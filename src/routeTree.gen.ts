@@ -16,6 +16,7 @@ import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as ProdutosRouteImport } from './routes/produtos'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as TermosRouteImport } from './routes/termos'
+import { Route as ViviRouteImport } from './routes/vivi'
 import { Route as ProdutoSlugRouteImport } from './routes/produto/$slug'
 
 const IndexRoute = IndexRouteImport.update({
@@ -53,6 +54,11 @@ const TermosRoute = TermosRouteImport.update({
   path: '/termos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ViviRoute = ViviRouteImport.update({
+  id: '/vivi',
+  path: '/vivi',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProdutoSlugRoute = ProdutoSlugRouteImport.update({
   id: '/produto/$slug',
   path: '/produto/$slug',
@@ -67,6 +73,7 @@ export interface FileRoutesByFullPath {
   '/produtos': typeof ProdutosRoute
   '/sobre': typeof SobreRoute
   '/termos': typeof TermosRoute
+  '/vivi': typeof ViviRoute
   '/produto/$slug': typeof ProdutoSlugRoute
 }
 export interface FileRoutesByTo {
@@ -77,6 +84,7 @@ export interface FileRoutesByTo {
   '/produtos': typeof ProdutosRoute
   '/sobre': typeof SobreRoute
   '/termos': typeof TermosRoute
+  '/vivi': typeof ViviRoute
   '/produto/$slug': typeof ProdutoSlugRoute
 }
 export interface FileRoutesById {
@@ -88,6 +96,7 @@ export interface FileRoutesById {
   '/produtos': typeof ProdutosRoute
   '/sobre': typeof SobreRoute
   '/termos': typeof TermosRoute
+  '/vivi': typeof ViviRoute
   '/produto/$slug': typeof ProdutoSlugRoute
 }
 export interface FileRouteTypes {
@@ -100,6 +109,7 @@ export interface FileRouteTypes {
     | '/produtos'
     | '/sobre'
     | '/termos'
+    | '/vivi'
     | '/produto/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -110,6 +120,7 @@ export interface FileRouteTypes {
     | '/produtos'
     | '/sobre'
     | '/termos'
+    | '/vivi'
     | '/produto/$slug'
   id:
     | '__root__'
@@ -120,6 +131,7 @@ export interface FileRouteTypes {
     | '/produtos'
     | '/sobre'
     | '/termos'
+    | '/vivi'
     | '/produto/$slug'
   fileRoutesById: FileRoutesById
 }
@@ -131,6 +143,7 @@ export interface RootRouteChildren {
   ProdutosRoute: typeof ProdutosRoute
   SobreRoute: typeof SobreRoute
   TermosRoute: typeof TermosRoute
+  ViviRoute: typeof ViviRoute
   ProdutoSlugRoute: typeof ProdutoSlugRoute
 }
 
@@ -185,6 +198,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TermosRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/vivi': {
+      id: '/vivi'
+      path: '/vivi'
+      fullPath: '/vivi'
+      preLoaderRoute: typeof ViviRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/produto/$slug': {
       id: '/produto/$slug'
       path: '/produto/$slug'
@@ -203,6 +223,7 @@ const rootRouteChildren: RootRouteChildren = {
   ProdutosRoute: ProdutosRoute,
   SobreRoute: SobreRoute,
   TermosRoute: TermosRoute,
+  ViviRoute: ViviRoute,
   ProdutoSlugRoute: ProdutoSlugRoute,
 }
 export const routeTree = rootRouteImport
