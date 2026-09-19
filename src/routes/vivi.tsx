@@ -1,0 +1,4 @@
+import { createFileRoute } from "@tanstack/react-router";
+import { SiteLayout } from "@/components/site/SiteLayout";
+import { ViviChat } from "@/components/vivi/ViviChat";
+export const Route=createFileRoute("/vivi")({head:()=>({meta:[{title:"Converse com a Vivi — PromoVip"},{name:"description",content:"A assistente virtual da PromoVip ajuda a encontrar produtos existentes no catálogo."},{property:"og:title",content:"Converse com a Vivi — PromoVip"},{property:"og:description",content:"Encontre produtos do catálogo com ajuda da Vivi."},{property:"og:type",content:"website"},{name:"twitter:card",content:"summary_large_image"}]}),component:Page});function Page(){return <SiteLayout><ViviChat/></SiteLayout>}

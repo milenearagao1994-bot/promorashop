@@ -14,8 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
+      analytics_events: {
+        Row: {
+          anonymous_session_id: string | null
+          event_type: Database["public"]["Enums"]["analytics_event_type"]
+          id: string
+          metadata: Json
+          occurred_at: string
+          product_id: string | null
+          store_id: string | null
+        }
+        Insert: {
+          anonymous_session_id?: string | null
+          event_type: Database["public"]["Enums"]["analytics_event_type"]
+          id?: string
+          metadata?: Json
+          occurred_at?: string
+          product_id?: string | null
+          store_id?: string | null
+        }
+        Update: {
+          anonymous_session_id?: string | null
+          event_type?: Database["public"]["Enums"]["analytics_event_type"]
+          id?: string
+          metadata?: Json
+          occurred_at?: string
+          product_id?: string | null
+          store_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "analytics_events_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "analytics_events_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       categories: {
         Row: {
+          active: boolean
           created_at: string
           icon: string | null
           id: string
@@ -25,6 +71,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          active?: boolean
           created_at?: string
           icon?: string | null
           id?: string
@@ -34,6 +81,7 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          active?: boolean
           created_at?: string
           icon?: string | null
           id?: string
@@ -49,6 +97,7 @@ export type Database = {
           active: boolean
           affiliate_url: string
           code: string | null
+          conditions: string | null
           created_at: string
           description: string | null
           discount_label: string | null
@@ -63,6 +112,7 @@ export type Database = {
           active?: boolean
           affiliate_url: string
           code?: string | null
+          conditions?: string | null
           created_at?: string
           description?: string | null
           discount_label?: string | null
@@ -77,6 +127,7 @@ export type Database = {
           active?: boolean
           affiliate_url?: string
           code?: string | null
+          conditions?: string | null
           created_at?: string
           description?: string | null
           discount_label?: string | null
@@ -97,6 +148,50 @@ export type Database = {
           },
         ]
       }
+      editorial_reviews: {
+        Row: {
+          active: boolean
+          body: string
+          created_at: string
+          id: string
+          product_id: string
+          published_at: string
+          rating: number | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          body: string
+          created_at?: string
+          id?: string
+          product_id: string
+          published_at?: string
+          rating?: number | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          body?: string
+          created_at?: string
+          id?: string
+          product_id?: string
+          published_at?: string
+          rating?: number | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "editorial_reviews_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       products: {
         Row: {
           active: boolean
@@ -104,6 +199,7 @@ export type Database = {
           category_id: string | null
           coupon_code: string | null
           created_at: string
+          currency: string
           description: string | null
           editorial_rating: number | null
           editorial_review: string | null
@@ -113,8 +209,11 @@ export type Database = {
           image_url: string | null
           original_price: number | null
           price: number | null
+          price_updated_at: string | null
           short_description: string | null
           slug: string
+          sort_order: number
+          specifications: Json
           store_id: string | null
           tags: string[]
           title: string
@@ -127,6 +226,7 @@ export type Database = {
           category_id?: string | null
           coupon_code?: string | null
           created_at?: string
+          currency?: string
           description?: string | null
           editorial_rating?: number | null
           editorial_review?: string | null
@@ -136,8 +236,11 @@ export type Database = {
           image_url?: string | null
           original_price?: number | null
           price?: number | null
+          price_updated_at?: string | null
           short_description?: string | null
           slug: string
+          sort_order?: number
+          specifications?: Json
           store_id?: string | null
           tags?: string[]
           title: string
@@ -150,6 +253,7 @@ export type Database = {
           category_id?: string | null
           coupon_code?: string | null
           created_at?: string
+          currency?: string
           description?: string | null
           editorial_rating?: number | null
           editorial_review?: string | null
@@ -159,8 +263,11 @@ export type Database = {
           image_url?: string | null
           original_price?: number | null
           price?: number | null
+          price_updated_at?: string | null
           short_description?: string | null
           slug?: string
+          sort_order?: number
+          specifications?: Json
           store_id?: string | null
           tags?: string[]
           title?: string
@@ -208,10 +315,36 @@ export type Database = {
         }
         Relationships: []
       }
+      site_settings: {
+        Row: {
+          created_at: string
+          key: string
+          public: boolean
+          updated_at: string
+          value: Json
+        }
+        Insert: {
+          created_at?: string
+          key: string
+          public?: boolean
+          updated_at?: string
+          value: Json
+        }
+        Update: {
+          created_at?: string
+          key?: string
+          public?: boolean
+          updated_at?: string
+          value?: Json
+        }
+        Relationships: []
+      }
       stores: {
         Row: {
           accent_color: string | null
           active: boolean
+          admin_notes: string | null
+          affiliate_base_url: string | null
           created_at: string
           id: string
           logo_url: string | null
@@ -223,6 +356,8 @@ export type Database = {
         Insert: {
           accent_color?: string | null
           active?: boolean
+          admin_notes?: string | null
+          affiliate_base_url?: string | null
           created_at?: string
           id?: string
           logo_url?: string | null
@@ -234,6 +369,8 @@ export type Database = {
         Update: {
           accent_color?: string | null
           active?: boolean
+          admin_notes?: string | null
+          affiliate_base_url?: string | null
           created_at?: string
           id?: string
           logo_url?: string | null
@@ -279,6 +416,7 @@ export type Database = {
       }
     }
     Enums: {
+      analytics_event_type: "product_view" | "outbound_click"
       app_role: "admin" | "user"
     }
     CompositeTypes: {
@@ -407,6 +545,7 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
+      analytics_event_type: ["product_view", "outbound_click"],
       app_role: ["admin", "user"],
     },
   },
