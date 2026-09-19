@@ -1,24 +1,16 @@
-import { createFileRoute } from "@tanstack/react-router";
-
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
-export const Route = createFileRoute("/")({
-  component: Index,
-});
-
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
-function Index() {
-  return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
-  );
-}
+import { useSuspenseQuery } from "@tanstack/react-query";
+import { createFileRoute, Link } from "@tanstack/react-router";
+import { ArrowRight, Gift, Search, Sparkles, Tag } from "lucide-react";
+import vivi from "@/assets/vivi-character.png.asset.json";
+import { CouponCard } from "@/components/site/CouponCard";
+import { EmptyState } from "@/components/site/EmptyState";
+import { ProductCard } from "@/components/site/ProductCard";
+import { SiteLayout } from "@/components/site/SiteLayout";
+import { Button } from "@/components/ui/button";
+import { categoriesQuery, couponsQuery, productsQuery } from "@/lib/promovip";
+export const Route=createFileRoute("/")({loader:({context})=>Promise.all([context.queryClient.ensureQueryData(productsQuery),context.queryClient.ensureQueryData(categoriesQuery),context.queryClient.ensureQueryData(couponsQuery)]),component:Index});
+function Index(){const{data:products}=useSuspenseQuery(productsQuery);const{data:categories}=useSuspenseQuery(categoriesQuery);const{data:coupons}=useSuspenseQuery(couponsQuery);const featured=products.filter(p=>p.featured).slice(0,4);return <SiteLayout><section className="relative overflow-hidden bg-soft-gradient"><div className="absolute -right-20 top-8 size-72 rounded-full bg-lilac/20 blur-3xl"/><div className="mx-auto grid min-h-[620px] max-w-6xl items-center gap-8 px-4 py-14 lg:grid-cols-[1.05fr_.95fr]"><div className="relative z-10"><div className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-white/70 px-3 py-2 text-xs font-semibold text-primary"><Sparkles className="size-3.5"/>OFERTAS · DESCOBERTAS · VOCÊ</div><h1 className="mt-6 max-w-2xl font-display text-5xl font-bold leading-[1.05] md:text-7xl">Descubra coisas incríveis. <span className="text-brand-gradient">Do seu jeito.</span></h1><p className="mt-6 max-w-xl text-base leading-7 text-muted-foreground md:text-lg">Achadinhos escolhidos com carinho, informações claras e uma assistente pronta para ajudar você a encontrar o que combina com sua vida.</p><div className="mt-8 flex flex-col gap-3 sm:flex-row"><Button asChild variant="hero" size="lg"><Link to="/produtos"><Search/>Explorar achadinhos</Link></Button><Button asChild variant="outline" size="lg"><Link to="/vivi"><Sparkles/>Falar com a Vivi</Link></Button></div></div><div className="relative mx-auto h-[420px] w-full max-w-md"><div className="absolute inset-x-6 bottom-4 h-72 rounded-[3rem] bg-brand-gradient opacity-90 shadow-glow"/><img src={vivi.url} alt="Vivi, assistente virtual da PromoVip" className="absolute inset-0 size-full object-contain object-bottom"/><div className="absolute right-0 top-8 rounded-xl border border-white/70 bg-white/90 px-4 py-3 shadow-soft backdrop-blur"><p className="font-display text-sm font-semibold text-primary">Oi, eu sou a Vivi! ♡</p></div></div></div></section>
+<section className="mx-auto max-w-6xl px-4 py-16"><div className="flex items-end justify-between"><div><p className="text-xs font-semibold text-primary">EXPLORE POR CATEGORIA</p><h2 className="mt-2 font-display text-3xl font-bold">Encontre sua próxima descoberta</h2></div></div><div className="mt-7 flex gap-3 overflow-x-auto pb-3">{categories.length?categories.map(c=><Link key={c.id} to="/produtos" className="flex min-w-36 items-center gap-3 rounded-xl border border-border bg-card p-4 text-sm font-semibold transition hover:border-primary hover:text-primary"><Tag className="size-4"/>{c.name}</Link>):<p className="text-sm text-muted-foreground">As categorias aparecerão aqui quando estiverem ativas.</p>}</div></section>
+<section className="bg-muted/50"><div className="mx-auto max-w-6xl px-4 py-16"><div className="flex items-end justify-between gap-4"><div><p className="text-xs font-semibold text-primary">SELEÇÃO PROMOVIP</p><h2 className="mt-2 font-display text-3xl font-bold">Achadinhos em destaque</h2></div><Button asChild variant="ghost"><Link to="/produtos">Ver todos <ArrowRight/></Link></Button></div><div className="mt-8">{featured.length?<div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-6">{featured.map(p=><ProductCard key={p.id} product={p}/>)}</div>:<EmptyState title="A curadoria está chegando" description="Nenhum produto foi destacado ainda. A administradora poderá publicar os primeiros achadinhos pelo painel."/>}</div></div></section>
+<section className="mx-auto max-w-6xl px-4 py-16"><div className="flex items-end justify-between"><div><p className="text-xs font-semibold text-primary">CUPONS</p><h2 className="mt-2 font-display text-3xl font-bold">Condições para conferir</h2></div><Button asChild variant="ghost"><Link to="/cupons">Ver cupons <ArrowRight/></Link></Button></div><div className="mt-8">{coupons.slice(0,3).length?<div className="grid gap-4 md:grid-cols-3">{coupons.slice(0,3).map(c=><CouponCard key={c.id} coupon={c}/>)}</div>:<EmptyState title="Sem cupons ativos agora" description="Assim que houver cupons cadastrados e não expirados, eles aparecerão nesta área."/>}</div></section>
+<section className="mx-auto max-w-6xl px-4 pb-8"><div className="relative overflow-hidden rounded-[2rem] bg-night-gradient px-6 py-10 text-primary-foreground md:px-12 md:py-14"><div className="relative z-10 max-w-2xl"><Sparkles className="size-7 text-lilac"/><h2 className="mt-4 font-display text-3xl font-bold md:text-4xl">Está procurando alguma coisa?</h2><p className="mt-3 text-primary-foreground/75">A Vivi pesquisa somente o catálogo real da PromoVip e conta quando não encontra uma opção.</p><Button asChild variant="vip" size="lg" className="mt-6"><Link to="/vivi">Conversar com a Vivi <ArrowRight/></Link></Button></div><Gift className="absolute -bottom-12 right-8 size-52 text-white/5"/></div></section></SiteLayout>}
