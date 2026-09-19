@@ -28,6 +28,8 @@ export type Product = {
   description: string | null;
   price: number | null;
   original_price: number | null;
+  currency: string;
+  price_updated_at: string | null;
   image_url: string | null;
   gallery: unknown;
   video_url: string | null;
@@ -41,6 +43,7 @@ export type Product = {
   featured: boolean;
   active: boolean;
   created_at: string;
+  sort_order: number;
   stores?: Pick<Store, "id" | "name" | "slug" | "accent_color"> | null;
   categories?: Pick<Category, "id" | "name" | "slug"> | null;
 };
@@ -50,6 +53,7 @@ export type Coupon = {
   code: string | null;
   title: string;
   description: string | null;
+  conditions: string | null;
   discount_label: string | null;
   store_id: string | null;
   affiliate_url: string;
@@ -67,9 +71,9 @@ export function galleryToArray(gallery: unknown): string[] {
   return [];
 }
 
-export function formatPrice(value: number | null | undefined) {
+export function formatPrice(value: number | null | undefined, currency = "BRL") {
   if (value === null || value === undefined) return null;
-  return value.toLocaleString("pt-BR", { style: "currency", currency: "BRL" });
+  return value.toLocaleString("pt-BR", { style: "currency", currency });
 }
 
 export function discountPercent(product: Pick<Product, "price" | "original_price">) {
