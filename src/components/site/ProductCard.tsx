@@ -37,7 +37,7 @@ export function ProductCard({ product }: { product: Product }) {
             )}
           </div>
           <Button asChild size="icon-sm" aria-label={`Ver ${product.title}`}>
-            <Link to="/produto/$slug" params={{ slug: product.slug }}><ArrowUpRight /></Link>
+            <Link to="/produto/$slug" params={{ slug: product.slug }}><ArrowUpRight aria-hidden="true" /></Link>
           </Button>
         </div>
       </div>
