@@ -18,6 +18,7 @@ export type Category = {
   slug: string;
   icon: string | null;
   sort_order: number;
+  active?: boolean;
 };
 
 export type Product = {
@@ -63,6 +64,16 @@ export type Coupon = {
   stores?: Pick<Store, "id" | "name" | "slug" | "accent_color"> | null;
 };
 
+export type EditorialReview = {
+  id: string;
+  product_id: string;
+  title: string;
+  body: string;
+  rating: number | null;
+  published_at: string;
+  active: boolean;
+};
+
 const PRODUCT_SELECT =
   "*, stores(id,name,slug,accent_color), categories(id,name,slug)" as const;
 
@@ -105,6 +116,19 @@ export function youtubeEmbedUrl(url: string | null | undefined) {
 export const storesQuery = queryOptions({
   queryKey: ["stores"],
   queryFn: async (): Promise<Store[]> => {
+    const { data, error } = await supabase
+      .from("stores")
+      .select("id,name,slug,website_url,logo_url,accent_color,active")
+      .eq("active", true)
+      .order("name");
+    if (error) throw error;
+    return (data ?? []) as Store[];
+  },
+});
+
+export const adminStoresQuery = queryOptions({
+  queryKey: ["stores", "admin"],
+  queryFn: async (): Promise<Store[]> => {
     const { data, error } = await supabase.from("stores").select("*").order("name");
     if (error) throw error;
     return (data ?? []) as Store[];
@@ -113,6 +137,15 @@ export const storesQuery = queryOptions({
 
 export const categoriesQuery = queryOptions({
   queryKey: ["categories"],
+  queryFn: async (): Promise<Category[]> => {
+    const { data, error } = await supabase.from("categories").select("*").order("sort_order");
+    if (error) throw error;
+    return (data ?? []) as Category[];
+  },
+});
+
+export const adminCategoriesQuery = queryOptions({
+  queryKey: ["categories", "admin"],
   queryFn: async (): Promise<Category[]> => {
     const { data, error } = await supabase.from("categories").select("*").order("sort_order");
     if (error) throw error;
@@ -182,5 +215,14 @@ export const adminCouponsQuery = queryOptions({
       .order("created_at", { ascending: false });
     if (error) throw error;
     return (data ?? []) as unknown as Coupon[];
+  },
+});
+
+export const adminReviewsQuery = queryOptions({
+  queryKey: ["editorial-reviews", "admin"],
+  queryFn: async (): Promise<EditorialReview[]> => {
+    const { data, error } = await supabase.from("editorial_reviews").select("*").order("published_at", { ascending: false });
+    if (error) throw error;
+    return (data ?? []) as EditorialReview[];
   },
 });

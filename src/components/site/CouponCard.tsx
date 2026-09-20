@@ -5,7 +5,8 @@ import { Button } from "@/components/ui/button";
 import type { Coupon } from "@/lib/promovip";
 
 export function CouponCard({ coupon }: { coupon: Coupon }) {
-  const expires = coupon.expires_at ? new Date(coupon.expires_at) : null;
+  const parsedDate = coupon.expires_at ? new Date(coupon.expires_at) : null;
+  const expires = parsedDate && !isNaN(parsedDate.getTime()) ? parsedDate : null;
   const expired = expires ? expires.getTime() < Date.now() : false;
 
   return (
