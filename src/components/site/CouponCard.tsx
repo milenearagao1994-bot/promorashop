@@ -5,13 +5,14 @@ import { Button } from "@/components/ui/button";
 import type { Coupon } from "@/lib/promovip";
 
 export function CouponCard({ coupon }: { coupon: Coupon }) {
-  const expires = coupon.expires_at ? new Date(coupon.expires_at) : null;
+  const parsedDate = coupon.expires_at ? new Date(coupon.expires_at) : null;
+  const expires = parsedDate && !isNaN(parsedDate.getTime()) ? parsedDate : null;
   const expired = expires ? expires.getTime() < Date.now() : false;
 
   return (
     <article className="rounded-xl border border-border bg-card p-5 shadow-soft">
       <div className="flex items-start justify-between gap-4">
-        <div className="flex size-10 items-center justify-center rounded-lg bg-secondary text-primary"><Ticket /></div>
+        <div className="flex size-10 items-center justify-center rounded-lg bg-secondary text-primary"><Ticket aria-hidden="true" /></div>
         {coupon.featured ? <Badge variant="secondary">Destaque</Badge> : null}
       </div>
       <p className="mt-5 text-xs font-medium text-muted-foreground">{coupon.stores?.name ?? "Loja parceira"}</p>
@@ -25,7 +26,7 @@ export function CouponCard({ coupon }: { coupon: Coupon }) {
       {coupon.code ? <div className="mt-4 rounded-lg border border-dashed border-primary/40 bg-secondary px-3 py-2 text-center font-mono text-sm font-semibold">{coupon.code}</div> : null}
       <Button asChild className="mt-4 w-full" variant="outline" disabled={expired}>
         <a href={coupon.affiliate_url} target="_blank" rel="sponsored noopener noreferrer">
-          {expired ? "Cupom expirado" : "Ver condições na loja"}<ExternalLink />
+          {expired ? "Cupom expirado" : "Ver condições na loja"}<ExternalLink aria-hidden="true" />
         </a>
       </Button>
     </article>

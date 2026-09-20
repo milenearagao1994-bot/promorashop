@@ -42,7 +42,7 @@ export function SiteFooter() {
 
       <div className="border-t border-white/10 px-4 py-5 text-center text-xs text-primary-foreground/70">
         <span className="inline-flex items-center gap-1.5">
-          PromoVip © {new Date().getFullYear()} · feito com <Heart className="size-3.5" /> para quem
+          PromoVip © {new Date().getFullYear()} · feito com <Heart className="size-3.5" aria-hidden="true" /> para quem
           ama um achadinho
         </span>
       </div>
