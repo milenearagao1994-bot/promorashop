@@ -20,7 +20,6 @@ export type Category = {
   slug: string;
   icon: string | null;
   sort_order: number;
-  specifications?: Record<string, unknown>;
   active?: boolean;
 };
 
@@ -48,6 +47,7 @@ export type Product = {
   active: boolean;
   created_at: string;
   sort_order: number;
+  specifications?: Record<string, unknown>;
   stores?: Pick<Store, "id" | "name" | "slug" | "accent_color"> | null;
   categories?: Pick<Category, "id" | "name" | "slug"> | null;
 };
