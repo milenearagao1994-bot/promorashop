@@ -9,6 +9,8 @@ export type Store = {
   website_url: string | null;
   logo_url: string | null;
   accent_color: string | null;
+  affiliate_base_url?: string | null;
+  admin_notes?: string | null;
   active: boolean;
 };
 
@@ -18,6 +20,7 @@ export type Category = {
   slug: string;
   icon: string | null;
   sort_order: number;
+  specifications?: Record<string, unknown>;
   active?: boolean;
 };
 
