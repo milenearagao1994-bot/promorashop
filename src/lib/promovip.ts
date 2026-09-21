@@ -9,6 +9,8 @@ export type Store = {
   website_url: string | null;
   logo_url: string | null;
   accent_color: string | null;
+  affiliate_base_url?: string | null;
+  admin_notes?: string | null;
   active: boolean;
 };
 
@@ -45,6 +47,7 @@ export type Product = {
   active: boolean;
   created_at: string;
   sort_order: number;
+  specifications?: Record<string, unknown>;
   stores?: Pick<Store, "id" | "name" | "slug" | "accent_color"> | null;
   categories?: Pick<Category, "id" | "name" | "slug"> | null;
 };
