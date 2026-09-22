@@ -46,6 +46,12 @@ function validUrl(value: string, required = false) {
   if (!value) return !required;
   try { const url = new URL(value); return url.protocol === "https:" || url.protocol === "http:"; } catch { return false; }
 }
+/** Media accepts both external addresses and internal paths created by our own upload. */
+function validMedia(value: string, required = false) {
+  if (!value) return !required;
+  if (value.startsWith("/")) return true;
+  return validUrl(value, required);
+}
 function nullable(value: FormDataEntryValue | null) { const text = String(value ?? "").trim(); return text || null; }
 function numberOrNull(value: FormDataEntryValue | null) { const text = String(value ?? "").trim().replace(",", "."); return text ? Number(text) : null; }
 
@@ -96,7 +102,10 @@ export function AdminPanel() {
         const storeId = form.get("store_id") === NONE ? null : String(form.get("store_id") ?? "");
         if (!title || price === null || !storeId || !imageUrl || !affiliateUrl) throw new Error("Preencha nome, preço, loja, link de afiliado e foto principal.");
         if (price < 0) throw new Error("Informe um preço válido.");
-        if (!validUrl(affiliateUrl, true) || !validUrl(imageUrl, true) || !validUrl(videoUrl) || gallery.some((url) => !validUrl(url))) throw new Error("Confira os endereços informados.");
+        if (!validUrl(affiliateUrl, true)) throw new Error("Informe um link de afiliado válido.");
+        if (!validMedia(imageUrl, true)) throw new Error("Não foi possível enviar a imagem. Tente novamente.");
+        if (!validMedia(videoUrl)) throw new Error("Não foi possível enviar o vídeo. Tente novamente.");
+        if (gallery.some((url) => !validMedia(url))) throw new Error("Não foi possível enviar uma das fotos adicionais. Tente novamente.");
         const specificationsText = String(form.get("specifications") ?? "").trim();
         const specifications = specificationsText ? JSON.parse(specificationsText) : {};
         if (!specifications || Array.isArray(specifications) || typeof specifications !== "object") throw new Error("As características devem usar o formato de objeto JSON.");
@@ -108,10 +117,16 @@ export function AdminPanel() {
         table = "categories"; payload = { name: String(form.get("name") ?? "").trim(), slug: slugify(String(form.get("slug") || form.get("name") || "")), icon: nullable(form.get("icon")), sort_order: Number(form.get("sort_order") || 0), active: form.get("active") === "on" };
       } else if (editor.kind === "store") {
         const website = String(form.get("website_url") ?? "").trim(); const affiliate = String(form.get("affiliate_base_url") ?? "").trim(); const logo = String(form.get("logo_url") ?? "").trim();
-        if (!validUrl(website) || !validUrl(affiliate) || !validUrl(logo)) throw new Error("Confira os endereços informados.");
+        if (!validUrl(website)) throw new Error("Informe um endereço de site válido.");
+        if (!validUrl(affiliate)) throw new Error("Informe um link de afiliado válido.");
+        if (!validMedia(logo)) throw new Error("Não foi possível enviar a imagem. Tente novamente.");
         table = "stores"; payload = { name: String(form.get("name") ?? "").trim(), slug: slugify(String(form.get("slug") || form.get("name") || "")), website_url: website || null, affiliate_base_url: affiliate || null, logo_url: logo || null, admin_notes: nullable(form.get("admin_notes")), active: form.get("active") === "on" };
       } else if(editor.kind === "banner") {
-        const image=String(form.get("image_url")??"").trim();const link=String(form.get("link_url")??"").trim();const bannerVideo=String(form.get("video_url")??"").trim();const media=String(form.get("media")??"").split("\n").map(item=>item.trim()).filter(Boolean);if(!validUrl(image)||!validUrl(link)||!validUrl(bannerVideo)||media.some(url=>!validUrl(url)))throw new Error("Confira os endereços informados.");
+        const image=String(form.get("image_url")??"").trim();const link=String(form.get("link_url")??"").trim();const bannerVideo=String(form.get("video_url")??"").trim();const media=String(form.get("media")??"").split("\n").map(item=>item.trim()).filter(Boolean);
+        if(!validMedia(image))throw new Error("Não foi possível enviar a imagem. Tente novamente.");
+        if(!validUrl(link))throw new Error("Informe um link válido para o banner.");
+        if(!validMedia(bannerVideo))throw new Error("Não foi possível enviar o vídeo. Tente novamente.");
+        if(media.some(url=>!validMedia(url)))throw new Error("Não foi possível enviar uma das imagens do carrossel. Tente novamente.");
         table="banners";payload={title:String(form.get("title")??"").trim(),subtitle:nullable(form.get("subtitle")),image_url:image||null,media,video_url:bannerVideo||null,autoplay:form.get("autoplay")==="on",link_url:link||null,link_label:nullable(form.get("link_label")),starts_at:nullable(form.get("starts_at")),ends_at:nullable(form.get("ends_at")),sort_order:Number(form.get("sort_order")||0),active:form.get("active")==="on"};
       } else if (editor.kind === "customer") {
         const rating = Number(form.get("rating") ?? 5);
