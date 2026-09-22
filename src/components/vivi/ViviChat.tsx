@@ -170,7 +170,7 @@ function Chat({ initialMessages, products }: { initialMessages: UIMessage[]; pro
                               <p className="line-clamp-2 text-sm font-semibold">{product.title}</p>
                               <p className="mt-1 text-xs text-muted-foreground">{product.stores?.name ?? "Loja parceira"}</p>
                               <p className="mt-1 text-xs font-semibold text-primary">
-                                {product.price === null ? "Ver na loja" : formatPrice(product.price, product.currency)}
+                                {product.price === null ? "Preço na loja" : formatPrice(product.price, product.currency)}
                               </p>
                               <span className="mt-2 inline-block text-xs font-semibold text-primary">Ver produto →</span>
                             </Link>
