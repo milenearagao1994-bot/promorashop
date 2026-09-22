@@ -8,7 +8,7 @@ import { EmptyState } from "@/components/site/EmptyState";
 import { ProductCard } from "@/components/site/ProductCard";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { Button } from "@/components/ui/button";
-import { bannersQuery, categoriesQuery, couponsQuery, productsQuery, siteSettingsQuery } from "@/lib/promovip";
+import { bannersQuery, categoriesQuery, couponsQuery, discountHuntConfig, productsQuery, siteSettingsQuery } from "@/lib/promovip";
 
 const description="Achadinhos, ofertas, promoções e produtos selecionados em um só lugar.";
 export const Route=createFileRoute("/")({
@@ -19,7 +19,7 @@ export const Route=createFileRoute("/")({
 
 function Index(){
   const{data:products}=useSuspenseQuery(productsQuery);const{data:categories}=useSuspenseQuery(categoriesQuery);const{data:coupons}=useSuspenseQuery(couponsQuery);const{data:banners}=useSuspenseQuery(bannersQuery);const{data:settings}=useSuspenseQuery(siteSettingsQuery);
-  const landing=(settings.find(s=>s.key==="landing")?.value??{}) as Record<string,string>;const featured=products.filter(p=>p.featured).slice(0,4);
+  const landing=(settings.find(s=>s.key==="landing")?.value??{}) as Record<string,string>;const featured=products.filter(p=>p.featured).slice(0,4);const hunt=discountHuntConfig(settings);
   return <SiteLayout>
     <section className="overflow-hidden bg-soft-gradient"><div className="mx-auto grid max-w-6xl items-center gap-3 px-4 py-8 lg:h-[calc(100svh-4rem)] lg:min-h-[620px] lg:max-h-[760px] lg:grid-cols-[1.08fr_.92fr]">
       <div className="relative z-10"><div className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-card/70 px-3 py-2 text-xs font-semibold text-primary"><Sparkles className="size-3.5"/>OFERTAS · DESCOBERTAS · VOCÊ</div><h1 className="mt-6 max-w-2xl font-display text-4xl font-bold leading-[1.08] md:text-6xl">{landing["hero_title"]??"Descubra coisas incríveis. Do seu jeito."}</h1><p className="mt-5 max-w-xl text-base leading-7 text-muted-foreground md:text-lg">{landing["hero_description"]??"Achadinhos escolhidos com carinho, informações claras e uma assistente pronta para ajudar você a encontrar o que combina com sua vida."}</p><div className="mt-7 flex flex-col gap-3 sm:flex-row"><Button asChild variant="hero" size="lg"><Link to="/produtos"><Search/>Explorar achadinhos</Link></Button><Button asChild variant="outline" size="lg"><Link to="/vivi"><Sparkles/>Falar com a Vivi</Link></Button></div></div>
