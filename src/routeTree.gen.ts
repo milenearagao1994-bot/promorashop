@@ -15,6 +15,8 @@ import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CuponsRouteImport } from './routes/cupons'
 import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as ProdutosRouteImport } from './routes/produtos'
+import { Route as RecuperarSenhaRouteImport } from './routes/recuperar-senha'
+import { Route as RedefinirSenhaRouteImport } from './routes/redefinir-senha'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as TermosRouteImport } from './routes/termos'
 import { Route as ViviRouteImport } from './routes/vivi'
@@ -50,6 +52,16 @@ const ProdutosRoute = ProdutosRouteImport.update({
   path: '/produtos',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RecuperarSenhaRoute = RecuperarSenhaRouteImport.update({
+  id: '/recuperar-senha',
+  path: '/recuperar-senha',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RedefinirSenhaRoute = RedefinirSenhaRouteImport.update({
+  id: '/redefinir-senha',
+  path: '/redefinir-senha',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SobreRoute = SobreRouteImport.update({
   id: '/sobre',
   path: '/sobre',
@@ -82,6 +94,8 @@ export interface FileRoutesByFullPath {
   '/cupons': typeof CuponsRoute
   '/privacidade': typeof PrivacidadeRoute
   '/produtos': typeof ProdutosRoute
+  '/recuperar-senha': typeof RecuperarSenhaRoute
+  '/redefinir-senha': typeof RedefinirSenhaRoute
   '/sobre': typeof SobreRoute
   '/termos': typeof TermosRoute
   '/vivi': typeof ViviRoute
@@ -94,6 +108,8 @@ export interface FileRoutesByTo {
   '/cupons': typeof CuponsRoute
   '/privacidade': typeof PrivacidadeRoute
   '/produtos': typeof ProdutosRoute
+  '/recuperar-senha': typeof RecuperarSenhaRoute
+  '/redefinir-senha': typeof RedefinirSenhaRoute
   '/sobre': typeof SobreRoute
   '/termos': typeof TermosRoute
   '/vivi': typeof ViviRoute
@@ -108,6 +124,8 @@ export interface FileRoutesById {
   '/cupons': typeof CuponsRoute
   '/privacidade': typeof PrivacidadeRoute
   '/produtos': typeof ProdutosRoute
+  '/recuperar-senha': typeof RecuperarSenhaRoute
+  '/redefinir-senha': typeof RedefinirSenhaRoute
   '/sobre': typeof SobreRoute
   '/termos': typeof TermosRoute
   '/vivi': typeof ViviRoute
@@ -122,6 +140,8 @@ export interface FileRouteTypes {
     | '/cupons'
     | '/privacidade'
     | '/produtos'
+    | '/recuperar-senha'
+    | '/redefinir-senha'
     | '/sobre'
     | '/termos'
     | '/vivi'
@@ -134,6 +154,8 @@ export interface FileRouteTypes {
     | '/cupons'
     | '/privacidade'
     | '/produtos'
+    | '/recuperar-senha'
+    | '/redefinir-senha'
     | '/sobre'
     | '/termos'
     | '/vivi'
@@ -147,6 +169,8 @@ export interface FileRouteTypes {
     | '/cupons'
     | '/privacidade'
     | '/produtos'
+    | '/recuperar-senha'
+    | '/redefinir-senha'
     | '/sobre'
     | '/termos'
     | '/vivi'
@@ -161,6 +185,8 @@ export interface RootRouteChildren {
   CuponsRoute: typeof CuponsRoute
   PrivacidadeRoute: typeof PrivacidadeRoute
   ProdutosRoute: typeof ProdutosRoute
+  RecuperarSenhaRoute: typeof RecuperarSenhaRoute
+  RedefinirSenhaRoute: typeof RedefinirSenhaRoute
   SobreRoute: typeof SobreRoute
   TermosRoute: typeof TermosRoute
   ViviRoute: typeof ViviRoute
@@ -209,6 +235,20 @@ declare module '@tanstack/react-router' {
       path: '/produtos'
       fullPath: '/produtos'
       preLoaderRoute: typeof ProdutosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/recuperar-senha': {
+      id: '/recuperar-senha'
+      path: '/recuperar-senha'
+      fullPath: '/recuperar-senha'
+      preLoaderRoute: typeof RecuperarSenhaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/redefinir-senha': {
+      id: '/redefinir-senha'
+      path: '/redefinir-senha'
+      fullPath: '/redefinir-senha'
+      preLoaderRoute: typeof RedefinirSenhaRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sobre': {
@@ -267,6 +307,8 @@ const rootRouteChildren: RootRouteChildren = {
   CuponsRoute: CuponsRoute,
   PrivacidadeRoute: PrivacidadeRoute,
   ProdutosRoute: ProdutosRoute,
+  RecuperarSenhaRoute: RecuperarSenhaRoute,
+  RedefinirSenhaRoute: RedefinirSenhaRoute,
   SobreRoute: SobreRoute,
   TermosRoute: TermosRoute,
   ViviRoute: ViviRoute,
