@@ -25,9 +25,28 @@ export function MediaListField({
   defaultValue?: string[];
   helper?: string;
   onPromote?: (url: string) => void;
+  folder?: string;
 }) {
   const [items, setItems] = useState<string[]>(defaultValue);
   const [draft, setDraft] = useState("");
+  const [progress, setProgress] = useState<string | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const addFiles = async (files: FileList | null) => {
+    const list = files ? Array.from(files) : [];
+    if (!list.length) return;
+    setProgress(`Enviando 0 de ${list.length}…`);
+    try {
+      const urls = await uploadManyMedia(list, folder ?? "produtos", (done, total) => setProgress(`Enviando ${done} de ${total}…`));
+      setItems((current) => [...current, ...urls]);
+      toast.success(urls.length > 1 ? `${urls.length} imagens enviadas.` : "Imagem enviada.");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Não foi possível enviar as imagens.");
+    } finally {
+      setProgress(null);
+      if (fileRef.current) fileRef.current.value = "";
+    }
+  };
 
   const move = (index: number, direction: -1 | 1) => {
     setItems((current) => {
