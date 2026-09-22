@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
 import { Send, Sparkles, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import vivi from "@/assets/vivi-character.png.asset.json";
+import vivi from "@/assets/vivi-avatar.png.asset.json";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { formatPrice, productsQuery, type Product } from "@/lib/promovip";
