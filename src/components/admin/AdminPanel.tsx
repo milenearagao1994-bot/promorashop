@@ -24,6 +24,7 @@ import {
   adminBannersQuery,
   adminCouponsQuery,
   adminProductsQuery,
+  adminProductReviewsQuery,
   adminReviewsQuery,
   adminStoresQuery,
   adminSiteSettingsQuery,
@@ -34,10 +35,11 @@ import {
   type Product,
   type Store,
   type Banner,
+  type ProductReview,
 } from "@/lib/promovip";
 
-type Editor = { kind: "product"; value?: Product } | { kind: "coupon"; value?: Coupon } | { kind: "category"; value?: Category } | { kind: "store"; value?: Store } | { kind: "review"; value?: EditorialReview } | {kind:"banner";value?:Banner};
-type TableName = "products" | "coupons" | "categories" | "stores" | "editorial_reviews" | "banners";
+type Editor = { kind: "product"; value?: Product } | { kind: "coupon"; value?: Coupon } | { kind: "category"; value?: Category } | { kind: "store"; value?: Store } | { kind: "review"; value?: EditorialReview } | {kind:"banner";value?:Banner} | {kind:"customer";value?:ProductReview};
+type TableName = "products" | "coupons" | "categories" | "stores" | "editorial_reviews" | "banners" | "product_reviews";
 const NONE = "__none__";
 
 function validUrl(value: string, required = false) {
