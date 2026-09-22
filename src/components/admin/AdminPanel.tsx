@@ -46,6 +46,12 @@ function validUrl(value: string, required = false) {
   if (!value) return !required;
   try { const url = new URL(value); return url.protocol === "https:" || url.protocol === "http:"; } catch { return false; }
 }
+/** Media accepts both external addresses and internal paths created by our own upload. */
+function validMedia(value: string, required = false) {
+  if (!value) return !required;
+  if (value.startsWith("/")) return true;
+  return validUrl(value, required);
+}
 function nullable(value: FormDataEntryValue | null) { const text = String(value ?? "").trim(); return text || null; }
 function numberOrNull(value: FormDataEntryValue | null) { const text = String(value ?? "").trim().replace(",", "."); return text ? Number(text) : null; }
 
