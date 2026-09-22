@@ -19,6 +19,7 @@ export function MediaListField({
   defaultValue = [],
   helper,
   onPromote,
+  folder,
 }: {
   label: string;
   name: string;
