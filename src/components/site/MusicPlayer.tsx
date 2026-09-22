@@ -25,30 +25,30 @@ export function MusicPlayer() {
   }, []);
 
   return (
-    <aside className="fixed bottom-3 left-3 z-40 w-[calc(100%-6.5rem)] max-w-sm overflow-hidden rounded-xl border border-border bg-card/95 shadow-card backdrop-blur md:bottom-5 md:left-5 md:w-96">
-      <div className="flex h-14 items-center gap-3 px-3">
-        <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-secondary text-primary">
-          <Music2 className="size-4" />
+    <aside className={`fixed bottom-3 left-3 z-40 overflow-hidden border border-border bg-card/95 shadow-card backdrop-blur transition-[width] duration-300 md:bottom-5 md:left-5 ${expanded ? "w-[calc(100%-1.5rem)] max-w-sm rounded-xl md:w-96" : "size-11 rounded-full"}`}>
+      {expanded ? (
+        <div className="flex h-14 items-center gap-3 px-3">
+          <div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-secondary text-primary">
+            <Music2 className="size-4" aria-hidden="true" />
+          </div>
+          <div className="min-w-0 flex-1">
+            <p className="truncate text-sm font-semibold text-foreground">{title}</p>
+            <p className="truncate text-xs text-muted-foreground">Playlist oficial · YouTube</p>
+          </div>
+          <Button type="button" variant="ghost" size="icon-sm" disabled={!ready} aria-label="Faixa anterior" onClick={()=>player.current?.previousVideo()}><SkipBack /></Button>
+          <Button type="button" variant="ghost" size="icon-sm" disabled={!ready} aria-label={playing?"Pausar":"Reproduzir"} onClick={()=>playing?player.current?.pauseVideo():player.current?.playVideo()}>{playing?<Pause/>:<Play/>}</Button>
+          <Button type="button" variant="ghost" size="icon-sm" disabled={!ready} aria-label="Próxima faixa" onClick={()=>player.current?.nextVideo()}><SkipForward /></Button>
+          <Button type="button" variant="ghost" size="icon-sm" disabled={!ready} aria-label={muted?"Ativar som":"Silenciar"} onClick={()=>{if(muted)player.current?.unMute();else player.current?.mute();setMuted(!muted)}}>{muted?<VolumeX/>:<Volume2/>}</Button>
+          <Button type="button" variant="ghost" size="icon-sm" aria-label="Minimizar player" onClick={() => setExpanded(false)}>
+            <ChevronDown />
+          </Button>
         </div>
-        <div className="min-w-0 flex-1">
-          <p className="truncate text-sm font-semibold text-foreground">{title}</p>
-          <p className="truncate text-xs text-muted-foreground">Playlist oficial · YouTube</p>
-        </div>
-        <Button type="button" variant="ghost" size="icon-sm" disabled={!ready} aria-label="Faixa anterior" onClick={()=>player.current?.previousVideo()}><SkipBack /></Button>
-        <Button type="button" variant="ghost" size="icon-sm" disabled={!ready} aria-label={playing?"Pausar":"Reproduzir"} onClick={()=>playing?player.current?.pauseVideo():player.current?.playVideo()}>{playing?<Pause/>:<Play/>}</Button>
-        <Button type="button" variant="ghost" size="icon-sm" disabled={!ready} aria-label="Próxima faixa" onClick={()=>player.current?.nextVideo()}><SkipForward /></Button>
-        <Button type="button" variant="ghost" size="icon-sm" disabled={!ready} aria-label={muted?"Ativar som":"Silenciar"} onClick={()=>{if(muted)player.current?.unMute();else player.current?.mute();setMuted(!muted)}}>{muted?<VolumeX/>:<Volume2/>}</Button>
-        <Button
-          type="button"
-          variant="ghost"
-          size="icon-sm"
-          aria-label={expanded ? "Minimizar player" : "Expandir player"}
-          onClick={() => setExpanded((value) => !value)}
-        >
-          {expanded ? <ChevronDown /> : <ChevronUp />}
+      ) : (
+        <Button type="button" variant="ghost" size="icon" className="size-11 rounded-full bg-secondary text-primary" aria-label="Abrir player de música" title="Abrir player de música" onClick={() => setExpanded(true)}>
+          <Music2 className="size-5" aria-hidden="true" />
         </Button>
-      </div>
-      <div className={`${expanded ? "aspect-video" : "h-px overflow-hidden opacity-0"} border-t border-border bg-muted`}><div id="promorashop-youtube-player" className="size-full" /></div>
+      )}
+      <div className={`${expanded ? "aspect-video border-t border-border" : "pointer-events-none absolute size-px overflow-hidden opacity-0"} bg-muted`}><div id="promorashop-youtube-player" className="size-full" /></div>
     </aside>
   );
 }
