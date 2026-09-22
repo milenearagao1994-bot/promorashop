@@ -1,11 +1,13 @@
 "use client";
 
-import { ArrowDown, ArrowUp, ImageIcon, Plus, Star, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { ArrowDown, ArrowUp, ImageIcon, Plus, Star, Trash2, Upload } from "lucide-react";
+import { useRef, useState } from "react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { uploadManyMedia } from "@/lib/media-upload";
 
 /**
  * Lista ordenável de endereços de imagem com miniaturas.
