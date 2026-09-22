@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as CacaAoDescontoRouteImport } from './routes/caca-ao-desconto'
 import { Route as CuponsRouteImport } from './routes/cupons'
 import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as ProdutosRouteImport } from './routes/produtos'
@@ -21,6 +22,7 @@ import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as TermosRouteImport } from './routes/termos'
 import { Route as ViviRouteImport } from './routes/vivi'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as ApiViviRouteImport } from './routes/api/vivi'
 import { Route as ProdutoSlugRouteImport } from './routes/produto/$slug'
 
 const IndexRoute = IndexRouteImport.update({
@@ -35,6 +37,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CacaAoDescontoRoute = CacaAoDescontoRouteImport.update({
+  id: '/caca-ao-desconto',
+  path: '/caca-ao-desconto',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CuponsRoute = CuponsRouteImport.update({
@@ -82,6 +89,11 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const ApiViviRoute = ApiViviRouteImport.update({
+  id: '/api/vivi',
+  path: '/api/vivi',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProdutoSlugRoute = ProdutoSlugRouteImport.update({
   id: '/produto/$slug',
   path: '/produto/$slug',
@@ -91,6 +103,7 @@ const ProdutoSlugRoute = ProdutoSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/caca-ao-desconto': typeof CacaAoDescontoRoute
   '/cupons': typeof CuponsRoute
   '/privacidade': typeof PrivacidadeRoute
   '/produtos': typeof ProdutosRoute
@@ -100,11 +113,13 @@ export interface FileRoutesByFullPath {
   '/termos': typeof TermosRoute
   '/vivi': typeof ViviRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/api/vivi': typeof ApiViviRoute
   '/produto/$slug': typeof ProdutoSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/caca-ao-desconto': typeof CacaAoDescontoRoute
   '/cupons': typeof CuponsRoute
   '/privacidade': typeof PrivacidadeRoute
   '/produtos': typeof ProdutosRoute
@@ -114,6 +129,7 @@ export interface FileRoutesByTo {
   '/termos': typeof TermosRoute
   '/vivi': typeof ViviRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/api/vivi': typeof ApiViviRoute
   '/produto/$slug': typeof ProdutoSlugRoute
 }
 export interface FileRoutesById {
@@ -121,6 +137,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/caca-ao-desconto': typeof CacaAoDescontoRoute
   '/cupons': typeof CuponsRoute
   '/privacidade': typeof PrivacidadeRoute
   '/produtos': typeof ProdutosRoute
@@ -130,6 +147,7 @@ export interface FileRoutesById {
   '/termos': typeof TermosRoute
   '/vivi': typeof ViviRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/api/vivi': typeof ApiViviRoute
   '/produto/$slug': typeof ProdutoSlugRoute
 }
 export interface FileRouteTypes {
@@ -137,6 +155,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/caca-ao-desconto'
     | '/cupons'
     | '/privacidade'
     | '/produtos'
@@ -146,11 +165,13 @@ export interface FileRouteTypes {
     | '/termos'
     | '/vivi'
     | '/admin'
+    | '/api/vivi'
     | '/produto/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth'
+    | '/caca-ao-desconto'
     | '/cupons'
     | '/privacidade'
     | '/produtos'
@@ -160,12 +181,14 @@ export interface FileRouteTypes {
     | '/termos'
     | '/vivi'
     | '/admin'
+    | '/api/vivi'
     | '/produto/$slug'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/caca-ao-desconto'
     | '/cupons'
     | '/privacidade'
     | '/produtos'
@@ -175,6 +198,7 @@ export interface FileRouteTypes {
     | '/termos'
     | '/vivi'
     | '/_authenticated/admin'
+    | '/api/vivi'
     | '/produto/$slug'
   fileRoutesById: FileRoutesById
 }
@@ -182,6 +206,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  CacaAoDescontoRoute: typeof CacaAoDescontoRoute
   CuponsRoute: typeof CuponsRoute
   PrivacidadeRoute: typeof PrivacidadeRoute
   ProdutosRoute: typeof ProdutosRoute
@@ -190,6 +215,7 @@ export interface RootRouteChildren {
   SobreRoute: typeof SobreRoute
   TermosRoute: typeof TermosRoute
   ViviRoute: typeof ViviRoute
+  ApiViviRoute: typeof ApiViviRoute
   ProdutoSlugRoute: typeof ProdutoSlugRoute
 }
 
@@ -214,6 +240,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/caca-ao-desconto': {
+      id: '/caca-ao-desconto'
+      path: '/caca-ao-desconto'
+      fullPath: '/caca-ao-desconto'
+      preLoaderRoute: typeof CacaAoDescontoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cupons': {
@@ -279,6 +312,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/api/vivi': {
+      id: '/api/vivi'
+      path: '/api/vivi'
+      fullPath: '/api/vivi'
+      preLoaderRoute: typeof ApiViviRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/produto/$slug': {
       id: '/produto/$slug'
       path: '/produto/$slug'
@@ -304,6 +344,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  CacaAoDescontoRoute: CacaAoDescontoRoute,
   CuponsRoute: CuponsRoute,
   PrivacidadeRoute: PrivacidadeRoute,
   ProdutosRoute: ProdutosRoute,
@@ -312,6 +353,7 @@ const rootRouteChildren: RootRouteChildren = {
   SobreRoute: SobreRoute,
   TermosRoute: TermosRoute,
   ViviRoute: ViviRoute,
+  ApiViviRoute: ApiViviRoute,
   ProdutoSlugRoute: ProdutoSlugRoute,
 }
 export const routeTree = rootRouteImport

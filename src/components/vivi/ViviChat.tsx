@@ -1,13 +1,223 @@
 "use client";
+
+import { useChat } from "@ai-sdk/react";
 import { useQuery } from "@tanstack/react-query";
 import { Link } from "@tanstack/react-router";
-import { Send, Sparkles, Trash2 } from "lucide-react";
-import { useEffect, useRef, useState } from "react";
+import { DefaultChatTransport, type UIMessage } from "ai";
+import { Search, Sparkles, Trash2 } from "lucide-react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+
 import vivi from "@/assets/vivi-avatar.png.asset.json";
+import {
+  Conversation,
+  ConversationContent,
+  ConversationScrollButton,
+} from "@/components/ai-elements/conversation";
+import { Message, MessageContent, MessageResponse } from "@/components/ai-elements/message";
+import {
+  PromptInput,
+  PromptInputFooter,
+  PromptInputSubmit,
+  PromptInputTextarea,
+} from "@/components/ai-elements/prompt-input";
+import { Shimmer } from "@/components/ai-elements/shimmer";
 import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
 import { formatPrice, productsQuery, type Product } from "@/lib/promovip";
-type Message={id:string;role:"user"|"assistant";text:string;products?:Product[]};const KEY="promorashop:vivi:v1";
-function normalize(value:string){return value.normalize("NFD").replace(/[\u0300-\u036f]/g,"").toLowerCase()}
-function answer(query:string,products:Product[]){const q=normalize(query);const budget=Number(q.match(/(?:r\$\s*|ate\s+)(\d+(?:[.,]\d+)?)/)?.[1]?.replace(",","."));const words=q.split(/\s+/).filter(word=>word.length>2&&!['quero','procuro','para','uma','algum','coisa','achar','produto'].includes(word));const matches=products.filter(p=>{const hay=normalize(`${p.title} ${p.short_description??""} ${p.tags.join(" ")} ${p.categories?.name??""}`);return(!budget||p.price===null||p.price<=budget)&&(words.length===0||words.some(word=>hay.includes(word)))}).slice(0,3);return matches.length?{text:`Encontrei ${matches.length===1?"uma opção":"algumas opções"} no catálogo. Confira os detalhes e confirme preço e disponibilidade na loja.`,products:matches}:{text:"Não encontrei uma correspondência no catálogo agora. Tente descrever por categoria, cor, uso ou faixa de preço — eu busco novamente sem inventar opções.",products:[]}}
-export function ViviChat(){const{data:products=[]}=useQuery(productsQuery);const[messages,setMessages]=useState<Message[]>([]);const[input,setInput]=useState("");const end=useRef<HTMLDivElement>(null);useEffect(()=>{try{const saved=localStorage.getItem(KEY);if(saved)setMessages(JSON.parse(saved) as Message[])}catch{}},[]);useEffect(()=>{localStorage.setItem(KEY,JSON.stringify(messages));end.current?.scrollIntoView({behavior:"smooth"})},[messages]);function send(value=input){const text=value.trim();if(!text)return;const found=answer(text,products);setMessages(current=>[...current,{id:crypto.randomUUID(),role:"user",text},{id:crypto.randomUUID(),role:"assistant",...found}]);setInput("")}return <div className="grid min-h-[calc(100vh-8rem)] lg:grid-cols-[260px_1fr]"><aside className="hidden border-r border-border bg-card p-5 lg:block"><Button variant="outline" className="w-full" onClick={()=>setMessages([])}><Trash2/>Limpar conversa</Button><p className="mt-6 text-xs leading-5 text-muted-foreground">A conversa fica somente neste navegador. A Vivi pesquisa exclusivamente os produtos ativos do catálogo.</p></aside><section className="flex min-h-0 flex-col"><header className="border-b border-border bg-card/80 px-4 py-3"><div className="mx-auto flex max-w-3xl items-center gap-3"><img src={vivi.url} alt="Vivi, assistente virtual" className="size-12 rounded-full bg-secondary object-cover object-top"/><div><h1 className="font-display font-semibold">Vivi</h1><p className="text-xs text-muted-foreground">Assistente virtual da PromoraShop</p></div></div></header><div className="flex-1 overflow-y-auto px-4 py-8"><div className="mx-auto max-w-3xl space-y-5">{messages.length===0?<div className="py-8 text-center"><img src={vivi.url} alt="Vivi" className="mx-auto h-44 w-44 object-contain"/><h2 className="mt-4 font-display text-2xl font-bold">Oi, eu sou a Vivi!</h2><p className="mt-2 text-muted-foreground">Conte o que você procura e eu consulto o catálogo.</p><div className="mt-6 flex flex-wrap justify-center gap-2">{["Presente até R$ 50","Bolsa preta","Organizar o quarto"].map(item=><button key={item} onClick={()=>send(item)} className="rounded-full border border-border bg-card px-4 py-2 text-sm hover:border-primary">{item}</button>)}</div></div>:messages.map(message=><div key={message.id} className={message.role==="user"?"ml-auto max-w-[85%]":"max-w-[90%]"}><div className={`rounded-xl px-4 py-3 text-sm leading-6 ${message.role==="user"?"bg-primary text-primary-foreground":"border border-border bg-card"}`}>{message.text}</div>{message.products?.length?<div className="mt-3 grid gap-2 sm:grid-cols-3">{message.products.map(p=><Link key={p.id} to="/produto/$slug" params={{slug:p.slug}} className="rounded-lg border border-border bg-card p-3 hover:border-primary"><p className="line-clamp-2 text-sm font-semibold">{p.title}</p><p className="mt-2 text-xs text-primary">{p.price===null?"Ver na loja":formatPrice(p.price,p.currency)}</p></Link>)}</div>:null}</div>)}<div ref={end}/></div></div><footer className="border-t border-border bg-background/95 p-4"><form className="mx-auto flex max-w-3xl items-end gap-2" onSubmit={e=>{e.preventDefault();send()}}><Textarea value={input} onChange={e=>setInput(e.target.value)} placeholder="Ex.: presente até R$ 50" className="min-h-11 resize-none"/><Button type="submit" size="icon" aria-label="Enviar"><Send/></Button></form><p className="mt-2 text-center text-[11px] text-muted-foreground"><Sparkles className="mr-1 inline size-3"/>Confirme preço e disponibilidade na loja.</p></footer></section></div>}
+
+const STORAGE_KEY = "promorashop:vivi:v2";
+
+const QUICK_PROMPTS = [
+  "🛍️ Encontrar um produto",
+  "🔥 Ver ofertas",
+  "💰 Procurar por preço",
+  "🎁 Sugestão de presente",
+  "✨ O que está em alta?",
+];
+
+function messageText(message: UIMessage) {
+  return message.parts.map((part) => (part.type === "text" ? part.text : "")).join("");
+}
+
+function parseAnswer(text: string) {
+  const slugMatch = text.match(/PRODUTOS:\s*(.+)$/im);
+  const slugs = slugMatch?.[1]?.split(",").map((value) => value.trim()).filter(Boolean) ?? [];
+  const showHunt = text.includes("[[CACA]]");
+  const clean = text.replace(/PRODUTOS:\s*.+$/im, "").replace(/\[\[CACA\]\]/g, "").trim();
+  return { clean, slugs, showHunt };
+}
+
+export function ViviChat() {
+  const { data: products = [] } = useQuery(productsQuery);
+  const [initial, setInitial] = useState<UIMessage[] | null>(null);
+
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem(STORAGE_KEY);
+      setInitial(saved ? (JSON.parse(saved) as UIMessage[]) : []);
+    } catch {
+      setInitial([]);
+    }
+  }, []);
+
+  if (!initial) return <div className="px-4 py-16 text-center text-muted-foreground">Carregando a Vivi…</div>;
+  return <Chat initialMessages={initial} products={products} />;
+}
+
+function Chat({ initialMessages, products }: { initialMessages: UIMessage[]; products: Product[] }) {
+  const [input, setInput] = useState("");
+  const { messages, sendMessage, setMessages, status } = useChat({
+    messages: initialMessages,
+    transport: new DefaultChatTransport({ api: "/api/vivi" }),
+    onError: () => toast.error("A Vivi não conseguiu responder agora. Tente novamente em instantes."),
+  });
+  const busy = status === "submitted" || status === "streaming";
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(messages));
+    } catch {
+      /* armazenamento indisponível */
+    }
+  }, [messages]);
+
+  const send = (text: string) => {
+    const value = text.trim();
+    if (!value || busy) return;
+    void sendMessage({ text: value });
+    setInput("");
+  };
+
+  return (
+    <div className="grid min-h-[calc(100vh-8rem)] lg:grid-cols-[260px_1fr]">
+      <aside className="hidden border-r border-border bg-card p-5 lg:block">
+        <Button variant="outline" className="w-full" onClick={() => setMessages([])}>
+          <Trash2 />
+          Limpar conversa
+        </Button>
+        <Button asChild variant="ghost" className="mt-2 w-full">
+          <Link to="/caca-ao-desconto" search={{}}>
+            <Search />
+            Procurar desconto
+          </Link>
+        </Button>
+        <p className="mt-6 text-xs leading-5 text-muted-foreground">
+          A conversa fica somente neste navegador. Sobre produtos, preços e cupons, a Vivi usa apenas o catálogo real da PromoraShop.
+        </p>
+      </aside>
+
+      <section className="flex min-h-0 flex-col">
+        <header className="border-b border-border bg-card/80 px-4 py-3">
+          <div className="mx-auto flex max-w-3xl items-center gap-3">
+            <img src={vivi.url} alt="Vivi, assistente virtual" className="size-12 rounded-full bg-secondary object-cover object-top" />
+            <div>
+              <h1 className="font-display font-semibold">Vivi</h1>
+              <p className="text-xs text-muted-foreground">Assistente virtual da PromoraShop</p>
+            </div>
+          </div>
+        </header>
+
+        <Conversation className="flex-1">
+          <ConversationContent className="mx-auto w-full max-w-3xl">
+            {messages.length === 0 ? (
+              <div className="py-8 text-center">
+                <img src={vivi.url} alt="Vivi" className="mx-auto h-40 w-40 rounded-full object-cover object-top" />
+                <h2 className="mt-4 font-display text-2xl font-bold">Oi, eu sou a Vivi! 💜</h2>
+                <p className="mt-2 text-muted-foreground">Podemos conversar, escolher um presente ou procurar um achadinho.</p>
+                <div className="mt-6 flex flex-wrap justify-center gap-2">
+                  {QUICK_PROMPTS.map((item) => (
+                    <button
+                      key={item}
+                      type="button"
+                      onClick={() => send(item)}
+                      className="rounded-full border border-border bg-card px-4 py-2 text-sm transition hover:border-primary hover:text-primary"
+                    >
+                      {item}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ) : (
+              messages.map((message) => {
+                if (message.role === "user") {
+                  return (
+                    <Message from="user" key={message.id}>
+                      <MessageContent>{messageText(message)}</MessageContent>
+                    </Message>
+                  );
+                }
+                const { clean, slugs, showHunt } = parseAnswer(messageText(message));
+                const suggested = slugs
+                  .map((slug) => products.find((product) => product.slug === slug))
+                  .filter((product): product is Product => Boolean(product))
+                  .slice(0, 3);
+                return (
+                  <Message from="assistant" key={message.id}>
+                    <MessageContent className="bg-transparent p-0">
+                      <MessageResponse>{clean}</MessageResponse>
+                      {suggested.length ? (
+                        <div className="mt-3 grid gap-2 sm:grid-cols-3">
+                          {suggested.map((product) => (
+                            <Link
+                              key={product.id}
+                              to="/produto/$slug"
+                              params={{ slug: product.slug }}
+                              className="rounded-lg border border-border bg-card p-3 transition hover:border-primary"
+                            >
+                              {product.image_url ? (
+                                <img src={product.image_url} alt="" className="mb-2 aspect-square w-full rounded object-cover" />
+                              ) : null}
+                              <p className="line-clamp-2 text-sm font-semibold">{product.title}</p>
+                              <p className="mt-1 text-xs text-muted-foreground">{product.stores?.name ?? "Loja parceira"}</p>
+                              <p className="mt-1 text-xs font-semibold text-primary">
+                                {product.price === null ? "Preço na loja" : formatPrice(product.price, product.currency)}
+                              </p>
+                              <span className="mt-2 inline-block text-xs font-semibold text-primary">Ver produto →</span>
+                            </Link>
+                          ))}
+                        </div>
+                      ) : null}
+                      {showHunt ? (
+                        <Button asChild size="sm" className="mt-3">
+                          <Link to="/caca-ao-desconto" search={{}}>
+                            <Search /> 🔎 Procurar desconto
+                          </Link>
+                        </Button>
+                      ) : null}
+                    </MessageContent>
+                  </Message>
+                );
+              })
+            )}
+            {status === "submitted" ? <Shimmer>Pensando…</Shimmer> : null}
+          </ConversationContent>
+          <ConversationScrollButton />
+        </Conversation>
+
+        <footer className="border-t border-border bg-background/95 p-4">
+          <div className="mx-auto max-w-3xl">
+            <PromptInput
+              onSubmit={(_message, event) => {
+                event.preventDefault();
+                send(input);
+              }}
+            >
+              <PromptInputTextarea
+                value={input}
+                onChange={(event) => setInput(event.target.value)}
+                placeholder="Conte o que você procura ou só diga oi 💜"
+              />
+              <PromptInputFooter className="justify-end">
+                <PromptInputSubmit status={status} disabled={busy || input.trim().length === 0} />
+              </PromptInputFooter>
+            </PromptInput>
+            <p className="mt-2 text-center text-[11px] text-muted-foreground">
+              <Sparkles className="mr-1 inline size-3" />
+              Confirme preço e disponibilidade na loja parceira.
+            </p>
+          </div>
+        </footer>
+      </section>
+    </div>
+  );
+}

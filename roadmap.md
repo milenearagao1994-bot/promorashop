@@ -12,3 +12,14 @@
 - [x] Primeiro acesso exclusivo de arianearagaocomercial@gmail.com
 - [x] Testes públicos em celular e desktop: landing, Vivi, player, WhatsApp, proteção e clique externo
 - [ ] Teste autenticado do CRUD do painel — aguardando a proprietária concluir o primeiro acesso por e-mail
+
+## Rodada de ajustes finais (player, Vivi, mídias, Caça ao Desconto)
+- [x] Player fixo na raiz, continua tocando ao navegar e ao trocar de aba
+- [x] Ícone da Vivi com fechar (X) e botão "Falar com a Vivi" para reabrir
+- [x] WhatsApp removido dos botões flutuantes e movido para "Sobre"
+- [x] Galeria de fotos com miniaturas, ordem, zoom e swipe + vídeo integrado
+- [x] Banners com carrossel de imagens, vídeo e autoplay sem som
+- [x] Vivi conversacional com IA usando somente o catálogo real
+- [x] Caça ao Desconto na landing, no produto e no chat, com envio pelo WhatsApp
+- [x] Painel: mídias de produto/banner, mídia e textos da Vivi, Caça ao Desconto
+- [x] Testes no celular: landing, Caça ao Desconto e conversa da Vivi

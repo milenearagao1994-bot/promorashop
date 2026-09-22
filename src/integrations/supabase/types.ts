@@ -62,45 +62,54 @@ export type Database = {
       banners: {
         Row: {
           active: boolean
+          autoplay: boolean
           created_at: string
           ends_at: string | null
           id: string
           image_url: string | null
           link_label: string | null
           link_url: string | null
+          media: Json
           sort_order: number
           starts_at: string | null
           subtitle: string | null
           title: string
           updated_at: string
+          video_url: string | null
         }
         Insert: {
           active?: boolean
+          autoplay?: boolean
           created_at?: string
           ends_at?: string | null
           id?: string
           image_url?: string | null
           link_label?: string | null
           link_url?: string | null
+          media?: Json
           sort_order?: number
           starts_at?: string | null
           subtitle?: string | null
           title: string
           updated_at?: string
+          video_url?: string | null
         }
         Update: {
           active?: boolean
+          autoplay?: boolean
           created_at?: string
           ends_at?: string | null
           id?: string
           image_url?: string | null
           link_label?: string | null
           link_url?: string | null
+          media?: Json
           sort_order?: number
           starts_at?: string | null
           subtitle?: string | null
           title?: string
           updated_at?: string
+          video_url?: string | null
         }
         Relationships: []
       }
