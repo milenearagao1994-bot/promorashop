@@ -153,7 +153,7 @@ function Chat({ initialMessages, products }: { initialMessages: UIMessage[]; pro
                   .slice(0, 3);
                 return (
                   <Message from="assistant" key={message.id}>
-                    <MessageContent variant="flat">
+                    <MessageContent className="bg-transparent p-0">
                       <MessageResponse>{clean}</MessageResponse>
                       {suggested.length ? (
                         <div className="mt-3 grid gap-2 sm:grid-cols-3">
