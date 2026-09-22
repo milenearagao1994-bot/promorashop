@@ -1,4 +1,4 @@
-# PromoVip — roadmap
+# PromoraShop — roadmap
 
 - [x] Banco de dados (lojas, categorias, produtos, cupons, perfis, papéis)
 - [x] Login por e-mail ativado
