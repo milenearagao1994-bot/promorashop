@@ -117,7 +117,9 @@ export function AdminPanel() {
         table = "categories"; payload = { name: String(form.get("name") ?? "").trim(), slug: slugify(String(form.get("slug") || form.get("name") || "")), icon: nullable(form.get("icon")), sort_order: Number(form.get("sort_order") || 0), active: form.get("active") === "on" };
       } else if (editor.kind === "store") {
         const website = String(form.get("website_url") ?? "").trim(); const affiliate = String(form.get("affiliate_base_url") ?? "").trim(); const logo = String(form.get("logo_url") ?? "").trim();
-        if (!validUrl(website) || !validUrl(affiliate) || !validUrl(logo)) throw new Error("Confira os endereços informados.");
+        if (!validUrl(website)) throw new Error("Informe um endereço de site válido.");
+        if (!validUrl(affiliate)) throw new Error("Informe um link de afiliado válido.");
+        if (!validMedia(logo)) throw new Error("Não foi possível enviar a imagem. Tente novamente.");
         table = "stores"; payload = { name: String(form.get("name") ?? "").trim(), slug: slugify(String(form.get("slug") || form.get("name") || "")), website_url: website || null, affiliate_base_url: affiliate || null, logo_url: logo || null, admin_notes: nullable(form.get("admin_notes")), active: form.get("active") === "on" };
       } else if(editor.kind === "banner") {
         const image=String(form.get("image_url")??"").trim();const link=String(form.get("link_url")??"").trim();const bannerVideo=String(form.get("video_url")??"").trim();const media=String(form.get("media")??"").split("\n").map(item=>item.trim()).filter(Boolean);if(!validUrl(image)||!validUrl(link)||!validUrl(bannerVideo)||media.some(url=>!validUrl(url)))throw new Error("Confira os endereços informados.");
