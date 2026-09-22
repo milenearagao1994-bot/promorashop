@@ -4,6 +4,7 @@ import { BarChart3, Eye, EyeOff, LogOut, Package, Pencil, Plus, Settings, Shield
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
+import { MediaListField } from "@/components/admin/MediaListField";
 import { Logo } from "@/components/site/Logo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
