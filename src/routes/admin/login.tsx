@@ -64,7 +64,7 @@ function Page() {
             <Input id="password" name="password" type="password" autoComplete="current-password" className="rounded-xl" required />
           </div>
           <Button className="w-full rounded-xl" size="lg" disabled={loading}>
-            {loading ? "Aguarde…" : "🔐 ENTRAR COM SEGURANÇA"}
+            {loading ? "Aguarde…" : <><LockKeyhole />ENTRAR COM SEGURANÇA</>}
           </Button>
         </form>
       </div>
