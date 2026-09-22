@@ -21,6 +21,7 @@ export function MediaUploadField({
   folder,
   defaultValue = null,
   helper,
+  required = false,
 }: {
   label: string;
   name: string;
@@ -28,6 +29,7 @@ export function MediaUploadField({
   folder: string;
   defaultValue?: string | null;
   helper?: string;
+  required?: boolean;
 }) {
   const [value, setValue] = useState<string>(defaultValue ?? "");
   const [busy, setBusy] = useState(false);
@@ -72,6 +74,7 @@ export function MediaUploadField({
           type="file"
           accept={kind === "image" ? "image/*" : "video/*"}
           disabled={busy}
+          required={required && !value}
           onChange={(event) => void pick(event.target.files)}
           className="max-w-xs"
         />
