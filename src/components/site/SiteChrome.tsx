@@ -2,7 +2,6 @@
 
 import { useRouterState } from "@tanstack/react-router";
 
-import { FloatingActions } from "@/components/site/FloatingActions";
 import { MusicPlayer } from "@/components/site/MusicPlayer";
 
 /**
@@ -13,10 +12,5 @@ export function SiteChrome() {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const isPrivate = /^\/admin/.test(pathname);
   if (isPrivate) return null;
-  return (
-    <>
-      <FloatingActions hideVivi={pathname.startsWith("/vivi")} />
-      <MusicPlayer />
-    </>
-  );
+  return <MusicPlayer />;
 }
