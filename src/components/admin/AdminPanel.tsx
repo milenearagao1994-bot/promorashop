@@ -102,7 +102,10 @@ export function AdminPanel() {
         const storeId = form.get("store_id") === NONE ? null : String(form.get("store_id") ?? "");
         if (!title || price === null || !storeId || !imageUrl || !affiliateUrl) throw new Error("Preencha nome, preço, loja, link de afiliado e foto principal.");
         if (price < 0) throw new Error("Informe um preço válido.");
-        if (!validUrl(affiliateUrl, true) || !validUrl(imageUrl, true) || !validUrl(videoUrl) || gallery.some((url) => !validUrl(url))) throw new Error("Confira os endereços informados.");
+        if (!validUrl(affiliateUrl, true)) throw new Error("Informe um link de afiliado válido.");
+        if (!validMedia(imageUrl, true)) throw new Error("Não foi possível enviar a imagem. Tente novamente.");
+        if (!validMedia(videoUrl)) throw new Error("Não foi possível enviar o vídeo. Tente novamente.");
+        if (gallery.some((url) => !validMedia(url))) throw new Error("Não foi possível enviar uma das fotos adicionais. Tente novamente.");
         const specificationsText = String(form.get("specifications") ?? "").trim();
         const specifications = specificationsText ? JSON.parse(specificationsText) : {};
         if (!specifications || Array.isArray(specifications) || typeof specifications !== "object") throw new Error("As características devem usar o formato de objeto JSON.");
