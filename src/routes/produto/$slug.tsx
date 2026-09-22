@@ -4,6 +4,7 @@ import { ArrowLeft, ExternalLink, Search, ShieldCheck } from "lucide-react";
 import { useEffect } from "react";
 
 import { ProductGallery } from "@/components/site/ProductGallery";
+import { ProductReviews } from "@/components/site/ProductReviews";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -113,6 +114,7 @@ function Page() {
             ) : null}
           </div>
         </div>
+        <ProductReviews productId={p.id} productTitle={p.title} />
         {p.description ? (
           <section className="mt-12 max-w-3xl">
             <h2 className="font-display text-2xl font-bold">Sobre este produto</h2>
