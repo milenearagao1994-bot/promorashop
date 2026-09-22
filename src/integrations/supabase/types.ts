@@ -282,6 +282,53 @@ export type Database = {
           },
         ]
       }
+      product_reviews: {
+        Row: {
+          author_name: string
+          body: string
+          created_at: string
+          id: string
+          photo_url: string | null
+          product_id: string
+          rating: number
+          source: Database["public"]["Enums"]["review_source"]
+          status: Database["public"]["Enums"]["review_status"]
+          updated_at: string
+        }
+        Insert: {
+          author_name: string
+          body: string
+          created_at?: string
+          id?: string
+          photo_url?: string | null
+          product_id: string
+          rating: number
+          source?: Database["public"]["Enums"]["review_source"]
+          status?: Database["public"]["Enums"]["review_status"]
+          updated_at?: string
+        }
+        Update: {
+          author_name?: string
+          body?: string
+          created_at?: string
+          id?: string
+          photo_url?: string | null
+          product_id?: string
+          rating?: number
+          source?: Database["public"]["Enums"]["review_source"]
+          status?: Database["public"]["Enums"]["review_status"]
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_reviews_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       products: {
         Row: {
           active: boolean
@@ -508,6 +555,8 @@ export type Database = {
     Enums: {
       analytics_event_type: "product_view" | "outbound_click"
       app_role: "admin" | "user"
+      review_source: "admin" | "visitor"
+      review_status: "pending" | "approved" | "rejected"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -637,6 +686,8 @@ export const Constants = {
     Enums: {
       analytics_event_type: ["product_view", "outbound_click"],
       app_role: ["admin", "user"],
+      review_source: ["admin", "visitor"],
+      review_status: ["pending", "approved", "rejected"],
     },
   },
 } as const

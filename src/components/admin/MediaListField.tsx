@@ -1,11 +1,13 @@
 "use client";
 
-import { ArrowDown, ArrowUp, ImageIcon, Plus, Star, Trash2 } from "lucide-react";
-import { useState } from "react";
+import { ArrowDown, ArrowUp, ImageIcon, Plus, Star, Trash2, Upload } from "lucide-react";
+import { useRef, useState } from "react";
+import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { uploadManyMedia } from "@/lib/media-upload";
 
 /**
  * Lista ordenável de endereços de imagem com miniaturas.
@@ -17,15 +19,35 @@ export function MediaListField({
   defaultValue = [],
   helper,
   onPromote,
+  folder,
 }: {
   label: string;
   name: string;
   defaultValue?: string[];
   helper?: string;
   onPromote?: (url: string) => void;
+  folder?: string;
 }) {
   const [items, setItems] = useState<string[]>(defaultValue);
   const [draft, setDraft] = useState("");
+  const [progress, setProgress] = useState<string | null>(null);
+  const fileRef = useRef<HTMLInputElement>(null);
+
+  const addFiles = async (files: FileList | null) => {
+    const list = files ? Array.from(files) : [];
+    if (!list.length) return;
+    setProgress(`Enviando 0 de ${list.length}…`);
+    try {
+      const urls = await uploadManyMedia(list, folder ?? "produtos", (done, total) => setProgress(`Enviando ${done} de ${total}…`));
+      setItems((current) => [...current, ...urls]);
+      toast.success(urls.length > 1 ? `${urls.length} imagens enviadas.` : "Imagem enviada.");
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Não foi possível enviar as imagens.");
+    } finally {
+      setProgress(null);
+      if (fileRef.current) fileRef.current.value = "";
+    }
+  };
 
   const move = (index: number, direction: -1 | 1) => {
     setItems((current) => {
@@ -86,10 +108,25 @@ export function MediaListField({
           </div>
         ))}
       </div>
+      <div className="flex flex-wrap items-center gap-2">
+        <Input
+          ref={fileRef}
+          type="file"
+          accept="image/*"
+          multiple
+          disabled={Boolean(progress)}
+          onChange={(event) => void addFiles(event.target.files)}
+          className="max-w-xs"
+        />
+        <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+          <Upload className="size-3" />
+          {progress ?? "Adicionar imagens do dispositivo"}
+        </span>
+      </div>
       <div className="flex gap-2">
         <Input
           value={draft}
-          placeholder="https://…"
+          placeholder="Ou cole um endereço https://…"
           aria-label={`Adicionar imagem em ${label}`}
           onChange={(event) => setDraft(event.target.value)}
           onKeyDown={(event) => {

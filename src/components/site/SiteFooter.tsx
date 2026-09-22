@@ -34,7 +34,7 @@ export function SiteFooter() {
             <Link to="/privacidade" className="text-primary-foreground/70 transition hover:text-primary-foreground">Privacidade</Link>
             <Link to="/termos" className="text-primary-foreground/70 transition hover:text-primary-foreground">Termos</Link>
           </div>
-          <Link to="/auth" className="text-primary-foreground/60 transition hover:text-primary-foreground">
+          <Link to="/admin/login" className="text-primary-foreground/60 transition hover:text-primary-foreground">
             Acesso da administradora
           </Link>
           <div className="mt-2 flex gap-3">

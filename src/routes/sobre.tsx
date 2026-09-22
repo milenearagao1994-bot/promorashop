@@ -12,7 +12,7 @@ export const Route = createFileRoute("/sobre")({
       { title: "Sobre e contato — PromoraShop" },
       { name: "description", content: "Entenda como a PromoraShop seleciona descobertas, usa links de afiliados e fale com a gente pelo WhatsApp ou Facebook." },
       { property: "og:title", content: "Sobre e contato — PromoraShop" },
-      { property: "og:description", content: "Como funcionam as descobertas, avaliações editoriais e links de afiliados da PromoraShop." },
+      { property: "og:description", content: "Como funcionam as descobertas, a curadoria e os links de afiliados da PromoraShop." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
     ],
@@ -24,7 +24,7 @@ function AboutPage() {
   const { data: settings } = useQuery(siteSettingsQuery);
   const contact = contactConfig(settings);
   const items = [
-    { Icon: Heart, title: "Curadoria humana", text: "As avaliações são conteúdo editorial da PromoraShop e nunca são apresentadas como opinião de compradores." },
+    { Icon: Heart, title: "Curadoria humana", text: "Cada achadinho é escolhido a dedo pensando em quem busca preço justo, qualidade e utilidade no dia a dia." },
     { Icon: Store, title: "Compra fora do site", text: "Preços e disponibilidade podem mudar. Confirme tudo na loja antes de comprar." },
     { Icon: ShieldCheck, title: "Links de afiliados", text: "Alguns links podem gerar comissão sem custo adicional, conforme as regras de cada parceiro." },
   ];
@@ -34,8 +34,8 @@ function AboutPage() {
         <p className="text-sm font-semibold text-primary">SOBRE A PROMORASHOP</p>
         <h1 className="mt-3 font-display text-4xl font-bold md:text-6xl">Descobertas compartilhadas com transparência.</h1>
         <p className="mt-6 text-lg leading-8 text-muted-foreground">
-          A PromoraShop não vende produtos nem processa pagamentos. Reunimos produtos, informações e avaliações editoriais para ajudar você a
-          escolher; a compra acontece na loja parceira.
+          A PromoraShop não vende produtos nem processa pagamentos. Reunimos produtos, informações e opiniões para ajudar você a escolher; a
+          compra acontece na loja parceira.
         </p>
         <div className="mt-12 grid gap-8 md:grid-cols-3">
           {items.map(({ Icon, title, text }) => (

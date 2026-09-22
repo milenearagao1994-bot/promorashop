@@ -23,3 +23,15 @@
 - [x] Caça ao Desconto na landing, no produto e no chat, com envio pelo WhatsApp
 - [x] Painel: mídias de produto/banner, mídia e textos da Vivi, Caça ao Desconto
 - [x] Testes no celular: landing, Caça ao Desconto e conversa da Vivi
+
+## Rodada final (login único, avaliações e cliques externos)
+- [x] Selo/banner do Lovable escondido na experiência pública
+- [x] Tela única de login em /admin/login, sem cadastro nem recuperação
+- [x] Proteção do painel com redirecionamento para /admin/login e saída limpa
+- [x] Envio de imagens e vídeos direto do dispositivo (produtos, banners e avaliações)
+- [x] Avaliações dos visitantes com moderação (pendente, aprovada, rejeitada)
+- [x] Avaliações em formato de conversa na página do produto
+- [x] Aba de avaliações no painel com filtros por situação, produto e data
+- [x] Painel de cliques externos com totais, gráfico, produtos mais acessados e filtros
+- [x] Texto "Sobre" sem menção a avaliações editoriais
+- [x] Teste ponta a ponta: envio, moderação, aprovação e exibição pública
