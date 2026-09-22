@@ -78,17 +78,17 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "PromoVip — Ofertas, descobertas e você" },
+      { title: "PromoraShop — Achadinhos, ofertas e promoções" },
       {
         name: "description",
         content:
-          "PromoVip reúne achadinhos, cupons e avaliações sinceras das lojas parceiras, com a ajuda da Vivi.",
+          "Achadinhos, ofertas, promoções e produtos selecionados em um só lugar.",
       },
-      { name: "author", content: "PromoVip" },
-      { property: "og:title", content: "PromoVip — Ofertas, descobertas e você" },
+      { name: "author", content: "PromoraShop" },
+      { property: "og:title", content: "PromoraShop — Achadinhos, ofertas e promoções" },
       {
         property: "og:description",
-        content: "Achadinhos de verdade, cupons e avaliações feitas com carinho.",
+        content: "Achadinhos, ofertas, promoções e produtos selecionados em um só lugar.",
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },

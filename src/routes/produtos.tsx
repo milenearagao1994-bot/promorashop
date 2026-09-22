@@ -13,9 +13,9 @@ import { categoriesQuery, productsQuery, storesQuery } from "@/lib/promovip";
 export const Route = createFileRoute("/produtos")({
   loader: ({ context }) => Promise.all([context.queryClient.ensureQueryData(productsQuery), context.queryClient.ensureQueryData(categoriesQuery), context.queryClient.ensureQueryData(storesQuery)]),
   head: () => ({ meta: [
-    { title: "Achadinhos — PromoVip" },
-    { name: "description", content: "Explore produtos selecionados pela PromoVip e acesse diretamente as lojas parceiras." },
-    { property: "og:title", content: "Achadinhos — PromoVip" },
+    { title: "Achadinhos — PromoraShop" },
+    { name: "description", content: "Explore produtos selecionados pela PromoraShop e acesse diretamente as lojas parceiras." },
+    { property: "og:title", content: "Achadinhos — PromoraShop" },
     { property: "og:description", content: "Produtos selecionados com informação clara e links para lojas parceiras." },
     { property: "og:type", content: "website" },
     { name: "twitter:card", content: "summary_large_image" },

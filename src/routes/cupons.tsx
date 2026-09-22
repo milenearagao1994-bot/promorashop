@@ -9,9 +9,9 @@ import { couponsQuery } from "@/lib/promovip";
 export const Route = createFileRoute("/cupons")({
   loader: ({ context }) => context.queryClient.ensureQueryData(couponsQuery),
   head: () => ({ meta: [
-    { title: "Cupons — PromoVip" },
+    { title: "Cupons — PromoraShop" },
     { name: "description", content: "Consulte cupons cadastrados e confirme condições e validade na loja parceira." },
-    { property: "og:title", content: "Cupons — PromoVip" },
+    { property: "og:title", content: "Cupons — PromoraShop" },
     { property: "og:description", content: "Cupons e condições informadas com transparência." },
     { property: "og:type", content: "website" },
     { name: "twitter:card", content: "summary_large_image" },

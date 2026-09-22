@@ -1,6 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { BarChart3, Eye, EyeOff, LogOut, Package, Pencil, Plus, Ticket, Trash2 } from "lucide-react";
+import { BarChart3, Eye, EyeOff, Image, LogOut, Package, Pencil, Plus, Settings, ShieldCheck, Ticket, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
@@ -17,20 +17,23 @@ import { Textarea } from "@/components/ui/textarea";
 import { supabase } from "@/integrations/supabase/client";
 import {
   adminCategoriesQuery,
+  adminBannersQuery,
   adminCouponsQuery,
   adminProductsQuery,
   adminReviewsQuery,
   adminStoresQuery,
+  adminSiteSettingsQuery,
   slugify,
   type Category,
   type Coupon,
   type EditorialReview,
   type Product,
   type Store,
+  type Banner,
 } from "@/lib/promovip";
 
-type Editor = { kind: "product"; value?: Product } | { kind: "coupon"; value?: Coupon } | { kind: "category"; value?: Category } | { kind: "store"; value?: Store } | { kind: "review"; value?: EditorialReview };
-type TableName = "products" | "coupons" | "categories" | "stores" | "editorial_reviews";
+type Editor = { kind: "product"; value?: Product } | { kind: "coupon"; value?: Coupon } | { kind: "category"; value?: Category } | { kind: "store"; value?: Store } | { kind: "review"; value?: EditorialReview } | {kind:"banner";value?:Banner};
+type TableName = "products" | "coupons" | "categories" | "stores" | "editorial_reviews" | "banners";
 const NONE = "__none__";
 
 function validUrl(value: string, required = false) {
@@ -47,10 +50,12 @@ export function AdminPanel() {
   const categories = useQuery(adminCategoriesQuery);
   const stores = useQuery(adminStoresQuery);
   const reviews = useQuery(adminReviewsQuery);
+  const banners = useQuery(adminBannersQuery);
+  const settings = useQuery(adminSiteSettingsQuery);
   const analytics = useQuery({ queryKey: ["admin", "analytics"], queryFn: async () => { const { data, error } = await supabase.from("analytics_events").select("event_type,product_id,store_id,occurred_at"); if (error) throw error; return data; } });
   const [editor, setEditor] = useState<Editor | null>(null);
   const [saving, setSaving] = useState(false);
-  const refresh = async () => Promise.all([products.refetch(), coupons.refetch(), categories.refetch(), stores.refetch(), reviews.refetch(), analytics.refetch()]);
+  const refresh = async () => Promise.all([products.refetch(), coupons.refetch(), categories.refetch(), stores.refetch(), reviews.refetch(), banners.refetch(), settings.refetch(), analytics.refetch()]);
   const active = products.data?.filter((p) => p.active).length ?? 0;
   const hidden = (products.data?.length ?? 0) - active;
   const views = analytics.data?.filter((e) => e.event_type === "product_view").length ?? 0;
@@ -93,6 +98,9 @@ export function AdminPanel() {
         const website = String(form.get("website_url") ?? "").trim(); const affiliate = String(form.get("affiliate_base_url") ?? "").trim(); const logo = String(form.get("logo_url") ?? "").trim();
         if (!validUrl(website) || !validUrl(affiliate) || !validUrl(logo)) throw new Error("Confira os endereços informados.");
         table = "stores"; payload = { name: String(form.get("name") ?? "").trim(), slug: slugify(String(form.get("slug") || form.get("name") || "")), website_url: website || null, affiliate_base_url: affiliate || null, logo_url: logo || null, admin_notes: nullable(form.get("admin_notes")), active: form.get("active") === "on" };
+      } else if(editor.kind === "banner") {
+        const image=String(form.get("image_url")??"").trim();const link=String(form.get("link_url")??"").trim();if(!validUrl(image)||!validUrl(link))throw new Error("Confira os endereços informados.");
+        table="banners";payload={title:String(form.get("title")??"").trim(),subtitle:nullable(form.get("subtitle")),image_url:image||null,link_url:link||null,link_label:nullable(form.get("link_label")),starts_at:nullable(form.get("starts_at")),ends_at:nullable(form.get("ends_at")),sort_order:Number(form.get("sort_order")||0),active:form.get("active")==="on"};
       } else {
         table = "editorial_reviews"; const rating = numberOrNull(form.get("rating")); if (rating !== null && (rating < 0 || rating > 5)) throw new Error("A nota deve ficar entre 0 e 5.");
         payload = { product_id: form.get("product_id"), title: String(form.get("title") ?? "").trim(), body: String(form.get("body") ?? "").trim(), rating, published_at: String(form.get("published_at") ?? new Date().toISOString()), active: form.get("active") === "on" };
@@ -104,13 +112,20 @@ export function AdminPanel() {
     } catch (error) { toast.error(error instanceof Error ? error.message : "Não foi possível salvar."); } finally { setSaving(false); }
   }
 
+  async function saveSettings(event:React.FormEvent<HTMLFormElement>){event.preventDefault();setSaving(true);const f=new FormData(event.currentTarget);const rows=[{key:"landing",value:{hero_title:String(f.get("hero_title")??""),hero_description:String(f.get("hero_description")??""),vivi_title:String(f.get("vivi_title")??""),vivi_description:String(f.get("vivi_description")??"")},public:true},{key:"social",value:{whatsapp:String(f.get("whatsapp")??""),facebook:String(f.get("facebook")??"")},public:true},{key:"music_player",value:{playlist_id:String(f.get("playlist_id")??""),title:"Playlist PromoraShop"},public:true}];const{error}=await supabase.from("site_settings").upsert(rows);setSaving(false);if(error){toast.error("Não foi possível salvar as configurações.");return}toast.success("Configurações atualizadas.");await settings.refetch()}
+  async function changePassword(event:React.FormEvent<HTMLFormElement>){event.preventDefault();const f=new FormData(event.currentTarget);const password=String(f.get("password")??"");if(password!==String(f.get("confirm")??"")){toast.error("As senhas não coincidem.");return}const{error}=await supabase.auth.updateUser({password});if(error)toast.error("Não foi possível alterar a senha.");else toast.success("Senha alterada com segurança.")}
+
   const stats = [{ Icon: Package, label: "Produtos ativos", value: active }, { Icon: EyeOff, label: "Produtos ocultos", value: hidden }, { Icon: Eye, label: "Visualizações", value: views }, { Icon: BarChart3, label: "Cliques externos", value: clicks }];
-  return <main className="min-h-screen bg-muted/40"><header className="border-b border-border bg-card"><div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4"><Logo/><div className="flex items-center gap-3"><span className="hidden text-sm text-muted-foreground sm:inline">Painel da proprietária</span><Button variant="outline" size="sm" onClick={async()=>{await supabase.auth.signOut();await navigate({to:"/auth"})}}><LogOut/>Sair</Button></div></div></header><div className="mx-auto max-w-7xl px-4 py-8"><h1 className="font-display text-3xl font-bold">Visão geral</h1><p className="mt-2 text-sm text-muted-foreground">Dados reais da PromoVip. Visualizações e cliques não representam compras.</p>{expiring ? <p className="mt-4 rounded-lg border border-border bg-card px-4 py-3 text-sm"><Ticket className="mr-2 inline size-4 text-primary"/>{expiring} cupom(ns) expira(m) nos próximos 7 dias.</p> : null}<div className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">{stats.map(({Icon,label,value})=><Card key={label}><CardContent className="p-5"><Icon className="size-5 text-primary"/><p className="mt-5 text-2xl font-bold">{value}</p><p className="text-xs text-muted-foreground">{label}</p></CardContent></Card>)}</div><Tabs defaultValue="products" className="mt-8"><TabsList className="h-auto w-full justify-start overflow-x-auto"><TabsTrigger value="products">Produtos</TabsTrigger><TabsTrigger value="coupons">Cupons</TabsTrigger><TabsTrigger value="reviews">Avaliações</TabsTrigger><TabsTrigger value="categories">Categorias</TabsTrigger><TabsTrigger value="stores">Lojas</TabsTrigger></TabsList>
+  const config=Object.fromEntries((settings.data??[]).map(s=>[s.key,s.value])) as Record<string,Record<string,string>>;const landing=config["landing"]??{};const social=config["social"]??{};const music=config["music_player"]??{};
+  return <main className="min-h-screen bg-muted/40"><header className="border-b border-border bg-card"><div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4"><Logo/><div className="flex items-center gap-3"><span className="hidden text-sm text-muted-foreground sm:inline">Painel da proprietária</span><Button variant="outline" size="sm" onClick={async()=>{await supabase.auth.signOut();await navigate({to:"/auth"})}}><LogOut/>Sair</Button></div></div></header><div className="mx-auto max-w-7xl px-4 py-8"><h1 className="font-display text-3xl font-bold">Visão geral</h1><p className="mt-2 text-sm text-muted-foreground">Dados reais da PromoraShop. Visualizações e cliques não representam compras.</p>{expiring ? <p className="mt-4 rounded-lg border border-border bg-card px-4 py-3 text-sm"><Ticket className="mr-2 inline size-4 text-primary"/>{expiring} cupom(ns) expira(m) nos próximos 7 dias.</p> : null}<div className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">{stats.map(({Icon,label,value})=><Card key={label}><CardContent className="p-5"><Icon className="size-5 text-primary"/><p className="mt-5 text-2xl font-bold">{value}</p><p className="text-xs text-muted-foreground">{label}</p></CardContent></Card>)}</div><Tabs defaultValue="products" className="mt-8"><TabsList className="h-auto w-full justify-start overflow-x-auto"><TabsTrigger value="products">Produtos</TabsTrigger><TabsTrigger value="coupons">Cupons</TabsTrigger><TabsTrigger value="reviews">Avaliações</TabsTrigger><TabsTrigger value="categories">Categorias</TabsTrigger><TabsTrigger value="stores">Lojas</TabsTrigger><TabsTrigger value="banners">Banners</TabsTrigger><TabsTrigger value="content">Conteúdo e redes</TabsTrigger><TabsTrigger value="security">Segurança</TabsTrigger></TabsList>
   <AdminList tab="products" title="Produtos" add="Novo produto" onAdd={()=>setEditor({kind:"product"})}>{products.data?.map((p)=><Row key={p.id} title={p.title} subtitle={`${p.stores?.name ?? "Sem loja"} · ${p.active ? "Ativo" : "Oculto"}`} onEdit={()=>setEditor({kind:"product",value:p})} onToggle={()=>toggle("products",p.id,!p.active)} onDelete={()=>remove("products",p.id)} active={p.active}/>)}</AdminList>
   <AdminList tab="coupons" title="Cupons" add="Novo cupom" onAdd={()=>setEditor({kind:"coupon"})}>{coupons.data?.map((c)=><Row key={c.id} title={c.title} subtitle={`${c.stores?.name ?? "Sem loja"} · ${c.active ? "Ativo" : "Inativo"}`} onEdit={()=>setEditor({kind:"coupon",value:c})} onToggle={()=>toggle("coupons",c.id,!c.active)} onDelete={()=>remove("coupons",c.id)} active={c.active}/>)}</AdminList>
   <AdminList tab="reviews" title="Avaliações editoriais" add="Nova avaliação" onAdd={()=>setEditor({kind:"review"})}>{reviews.data?.map((r)=><Row key={r.id} title={r.title} subtitle={`${products.data?.find((p)=>p.id===r.product_id)?.title ?? "Produto"} · ${r.active ? "Publicada" : "Oculta"}`} onEdit={()=>setEditor({kind:"review",value:r})} onToggle={()=>toggle("editorial_reviews",r.id,!r.active)} onDelete={()=>remove("editorial_reviews",r.id)} active={r.active}/>)}</AdminList>
   <AdminList tab="categories" title="Categorias" add="Nova categoria" onAdd={()=>setEditor({kind:"category"})}>{categories.data?.map((c)=><Row key={c.id} title={c.name} subtitle={`Ordem ${c.sort_order} · ${c.active !== false ? "Ativa" : "Oculta"}`} onEdit={()=>setEditor({kind:"category",value:c})} onToggle={()=>toggle("categories",c.id,c.active===false)} onDelete={()=>remove("categories",c.id)} active={c.active!==false}/>)}</AdminList>
   <AdminList tab="stores" title="Lojas" add="Nova loja" onAdd={()=>setEditor({kind:"store"})}>{stores.data?.map((s)=><Row key={s.id} title={s.name} subtitle={s.active ? "Ativa" : "Inativa"} onEdit={()=>setEditor({kind:"store",value:s})} onToggle={()=>toggle("stores",s.id,!s.active)} onDelete={()=>remove("stores",s.id)} active={s.active}/>)}</AdminList>
+  <AdminList tab="banners" title="Promoções e banners" add="Novo banner" onAdd={()=>setEditor({kind:"banner"})}>{banners.data?.map((b)=><Row key={b.id} title={b.title} subtitle={`Ordem ${b.sort_order} · ${b.active?"Ativo":"Oculto"}`} onEdit={()=>setEditor({kind:"banner",value:b})} onToggle={()=>toggle("banners",b.id,!b.active)} onDelete={()=>remove("banners",b.id)} active={b.active}/>)}</AdminList>
+  <TabsContent value="content"><form onSubmit={saveSettings} className="mt-4 grid gap-4 rounded-lg border border-border bg-card p-5 sm:grid-cols-2"><h2 className="flex items-center gap-2 font-display text-lg font-semibold sm:col-span-2"><Settings className="size-5 text-primary"/>Conteúdo da landing e canais</h2><Field label="Título principal" name="hero_title" defaultValue={landing["hero_title"]}/><Field label="Chamada da Vivi" name="vivi_title" defaultValue={landing["vivi_title"]}/><div className="sm:col-span-2"><Area label="Descrição principal" name="hero_description" defaultValue={landing["hero_description"]}/></div><div className="sm:col-span-2"><Area label="Descrição da Vivi" name="vivi_description" defaultValue={landing["vivi_description"]}/></div><Field label="WhatsApp" name="whatsapp" type="url" defaultValue={social["whatsapp"]}/><Field label="Facebook" name="facebook" type="url" defaultValue={social["facebook"]}/><Field label="ID da playlist do YouTube" name="playlist_id" defaultValue={music["playlist_id"]}/><div className="flex justify-end sm:col-span-2"><Button disabled={saving}>Salvar conteúdo</Button></div></form></TabsContent>
+  <TabsContent value="security"><form onSubmit={changePassword} className="mt-4 max-w-xl space-y-4 rounded-lg border border-border bg-card p-5"><h2 className="flex items-center gap-2 font-display text-lg font-semibold"><ShieldCheck className="size-5 text-primary"/>Segurança da conta</h2><p className="text-sm text-muted-foreground">Altere sua senha. A confirmação de identidade é exigida pelo sistema de acesso.</p><Field label="Nova senha" name="password" type="password" required/><Field label="Confirmar nova senha" name="confirm" type="password" required/><Button>Alterar senha</Button></form></TabsContent>
   </Tabs></div><EditorDialog editor={editor} products={products.data ?? []} categories={categories.data ?? []} stores={stores.data ?? []} saving={saving} onClose={()=>setEditor(null)} onSave={save}/></main>;
 }
 
@@ -130,6 +145,7 @@ function EditorDialog({editor,products,categories,stores,saving,onClose,onSave}:
     {editor.kind==="category"?<CategoryFields value={editor.value}/>:null}
     {editor.kind==="store"?<StoreFields value={editor.value}/>:null}
     {editor.kind==="review"?<ReviewFields value={editor.value} products={products}/>:null}
+    {editor.kind==="banner"?<BannerFields value={editor.value}/>:null}
     <div className="flex justify-end gap-2 border-t border-border pt-4 sm:col-span-2"><Button type="button" variant="outline" onClick={onClose}>Cancelar</Button><Button disabled={saving}>{saving?"Salvando…":"Salvar"}</Button></div>
   </form></DialogContent></Dialog>;
 }
@@ -138,3 +154,4 @@ function CouponFields({value,stores}:{value?:Coupon|undefined;stores:Store[]}) {
 function CategoryFields({value}:{value?:Category|undefined}) { return <><Field label="Nome" name="name" defaultValue={value?.name} required/><Field label="Slug" name="slug" defaultValue={value?.slug}/><Field label="Ícone" name="icon" defaultValue={value?.icon}/><Field label="Ordem" name="sort_order" type="number" defaultValue={value?.sort_order ?? 0}/><div className="sm:col-span-2"><Check label="Ativa" name="active" checked={value?.active ?? true}/></div></>; }
 function StoreFields({value}:{value?:Store|undefined}) { return <><Field label="Nome" name="name" defaultValue={value?.name} required/><Field label="Slug" name="slug" defaultValue={value?.slug}/><Field label="Site oficial" name="website_url" type="url" defaultValue={value?.website_url}/><Field label="Link-base de afiliado" name="affiliate_base_url" type="url" defaultValue={value?.affiliate_base_url}/><div className="sm:col-span-2"><Field label="Logo" name="logo_url" type="url" defaultValue={value?.logo_url}/></div><div className="sm:col-span-2"><Area label="Observações administrativas" name="admin_notes" defaultValue={value?.admin_notes}/></div><div className="sm:col-span-2"><Check label="Ativa" name="active" checked={value?.active ?? true}/></div></>; }
 function ReviewFields({value,products}:{value?:EditorialReview|undefined;products:Product[]}) { return <><div className="sm:col-span-2"><Relation label="Produto" name="product_id" value={value?.product_id} items={products} required/></div><Field label="Título" name="title" defaultValue={value?.title} required/><Field label="Nota de 0 a 5" name="rating" type="number" defaultValue={value?.rating}/><div className="sm:col-span-2"><Area label="Texto editorial" name="body" defaultValue={value?.body}/></div><Field label="Data de publicação" name="published_at" type="datetime-local" defaultValue={value?.published_at?.slice(0,16) ?? new Date().toISOString().slice(0,16)}/><Check label="Publicada" name="active" checked={value?.active ?? true}/></>; }
+function BannerFields({value}:{value?:Banner}){return <><Field label="Título" name="title" defaultValue={value?.title} required/><Field label="Texto do botão" name="link_label" defaultValue={value?.link_label}/><div className="sm:col-span-2"><Area label="Descrição" name="subtitle" defaultValue={value?.subtitle}/></div><div className="sm:col-span-2"><Field label="Imagem PNG" name="image_url" type="url" defaultValue={value?.image_url}/></div><div className="sm:col-span-2"><Field label="Link de destino" name="link_url" type="url" defaultValue={value?.link_url}/></div><Field label="Início" name="starts_at" type="datetime-local" defaultValue={value?.starts_at?.slice(0,16)}/><Field label="Fim" name="ends_at" type="datetime-local" defaultValue={value?.ends_at?.slice(0,16)}/><Field label="Ordem" name="sort_order" type="number" defaultValue={value?.sort_order??0}/><Check label="Ativo" name="active" checked={value?.active??true}/></>}

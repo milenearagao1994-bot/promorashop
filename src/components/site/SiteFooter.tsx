@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { Heart } from "lucide-react";
+import { Facebook, Heart, MessageCircle } from "lucide-react";
 
 import { Logo } from "@/components/site/Logo";
 
@@ -12,7 +12,7 @@ export function SiteFooter() {
             <Logo size="sm" />
           </div>
           <p className="text-sm text-primary-foreground/80">
-            Sua plataforma de ofertas, descobertas e compras inteligentes. A PromoVip não vende nem
+            Sua plataforma de ofertas, descobertas e compras inteligentes. A PromoraShop não vende nem
             processa pagamentos: indicamos e você finaliza na loja parceira.
           </p>
         </div>
@@ -37,12 +37,16 @@ export function SiteFooter() {
           <Link to="/auth" className="text-primary-foreground/60 transition hover:text-primary-foreground">
             Acesso da administradora
           </Link>
+          <div className="mt-2 flex gap-3">
+            <a href="https://wa.me/5571992600863" target="_blank" rel="noopener noreferrer" aria-label="WhatsApp da PromoraShop" className="text-primary-foreground/80 transition hover:text-primary-foreground"><MessageCircle className="size-5" /></a>
+            <a href="https://www.facebook.com/PromoraShop.ofc?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" aria-label="Facebook da PromoraShop" className="text-primary-foreground/80 transition hover:text-primary-foreground"><Facebook className="size-5" /></a>
+          </div>
         </div>
       </div>
 
       <div className="border-t border-white/10 px-4 py-5 text-center text-xs text-primary-foreground/70">
         <span className="inline-flex items-center gap-1.5">
-          PromoVip © {new Date().getFullYear()} · feito com <Heart className="size-3.5" aria-hidden="true" /> para quem
+          PromoraShop © {new Date().getFullYear()} · feito com <Heart className="size-3.5" aria-hidden="true" /> para quem
           ama um achadinho
         </span>
       </div>

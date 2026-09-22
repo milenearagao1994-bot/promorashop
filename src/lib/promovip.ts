@@ -77,6 +77,9 @@ export type EditorialReview = {
   active: boolean;
 };
 
+export type Banner = { id:string; title:string; subtitle:string|null; image_url:string|null; link_url:string|null; link_label:string|null; starts_at:string|null; ends_at:string|null; sort_order:number; active:boolean };
+export type SiteSetting = { key:string; value:Record<string, unknown>; public:boolean };
+
 const PRODUCT_SELECT =
   "*, stores(id,name,slug,accent_color), categories(id,name,slug)" as const;
 
@@ -229,3 +232,8 @@ export const adminReviewsQuery = queryOptions({
     return (data ?? []) as EditorialReview[];
   },
 });
+
+export const bannersQuery = queryOptions({ queryKey:["banners","public"], queryFn:async():Promise<Banner[]>=>{ const {data,error}=await supabase.from("banners").select("*").order("sort_order"); if(error)throw error; return data ?? []; } });
+export const adminBannersQuery = queryOptions({ queryKey:["banners","admin"], queryFn:async():Promise<Banner[]>=>{ const {data,error}=await supabase.from("banners").select("*").order("sort_order"); if(error)throw error; return data ?? []; } });
+export const siteSettingsQuery = queryOptions({ queryKey:["site-settings","public"], queryFn:async():Promise<SiteSetting[]>=>{ const {data,error}=await supabase.from("site_settings").select("key,value,public").eq("public",true); if(error)throw error; return (data ?? []) as SiteSetting[]; } });
+export const adminSiteSettingsQuery = queryOptions({ queryKey:["site-settings","admin"], queryFn:async():Promise<SiteSetting[]>=>{ const {data,error}=await supabase.from("site_settings").select("key,value,public"); if(error)throw error; return (data ?? []) as SiteSetting[]; } });

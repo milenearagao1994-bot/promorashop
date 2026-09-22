@@ -5,7 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 /*
- * PromoVip — design system
+ * PromoraShop — design system
  * Paleta oficial: Roxo Dark #2D1B4E · Lilás #A78BFA · Lavanda #EAD9FF
  * Rosa Soft #FFC8E6 · Cinza #6B7280
  * Tipografia: Poppins (títulos) + Inter (textos)
@@ -156,7 +156,7 @@
   h4,
   .font-display {
     font-family: var(--font-display);
-    letter-spacing: -0.02em;
+    letter-spacing: 0;
   }
 }
 
