@@ -108,6 +108,12 @@ export function AdminPanel() {
       } else if(editor.kind === "banner") {
         const image=String(form.get("image_url")??"").trim();const link=String(form.get("link_url")??"").trim();const bannerVideo=String(form.get("video_url")??"").trim();const media=String(form.get("media")??"").split("\n").map(item=>item.trim()).filter(Boolean);if(!validUrl(image)||!validUrl(link)||!validUrl(bannerVideo)||media.some(url=>!validUrl(url)))throw new Error("Confira os endereços informados.");
         table="banners";payload={title:String(form.get("title")??"").trim(),subtitle:nullable(form.get("subtitle")),image_url:image||null,media,video_url:bannerVideo||null,autoplay:form.get("autoplay")==="on",link_url:link||null,link_label:nullable(form.get("link_label")),starts_at:nullable(form.get("starts_at")),ends_at:nullable(form.get("ends_at")),sort_order:Number(form.get("sort_order")||0),active:form.get("active")==="on"};
+      } else if (editor.kind === "customer") {
+        const rating = Number(form.get("rating") ?? 5);
+        if (!Number.isInteger(rating) || rating < 1 || rating > 5) throw new Error("A nota deve ficar entre 1 e 5 estrelas.");
+        const photo = String(form.get("photo_url") ?? "").trim();
+        table = "product_reviews";
+        payload = { product_id: form.get("product_id"), author_name: String(form.get("author_name") ?? "").trim(), body: String(form.get("body") ?? "").trim(), rating, photo_url: photo || null, source: "admin", status: String(form.get("status") ?? "approved"), created_at: new Date(String(form.get("created_at") || new Date().toISOString())).toISOString() };
       } else {
         table = "editorial_reviews"; const rating = numberOrNull(form.get("rating")); if (rating !== null && (rating < 0 || rating > 5)) throw new Error("A nota deve ficar entre 0 e 5.");
         payload = { product_id: form.get("product_id"), title: String(form.get("title") ?? "").trim(), body: String(form.get("body") ?? "").trim(), rating, published_at: String(form.get("published_at") ?? new Date().toISOString()), active: form.get("active") === "on" };
