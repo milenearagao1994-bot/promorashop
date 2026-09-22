@@ -59,6 +59,51 @@ export type Database = {
           },
         ]
       }
+      banners: {
+        Row: {
+          active: boolean
+          created_at: string
+          ends_at: string | null
+          id: string
+          image_url: string | null
+          link_label: string | null
+          link_url: string | null
+          sort_order: number
+          starts_at: string | null
+          subtitle: string | null
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          image_url?: string | null
+          link_label?: string | null
+          link_url?: string | null
+          sort_order?: number
+          starts_at?: string | null
+          subtitle?: string | null
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          ends_at?: string | null
+          id?: string
+          image_url?: string | null
+          link_label?: string | null
+          link_url?: string | null
+          sort_order?: number
+          starts_at?: string | null
+          subtitle?: string | null
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       categories: {
         Row: {
           active: boolean
@@ -186,6 +231,42 @@ export type Database = {
           {
             foreignKeyName: "editorial_reviews_product_id_fkey"
             columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      product_relations: {
+        Row: {
+          created_at: string
+          product_id: string
+          related_product_id: string
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          product_id: string
+          related_product_id: string
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          product_id?: string
+          related_product_id?: string
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "product_relations_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "product_relations_related_product_id_fkey"
+            columns: ["related_product_id"]
             isOneToOne: false
             referencedRelation: "products"
             referencedColumns: ["id"]
