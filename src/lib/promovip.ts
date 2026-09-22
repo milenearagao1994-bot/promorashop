@@ -77,8 +77,54 @@ export type EditorialReview = {
   active: boolean;
 };
 
-export type Banner = { id:string; title:string; subtitle:string|null; image_url:string|null; link_url:string|null; link_label:string|null; starts_at:string|null; ends_at:string|null; sort_order:number; active:boolean };
+export type Banner = { id:string; title:string; subtitle:string|null; image_url:string|null; link_url:string|null; link_label:string|null; starts_at:string|null; ends_at:string|null; sort_order:number; active:boolean; media?:unknown; video_url?:string|null; autoplay?:boolean };
 export type SiteSetting = { key:string; value:Record<string, unknown>; public:boolean };
+
+export function settingsMap(settings: SiteSetting[] | undefined) {
+  return Object.fromEntries((settings ?? []).map((item) => [item.key, item.value])) as Record<string, Record<string, string>>;
+}
+
+export const CONTACT_DEFAULTS = {
+  whatsapp: "https://wa.me/5571992600863",
+  whatsapp_label: "+55 71 99260-0863",
+  facebook: "https://www.facebook.com/PromoraShop.ofc?mibextid=wwXIfr",
+};
+
+export const DISCOUNT_HUNT_DEFAULTS = {
+  name: "Caça ao Desconto",
+  title: "Encontrou um produto?",
+  description: "Mande uma foto ou o link e pergunte se existe uma oferta, desconto ou cupom para ele.",
+  cta: "Procurar desconto",
+  send_label: "Enviar pelo WhatsApp",
+  whatsapp: CONTACT_DEFAULTS.whatsapp,
+  message_intro: "Oi! Encontrei este produto e queria saber se vocês conseguem encontrar uma oferta melhor para ele.",
+  message_question: "Tem esse produto com desconto ou algum cupom específico para ele?",
+};
+
+export function discountHuntConfig(settings: SiteSetting[] | undefined) {
+  const saved = settingsMap(settings)["discount_hunt"] ?? {};
+  const merged = { ...DISCOUNT_HUNT_DEFAULTS };
+  for (const key of Object.keys(DISCOUNT_HUNT_DEFAULTS) as (keyof typeof DISCOUNT_HUNT_DEFAULTS)[]) {
+    const value = saved[key];
+    if (typeof value === "string" && value.trim()) merged[key] = value.trim();
+  }
+  return merged;
+}
+
+export function contactConfig(settings: SiteSetting[] | undefined) {
+  const social = settingsMap(settings)["social"] ?? {};
+  return {
+    whatsapp: social["whatsapp"]?.trim() || CONTACT_DEFAULTS.whatsapp,
+    whatsapp_label: social["whatsapp_label"]?.trim() || CONTACT_DEFAULTS.whatsapp_label,
+    facebook: social["facebook"]?.trim() || CONTACT_DEFAULTS.facebook,
+  };
+}
+
+export function bannerImages(banner: Banner): string[] {
+  const list = Array.isArray(banner.media) ? banner.media.filter((item): item is string => typeof item === "string") : [];
+  const all = [banner.image_url, ...list].filter((item): item is string => Boolean(item));
+  return Array.from(new Set(all));
+}
 
 const PRODUCT_SELECT =
   "*, stores(id,name,slug,accent_color), categories(id,name,slug)" as const;
