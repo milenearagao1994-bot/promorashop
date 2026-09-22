@@ -283,3 +283,50 @@ export const bannersQuery = queryOptions({ queryKey:["banners","public"], queryF
 export const adminBannersQuery = queryOptions({ queryKey:["banners","admin"], queryFn:async():Promise<Banner[]>=>{ const {data,error}=await supabase.from("banners").select("*").order("sort_order"); if(error)throw error; return data ?? []; } });
 export const siteSettingsQuery = queryOptions({ queryKey:["site-settings","public"], queryFn:async():Promise<SiteSetting[]>=>{ const {data,error}=await supabase.from("site_settings").select("key,value,public").eq("public",true); if(error)throw error; return (data ?? []) as SiteSetting[]; } });
 export const adminSiteSettingsQuery = queryOptions({ queryKey:["site-settings","admin"], queryFn:async():Promise<SiteSetting[]>=>{ const {data,error}=await supabase.from("site_settings").select("key,value,public"); if(error)throw error; return (data ?? []) as SiteSetting[]; } });
+
+export type ReviewStatus = "pending" | "approved" | "rejected";
+
+export type ProductReview = {
+  id: string;
+  product_id: string;
+  author_name: string;
+  body: string;
+  rating: number;
+  photo_url: string | null;
+  source: "admin" | "visitor";
+  status: ReviewStatus;
+  created_at: string;
+  updated_at: string;
+};
+
+export function productReviewsQuery(productId: string | undefined) {
+  return queryOptions({
+    queryKey: ["product-reviews", productId ?? "none"],
+    enabled: Boolean(productId),
+    queryFn: async (): Promise<ProductReview[]> => {
+      if (!productId) return [];
+      const { data, error } = await supabase
+        .from("product_reviews")
+        .select("*")
+        .eq("product_id", productId)
+        .eq("status", "approved")
+        .order("created_at", { ascending: true });
+      if (error) throw error;
+      return (data ?? []) as ProductReview[];
+    },
+  });
+}
+
+export const adminProductReviewsQuery = queryOptions({
+  queryKey: ["product-reviews", "admin"],
+  queryFn: async (): Promise<ProductReview[]> => {
+    const { data, error } = await supabase.from("product_reviews").select("*").order("created_at", { ascending: false });
+    if (error) throw error;
+    return (data ?? []) as ProductReview[];
+  },
+});
+
+export function reviewAverage(reviews: ProductReview[]) {
+  if (!reviews.length) return null;
+  return reviews.reduce((total, review) => total + review.rating, 0) / reviews.length;
+}
