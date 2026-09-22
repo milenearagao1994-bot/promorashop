@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
 import { Route as AuthRouteImport } from './routes/auth'
+import { Route as CacaAoDescontoRouteImport } from './routes/caca-ao-desconto'
 import { Route as CuponsRouteImport } from './routes/cupons'
 import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as ProdutosRouteImport } from './routes/produtos'
@@ -35,6 +36,11 @@ const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
 const AuthRoute = AuthRouteImport.update({
   id: '/auth',
   path: '/auth',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CacaAoDescontoRoute = CacaAoDescontoRouteImport.update({
+  id: '/caca-ao-desconto',
+  path: '/caca-ao-desconto',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CuponsRoute = CuponsRouteImport.update({
@@ -91,6 +97,7 @@ const ProdutoSlugRoute = ProdutoSlugRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/caca-ao-desconto': typeof CacaAoDescontoRoute
   '/cupons': typeof CuponsRoute
   '/privacidade': typeof PrivacidadeRoute
   '/produtos': typeof ProdutosRoute
@@ -105,6 +112,7 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth': typeof AuthRoute
+  '/caca-ao-desconto': typeof CacaAoDescontoRoute
   '/cupons': typeof CuponsRoute
   '/privacidade': typeof PrivacidadeRoute
   '/produtos': typeof ProdutosRoute
@@ -121,6 +129,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
   '/auth': typeof AuthRoute
+  '/caca-ao-desconto': typeof CacaAoDescontoRoute
   '/cupons': typeof CuponsRoute
   '/privacidade': typeof PrivacidadeRoute
   '/produtos': typeof ProdutosRoute
@@ -137,6 +146,7 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/auth'
+    | '/caca-ao-desconto'
     | '/cupons'
     | '/privacidade'
     | '/produtos'
@@ -151,6 +161,7 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/auth'
+    | '/caca-ao-desconto'
     | '/cupons'
     | '/privacidade'
     | '/produtos'
@@ -166,6 +177,7 @@ export interface FileRouteTypes {
     | '/'
     | '/_authenticated'
     | '/auth'
+    | '/caca-ao-desconto'
     | '/cupons'
     | '/privacidade'
     | '/produtos'
@@ -182,6 +194,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
   AuthRoute: typeof AuthRoute
+  CacaAoDescontoRoute: typeof CacaAoDescontoRoute
   CuponsRoute: typeof CuponsRoute
   PrivacidadeRoute: typeof PrivacidadeRoute
   ProdutosRoute: typeof ProdutosRoute
@@ -214,6 +227,13 @@ declare module '@tanstack/react-router' {
       path: '/auth'
       fullPath: '/auth'
       preLoaderRoute: typeof AuthRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/caca-ao-desconto': {
+      id: '/caca-ao-desconto'
+      path: '/caca-ao-desconto'
+      fullPath: '/caca-ao-desconto'
+      preLoaderRoute: typeof CacaAoDescontoRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/cupons': {
@@ -304,6 +324,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
   AuthRoute: AuthRoute,
+  CacaAoDescontoRoute: CacaAoDescontoRoute,
   CuponsRoute: CuponsRoute,
   PrivacidadeRoute: PrivacidadeRoute,
   ProdutosRoute: ProdutosRoute,

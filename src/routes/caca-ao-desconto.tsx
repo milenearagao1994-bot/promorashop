@@ -12,7 +12,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { discountHuntConfig, siteSettingsQuery } from "@/lib/promovip";
 
-type Search = { produto?: string; link?: string; imagem?: string };
+type Search = { produto?: string | undefined; link?: string | undefined; imagem?: string | undefined };
 
 export const Route = createFileRoute("/caca-ao-desconto")({
   validateSearch: (search: Record<string, unknown>): Search => ({
