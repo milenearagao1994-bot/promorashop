@@ -108,10 +108,25 @@ export function MediaListField({
           </div>
         ))}
       </div>
+      <div className="flex flex-wrap items-center gap-2">
+        <Input
+          ref={fileRef}
+          type="file"
+          accept="image/*"
+          multiple
+          disabled={Boolean(progress)}
+          onChange={(event) => void addFiles(event.target.files)}
+          className="max-w-xs"
+        />
+        <span className="inline-flex items-center gap-1 text-xs text-muted-foreground">
+          <Upload className="size-3" />
+          {progress ?? "Adicionar imagens do dispositivo"}
+        </span>
+      </div>
       <div className="flex gap-2">
         <Input
           value={draft}
-          placeholder="https://…"
+          placeholder="Ou cole um endereço https://…"
           aria-label={`Adicionar imagem em ${label}`}
           onChange={(event) => setDraft(event.target.value)}
           onKeyDown={(event) => {
