@@ -1,10 +1,13 @@
 import { useQuery } from "@tanstack/react-query";
 import { useNavigate } from "@tanstack/react-router";
-import { BarChart3, Eye, EyeOff, LogOut, Package, Pencil, Plus, Settings, ShieldCheck, Ticket, Trash2 } from "lucide-react";
+import { BarChart3, Eye, EyeOff, LogOut, MessageSquare, Package, Pencil, Plus, Settings, ShieldCheck, Ticket, Trash2 } from "lucide-react";
 import { useMemo, useState } from "react";
 import { toast } from "sonner";
 
+import { ClickAnalytics } from "@/components/admin/ClickAnalytics";
 import { MediaListField } from "@/components/admin/MediaListField";
+import { MediaUploadField } from "@/components/admin/MediaUploadField";
+import { ReviewsModeration } from "@/components/admin/ReviewsModeration";
 import { Logo } from "@/components/site/Logo";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
