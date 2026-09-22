@@ -10,4 +10,5 @@
 - [x] Vivi: conversa local, catálogo real e cards de produtos
 - [x] Área administrativa protegida: dashboard, produtos, cupons, avaliações, categorias e lojas
 - [x] Primeiro acesso exclusivo de arianearagaocomercial@gmail.com
-- [ ] Testes completos em celular e desktop, incluindo segurança e integrações
+- [x] Testes públicos em celular e desktop: landing, Vivi, player, WhatsApp, proteção e clique externo
+- [ ] Teste autenticado do CRUD do painel — aguardando a proprietária concluir o primeiro acesso por e-mail
