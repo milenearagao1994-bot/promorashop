@@ -39,4 +39,4 @@
 ## Ajustes de player e cadastro rápido
 - [x] Player minimizado reduzido a um único botão musical, sem interromper a reprodução
 - [x] Cadastro de produto limitado a cinco campos obrigatórios, com os demais opcionais
-- [ ] Validar visual e cadastro rápido em celular e desktop
+- [x] Validar visual e cadastro rápido em celular e desktop
