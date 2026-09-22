@@ -58,17 +58,18 @@ export function AdminPanel() {
   const reviews = useQuery(adminReviewsQuery);
   const banners = useQuery(adminBannersQuery);
   const settings = useQuery(adminSiteSettingsQuery);
+  const customerReviews = useQuery(adminProductReviewsQuery);
   const analytics = useQuery({ queryKey: ["admin", "analytics"], queryFn: async () => { const { data, error } = await supabase.from("analytics_events").select("event_type,product_id,store_id,occurred_at"); if (error) throw error; return data; } });
   const [editor, setEditor] = useState<Editor | null>(null);
   const [saving, setSaving] = useState(false);
-  const refresh = async () => Promise.all([products.refetch(), coupons.refetch(), categories.refetch(), stores.refetch(), reviews.refetch(), banners.refetch(), settings.refetch(), analytics.refetch()]);
+  const refresh = async () => Promise.all([products.refetch(), coupons.refetch(), categories.refetch(), stores.refetch(), reviews.refetch(), banners.refetch(), settings.refetch(), analytics.refetch(), customerReviews.refetch()]);
   const active = products.data?.filter((p) => p.active).length ?? 0;
   const hidden = (products.data?.length ?? 0) - active;
   const views = analytics.data?.filter((e) => e.event_type === "product_view").length ?? 0;
   const clicks = analytics.data?.filter((e) => e.event_type === "outbound_click").length ?? 0;
   const expiring = useMemo(() => coupons.data?.filter((coupon) => coupon.active && coupon.expires_at && Date.parse(coupon.expires_at) > Date.now() && Date.parse(coupon.expires_at) < Date.now() + 7 * 86400000).length ?? 0, [coupons.data]);
 
-  async function toggle(table: Exclude<TableName, "editorial_reviews"> | "editorial_reviews", id: string, value: boolean) {
+  async function toggle(table: Exclude<TableName, "product_reviews">, id: string, value: boolean) {
     const { error } = await supabase.from(table).update({ active: value }).eq("id", id);
     if (error) { toast.error("Não foi possível atualizar o status."); return; }
     toast.success("Status atualizado."); await refresh();
