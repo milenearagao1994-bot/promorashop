@@ -122,7 +122,11 @@ export function AdminPanel() {
         if (!validMedia(logo)) throw new Error("Não foi possível enviar a imagem. Tente novamente.");
         table = "stores"; payload = { name: String(form.get("name") ?? "").trim(), slug: slugify(String(form.get("slug") || form.get("name") || "")), website_url: website || null, affiliate_base_url: affiliate || null, logo_url: logo || null, admin_notes: nullable(form.get("admin_notes")), active: form.get("active") === "on" };
       } else if(editor.kind === "banner") {
-        const image=String(form.get("image_url")??"").trim();const link=String(form.get("link_url")??"").trim();const bannerVideo=String(form.get("video_url")??"").trim();const media=String(form.get("media")??"").split("\n").map(item=>item.trim()).filter(Boolean);if(!validUrl(image)||!validUrl(link)||!validUrl(bannerVideo)||media.some(url=>!validUrl(url)))throw new Error("Confira os endereços informados.");
+        const image=String(form.get("image_url")??"").trim();const link=String(form.get("link_url")??"").trim();const bannerVideo=String(form.get("video_url")??"").trim();const media=String(form.get("media")??"").split("\n").map(item=>item.trim()).filter(Boolean);
+        if(!validMedia(image))throw new Error("Não foi possível enviar a imagem. Tente novamente.");
+        if(!validUrl(link))throw new Error("Informe um link válido para o banner.");
+        if(!validMedia(bannerVideo))throw new Error("Não foi possível enviar o vídeo. Tente novamente.");
+        if(media.some(url=>!validMedia(url)))throw new Error("Não foi possível enviar uma das imagens do carrossel. Tente novamente.");
         table="banners";payload={title:String(form.get("title")??"").trim(),subtitle:nullable(form.get("subtitle")),image_url:image||null,media,video_url:bannerVideo||null,autoplay:form.get("autoplay")==="on",link_url:link||null,link_label:nullable(form.get("link_label")),starts_at:nullable(form.get("starts_at")),ends_at:nullable(form.get("ends_at")),sort_order:Number(form.get("sort_order")||0),active:form.get("active")==="on"};
       } else if (editor.kind === "customer") {
         const rating = Number(form.get("rating") ?? 5);
