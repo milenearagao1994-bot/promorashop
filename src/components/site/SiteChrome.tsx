@@ -11,7 +11,7 @@ import { MusicPlayer } from "@/components/site/MusicPlayer";
  */
 export function SiteChrome() {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
-  const isPrivate = /^\/(auth|admin|recuperar-senha|redefinir-senha)/.test(pathname);
+  const isPrivate = /^\/admin/.test(pathname);
   if (isPrivate) return null;
   return (
     <>

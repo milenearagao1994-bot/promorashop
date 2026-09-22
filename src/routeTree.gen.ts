@@ -11,19 +11,18 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
-import { Route as AuthRouteImport } from './routes/auth'
 import { Route as CacaAoDescontoRouteImport } from './routes/caca-ao-desconto'
 import { Route as CuponsRouteImport } from './routes/cupons'
 import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as ProdutosRouteImport } from './routes/produtos'
-import { Route as RecuperarSenhaRouteImport } from './routes/recuperar-senha'
-import { Route as RedefinirSenhaRouteImport } from './routes/redefinir-senha'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as TermosRouteImport } from './routes/termos'
 import { Route as ViviRouteImport } from './routes/vivi'
 import { Route as AuthenticatedAdminRouteImport } from './routes/_authenticated/admin'
+import { Route as AdminLoginRouteImport } from './routes/admin/login'
 import { Route as ApiViviRouteImport } from './routes/api/vivi'
 import { Route as ProdutoSlugRouteImport } from './routes/produto/$slug'
+import { Route as ApiPublicMediaSplatRouteImport } from './routes/api/public/media/$'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -32,11 +31,6 @@ const IndexRoute = IndexRouteImport.update({
 } as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AuthRoute = AuthRouteImport.update({
-  id: '/auth',
-  path: '/auth',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CacaAoDescontoRoute = CacaAoDescontoRouteImport.update({
@@ -59,16 +53,6 @@ const ProdutosRoute = ProdutosRouteImport.update({
   path: '/produtos',
   getParentRoute: () => rootRouteImport,
 } as any)
-const RecuperarSenhaRoute = RecuperarSenhaRouteImport.update({
-  id: '/recuperar-senha',
-  path: '/recuperar-senha',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RedefinirSenhaRoute = RedefinirSenhaRouteImport.update({
-  id: '/redefinir-senha',
-  path: '/redefinir-senha',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const SobreRoute = SobreRouteImport.update({
   id: '/sobre',
   path: '/sobre',
@@ -89,6 +73,11 @@ const AuthenticatedAdminRoute = AuthenticatedAdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => AuthenticatedRouteRoute,
 } as any)
+const AdminLoginRoute = AdminLoginRouteImport.update({
+  id: '/admin/login',
+  path: '/admin/login',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiViviRoute = ApiViviRouteImport.update({
   id: '/api/vivi',
   path: '/api/vivi',
@@ -99,124 +88,122 @@ const ProdutoSlugRoute = ProdutoSlugRouteImport.update({
   path: '/produto/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicMediaSplatRoute = ApiPublicMediaSplatRouteImport.update({
+  id: '/api/public/media/$',
+  path: '/api/public/media/$',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
   '/caca-ao-desconto': typeof CacaAoDescontoRoute
   '/cupons': typeof CuponsRoute
   '/privacidade': typeof PrivacidadeRoute
   '/produtos': typeof ProdutosRoute
-  '/recuperar-senha': typeof RecuperarSenhaRoute
-  '/redefinir-senha': typeof RedefinirSenhaRoute
   '/sobre': typeof SobreRoute
   '/termos': typeof TermosRoute
   '/vivi': typeof ViviRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/admin/login': typeof AdminLoginRoute
   '/api/vivi': typeof ApiViviRoute
   '/produto/$slug': typeof ProdutoSlugRoute
+  '/api/public/media/$': typeof ApiPublicMediaSplatRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/auth': typeof AuthRoute
   '/caca-ao-desconto': typeof CacaAoDescontoRoute
   '/cupons': typeof CuponsRoute
   '/privacidade': typeof PrivacidadeRoute
   '/produtos': typeof ProdutosRoute
-  '/recuperar-senha': typeof RecuperarSenhaRoute
-  '/redefinir-senha': typeof RedefinirSenhaRoute
   '/sobre': typeof SobreRoute
   '/termos': typeof TermosRoute
   '/vivi': typeof ViviRoute
   '/admin': typeof AuthenticatedAdminRoute
+  '/admin/login': typeof AdminLoginRoute
   '/api/vivi': typeof ApiViviRoute
   '/produto/$slug': typeof ProdutoSlugRoute
+  '/api/public/media/$': typeof ApiPublicMediaSplatRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
-  '/auth': typeof AuthRoute
   '/caca-ao-desconto': typeof CacaAoDescontoRoute
   '/cupons': typeof CuponsRoute
   '/privacidade': typeof PrivacidadeRoute
   '/produtos': typeof ProdutosRoute
-  '/recuperar-senha': typeof RecuperarSenhaRoute
-  '/redefinir-senha': typeof RedefinirSenhaRoute
   '/sobre': typeof SobreRoute
   '/termos': typeof TermosRoute
   '/vivi': typeof ViviRoute
   '/_authenticated/admin': typeof AuthenticatedAdminRoute
+  '/admin/login': typeof AdminLoginRoute
   '/api/vivi': typeof ApiViviRoute
   '/produto/$slug': typeof ProdutoSlugRoute
+  '/api/public/media/$': typeof ApiPublicMediaSplatRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/auth'
     | '/caca-ao-desconto'
     | '/cupons'
     | '/privacidade'
     | '/produtos'
-    | '/recuperar-senha'
-    | '/redefinir-senha'
     | '/sobre'
     | '/termos'
     | '/vivi'
     | '/admin'
+    | '/admin/login'
     | '/api/vivi'
     | '/produto/$slug'
+    | '/api/public/media/$'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/auth'
     | '/caca-ao-desconto'
     | '/cupons'
     | '/privacidade'
     | '/produtos'
-    | '/recuperar-senha'
-    | '/redefinir-senha'
     | '/sobre'
     | '/termos'
     | '/vivi'
     | '/admin'
+    | '/admin/login'
     | '/api/vivi'
     | '/produto/$slug'
+    | '/api/public/media/$'
   id:
     | '__root__'
     | '/'
     | '/_authenticated'
-    | '/auth'
     | '/caca-ao-desconto'
     | '/cupons'
     | '/privacidade'
     | '/produtos'
-    | '/recuperar-senha'
-    | '/redefinir-senha'
     | '/sobre'
     | '/termos'
     | '/vivi'
     | '/_authenticated/admin'
+    | '/admin/login'
     | '/api/vivi'
     | '/produto/$slug'
+    | '/api/public/media/$'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
-  AuthRoute: typeof AuthRoute
   CacaAoDescontoRoute: typeof CacaAoDescontoRoute
   CuponsRoute: typeof CuponsRoute
   PrivacidadeRoute: typeof PrivacidadeRoute
   ProdutosRoute: typeof ProdutosRoute
-  RecuperarSenhaRoute: typeof RecuperarSenhaRoute
-  RedefinirSenhaRoute: typeof RedefinirSenhaRoute
   SobreRoute: typeof SobreRoute
   TermosRoute: typeof TermosRoute
   ViviRoute: typeof ViviRoute
+  AdminLoginRoute: typeof AdminLoginRoute
   ApiViviRoute: typeof ApiViviRoute
   ProdutoSlugRoute: typeof ProdutoSlugRoute
+  ApiPublicMediaSplatRoute: typeof ApiPublicMediaSplatRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -233,13 +220,6 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/auth': {
-      id: '/auth'
-      path: '/auth'
-      fullPath: '/auth'
-      preLoaderRoute: typeof AuthRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/caca-ao-desconto': {
@@ -270,20 +250,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProdutosRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/recuperar-senha': {
-      id: '/recuperar-senha'
-      path: '/recuperar-senha'
-      fullPath: '/recuperar-senha'
-      preLoaderRoute: typeof RecuperarSenhaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/redefinir-senha': {
-      id: '/redefinir-senha'
-      path: '/redefinir-senha'
-      fullPath: '/redefinir-senha'
-      preLoaderRoute: typeof RedefinirSenhaRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/sobre': {
       id: '/sobre'
       path: '/sobre'
@@ -312,6 +278,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedAdminRouteImport
       parentRoute: typeof AuthenticatedRouteRoute
     }
+    '/admin/login': {
+      id: '/admin/login'
+      path: '/admin/login'
+      fullPath: '/admin/login'
+      preLoaderRoute: typeof AdminLoginRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/vivi': {
       id: '/api/vivi'
       path: '/api/vivi'
@@ -324,6 +297,13 @@ declare module '@tanstack/react-router' {
       path: '/produto/$slug'
       fullPath: '/produto/$slug'
       preLoaderRoute: typeof ProdutoSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/media/$': {
+      id: '/api/public/media/$'
+      path: '/api/public/media/$'
+      fullPath: '/api/public/media/$'
+      preLoaderRoute: typeof ApiPublicMediaSplatRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -343,18 +323,17 @@ const AuthenticatedRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
-  AuthRoute: AuthRoute,
   CacaAoDescontoRoute: CacaAoDescontoRoute,
   CuponsRoute: CuponsRoute,
   PrivacidadeRoute: PrivacidadeRoute,
   ProdutosRoute: ProdutosRoute,
-  RecuperarSenhaRoute: RecuperarSenhaRoute,
-  RedefinirSenhaRoute: RedefinirSenhaRoute,
   SobreRoute: SobreRoute,
   TermosRoute: TermosRoute,
   ViviRoute: ViviRoute,
+  AdminLoginRoute: AdminLoginRoute,
   ApiViviRoute: ApiViviRoute,
   ProdutoSlugRoute: ProdutoSlugRoute,
+  ApiPublicMediaSplatRoute: ApiPublicMediaSplatRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
