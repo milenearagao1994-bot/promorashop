@@ -53,7 +53,7 @@ function Page() {
     );
 
   const images = [p.image_url, ...galleryToArray(p.gallery)].filter(Boolean) as string[];
-  const video = youtubeEmbedUrl(p.video_url);
+  const video = youtubeEmbedUrl(p.video_url) ?? p.video_url;
   const click = async (event: React.MouseEvent<HTMLAnchorElement>) => {
     event.preventDefault();
     await supabase.from("analytics_events").insert({ event_type: "outbound_click", product_id: p.id, store_id: p.store_id });
@@ -68,7 +68,7 @@ function Page() {
           Voltar aos achadinhos
         </Link>
         <div className="mt-6 grid gap-8 lg:grid-cols-[1.15fr_.85fr]">
-          <ProductGallery images={images} videoEmbedUrl={video} title={p.title} />
+          <ProductGallery images={images} videoUrl={video} title={p.title} />
           <div className="lg:sticky lg:top-24 lg:self-start">
             <p className="text-sm font-medium text-primary">{p.stores?.name ?? "Loja parceira"}</p>
             <h1 className="mt-2 font-display text-3xl font-bold md:text-4xl">{p.title}</h1>

@@ -3,12 +3,12 @@
 import { ChevronLeft, ChevronRight, ImageIcon, Play, ZoomIn } from "lucide-react";
 import { useRef, useState } from "react";
 
-type Slide = { kind: "image"; url: string } | { kind: "video"; url: string };
+type Slide = { kind: "image"; url: string } | { kind: "video"; url: string; embedded: boolean };
 
-export function ProductGallery({ images, videoEmbedUrl, title }: { images: string[]; videoEmbedUrl?: string | null; title: string }) {
+export function ProductGallery({ images, videoUrl, title }: { images: string[]; videoUrl?: string | null; title: string }) {
   const slides: Slide[] = [
     ...images.map((url) => ({ kind: "image" as const, url })),
-    ...(videoEmbedUrl ? [{ kind: "video" as const, url: videoEmbedUrl }] : []),
+    ...(videoUrl ? [{ kind: "video" as const, url: videoUrl, embedded: videoUrl.includes("youtube-nocookie.com/embed/") }] : []),
   ];
   const [index, setIndex] = useState(0);
   const [zoom, setZoom] = useState(false);
@@ -38,8 +38,18 @@ export function ProductGallery({ images, videoEmbedUrl, title }: { images: strin
           go(end < start ? index + 1 : index - 1);
         }}
       >
-        {current?.kind === "video" ? (
-          <iframe className="aspect-video w-full" src={current.url} title={`Vídeo de ${title}`} allowFullScreen />
+        {current?.kind === "video" ? current.embedded ? (
+          <iframe
+            className="aspect-video w-full"
+            src={current.url}
+            title={`Vídeo de ${title}`}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowFullScreen
+          />
+        ) : (
+          <video className="aspect-video w-full object-contain" src={current.url} controls playsInline preload="metadata">
+            Seu navegador não conseguiu reproduzir este vídeo.
+          </video>
         ) : current ? (
           <button
             type="button"
