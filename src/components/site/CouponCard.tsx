@@ -11,6 +11,14 @@ export function CouponCard({ coupon }: { coupon: Coupon }) {
 
   return (
     <article className="rounded-xl border border-border bg-card p-5 shadow-soft">
+      {coupon.image_url ? (
+        <img
+          src={coupon.image_url}
+          alt={coupon.title}
+          loading="lazy"
+          className="mb-4 aspect-video w-full rounded-lg object-cover"
+        />
+      ) : null}
       <div className="flex items-start justify-between gap-4">
         <div className="flex size-10 items-center justify-center rounded-lg bg-secondary text-primary"><Ticket aria-hidden="true" /></div>
         {coupon.featured ? <Badge variant="secondary">Destaque</Badge> : null}
