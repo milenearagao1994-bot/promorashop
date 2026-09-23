@@ -3,7 +3,7 @@
 - [x] Exibir vídeos enviados pelo dispositivo e vídeos do YouTube na galeria pública do produto.
 - [x] Ocultar completamente o player quando o produto não possui vídeo.
 - [x] Fixar a ordem principal da home: Vivi, destaques, categorias, Caça ao Desconto e cupons.
-- [ ] Validar o fluxo completo com foto e vídeo em celular e desktop e remover o produto temporário.
+- [x] Validar o fluxo completo com foto e vídeo em celular e desktop e remover o produto temporário.
 
 # PromoraShop — roadmap
 
