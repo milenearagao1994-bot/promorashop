@@ -61,6 +61,7 @@ export type Coupon = {
   discount_label: string | null;
   store_id: string | null;
   affiliate_url: string;
+  image_url?: string | null;
   expires_at: string | null;
   featured: boolean;
   active: boolean;
