@@ -158,6 +158,7 @@ export type Database = {
           expires_at: string | null
           featured: boolean
           id: string
+          image_url: string | null
           store_id: string | null
           title: string
           updated_at: string
@@ -173,6 +174,7 @@ export type Database = {
           expires_at?: string | null
           featured?: boolean
           id?: string
+          image_url?: string | null
           store_id?: string | null
           title: string
           updated_at?: string
@@ -188,6 +190,7 @@ export type Database = {
           expires_at?: string | null
           featured?: boolean
           id?: string
+          image_url?: string | null
           store_id?: string | null
           title?: string
           updated_at?: string
