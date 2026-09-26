@@ -15,10 +15,10 @@ export function WelcomeIntro() {
   const [leaving, setLeaving] = useState(false);
   useEffect(() => {
     let seen = false;
-    try { seen = localStorage.getItem(KEY) === today(); localStorage.setItem(KEY, today()); } catch { seen = true; }
+    try { seen = localStorage.getItem(KEY) === today(); } catch { seen = true; }
     if (seen) return;
     setShow(true);
-    const timers = [setTimeout(() => setStep(1), 1300), setTimeout(() => setStep(2), 2600), setTimeout(() => setLeaving(true), 4000), setTimeout(() => { setShow(false); window.dispatchEvent(new Event(INTRO_DONE_EVENT)); }, 4500)];
+    const timers = [setTimeout(() => setStep(1), 1300), setTimeout(() => setStep(2), 2600), setTimeout(() => setLeaving(true), 4000), setTimeout(() => { try { localStorage.setItem(KEY, today()); } catch { /* sem armazenamento */ } setShow(false); window.dispatchEvent(new Event(INTRO_DONE_EVENT)); }, 4500)];
     return () => timers.forEach(clearTimeout);
   }, []);
   if (!show) return null;
