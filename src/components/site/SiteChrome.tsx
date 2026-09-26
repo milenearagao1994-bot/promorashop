@@ -3,6 +3,7 @@
 import { useRouterState } from "@tanstack/react-router";
 
 import { MusicPlayer } from "@/components/site/MusicPlayer";
+import { WelcomeIntro } from "@/components/site/WelcomeIntro";
 
 /**
  * Mounted once in the root route so the music player keeps playing while the
@@ -12,5 +13,5 @@ export function SiteChrome() {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const isPrivate = /^\/admin/.test(pathname);
   if (isPrivate) return null;
-  return <MusicPlayer />;
+  return <><WelcomeIntro /><MusicPlayer /></>;
 }
