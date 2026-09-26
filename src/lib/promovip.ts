@@ -331,3 +331,39 @@ export function reviewAverage(reviews: ProductReview[]) {
   if (!reviews.length) return null;
   return reviews.reduce((total, review) => total + review.rating, 0) / reviews.length;
 }
+
+// ---------- Área exclusiva para afiliados (separada do catálogo do consumidor) ----------
+export type AffiliateOpportunity = {
+  id: string; title: string; link_url: string; store_id: string; category_id: string | null;
+  image_url: string | null; gallery: unknown; video_url: string | null;
+  commission_info: string | null; commission_highlight: boolean; description: string | null;
+  affiliate_notes: string | null; caption: string | null; benefits: string | null; promo_image_url: string | null;
+  starts_at: string | null; ends_at: string | null; featured: boolean; active: boolean; sort_order: number; created_at: string;
+  stores?: Pick<Store, "id" | "name" | "slug"> | null;
+  categories?: Pick<Category, "id" | "name" | "slug" | "icon"> | null;
+};
+const AFF_SELECT = "*, stores(id,name,slug), categories(id,name,slug,icon)";
+export const affiliateOpportunitiesQuery = queryOptions({
+  queryKey: ["affiliates", "public"],
+  queryFn: async (): Promise<AffiliateOpportunity[]> => {
+    const { data, error } = await supabase.from("affiliate_opportunities").select(AFF_SELECT).eq("active", true)
+      .order("featured", { ascending: false }).order("sort_order").order("created_at", { ascending: false });
+    if (error) throw error;
+    return (data ?? []) as unknown as AffiliateOpportunity[];
+  },
+});
+export const adminAffiliateOpportunitiesQuery = queryOptions({
+  queryKey: ["affiliates", "admin"],
+  queryFn: async (): Promise<AffiliateOpportunity[]> => {
+    const { data, error } = await supabase.from("affiliate_opportunities").select(AFF_SELECT).order("sort_order").order("created_at", { ascending: false });
+    if (error) throw error;
+    return (data ?? []) as unknown as AffiliateOpportunity[];
+  },
+});
+export const AFFILIATE_CONTENT_KEYS = [
+  ["notices", "📢 Avisos"], ["campaigns", "🔥 Campanhas em destaque"], ["commission", "💰 Oportunidades de comissão"],
+  ["products", "📦 Produtos para divulgação"], ["tips", "🎯 Dicas de divulgação"], ["notes", "📝 Observações da campanha"],
+] as const;
+export function affiliateContent(settings: SiteSetting[] | undefined) {
+  return settingsMap(settings)["affiliates"] ?? {};
+}

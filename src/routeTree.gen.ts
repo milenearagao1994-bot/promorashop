@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AuthenticatedRouteRouteImport } from './routes/_authenticated/route'
+import { Route as AfiliadosRouteImport } from './routes/afiliados'
 import { Route as CacaAoDescontoRouteImport } from './routes/caca-ao-desconto'
 import { Route as CuponsRouteImport } from './routes/cupons'
 import { Route as PrivacidadeRouteImport } from './routes/privacidade'
@@ -31,6 +32,11 @@ const IndexRoute = IndexRouteImport.update({
 } as any)
 const AuthenticatedRouteRoute = AuthenticatedRouteRouteImport.update({
   id: '/_authenticated',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AfiliadosRoute = AfiliadosRouteImport.update({
+  id: '/afiliados',
+  path: '/afiliados',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CacaAoDescontoRoute = CacaAoDescontoRouteImport.update({
@@ -96,6 +102,7 @@ const ApiPublicMediaSplatRoute = ApiPublicMediaSplatRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/afiliados': typeof AfiliadosRoute
   '/caca-ao-desconto': typeof CacaAoDescontoRoute
   '/cupons': typeof CuponsRoute
   '/privacidade': typeof PrivacidadeRoute
@@ -111,6 +118,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/afiliados': typeof AfiliadosRoute
   '/caca-ao-desconto': typeof CacaAoDescontoRoute
   '/cupons': typeof CuponsRoute
   '/privacidade': typeof PrivacidadeRoute
@@ -128,6 +136,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_authenticated': typeof AuthenticatedRouteRouteWithChildren
+  '/afiliados': typeof AfiliadosRoute
   '/caca-ao-desconto': typeof CacaAoDescontoRoute
   '/cupons': typeof CuponsRoute
   '/privacidade': typeof PrivacidadeRoute
@@ -145,6 +154,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/afiliados'
     | '/caca-ao-desconto'
     | '/cupons'
     | '/privacidade'
@@ -160,6 +170,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/afiliados'
     | '/caca-ao-desconto'
     | '/cupons'
     | '/privacidade'
@@ -176,6 +187,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_authenticated'
+    | '/afiliados'
     | '/caca-ao-desconto'
     | '/cupons'
     | '/privacidade'
@@ -193,6 +205,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthenticatedRouteRoute: typeof AuthenticatedRouteRouteWithChildren
+  AfiliadosRoute: typeof AfiliadosRoute
   CacaAoDescontoRoute: typeof CacaAoDescontoRoute
   CuponsRoute: typeof CuponsRoute
   PrivacidadeRoute: typeof PrivacidadeRoute
@@ -220,6 +233,13 @@ declare module '@tanstack/react-router' {
       path: ''
       fullPath: '/'
       preLoaderRoute: typeof AuthenticatedRouteRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/afiliados': {
+      id: '/afiliados'
+      path: '/afiliados'
+      fullPath: '/afiliados'
+      preLoaderRoute: typeof AfiliadosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/caca-ao-desconto': {
@@ -323,6 +343,7 @@ const AuthenticatedRouteRouteWithChildren =
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthenticatedRouteRoute: AuthenticatedRouteRouteWithChildren,
+  AfiliadosRoute: AfiliadosRoute,
   CacaAoDescontoRoute: CacaAoDescontoRoute,
   CuponsRoute: CuponsRoute,
   PrivacidadeRoute: PrivacidadeRoute,

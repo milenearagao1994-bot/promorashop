@@ -14,6 +14,145 @@ export type Database = {
   }
   public: {
     Tables: {
+      affiliate_events: {
+        Row: {
+          category_id: string | null
+          created_at: string
+          event_type: string
+          id: string
+          opportunity_id: string | null
+          store_id: string | null
+        }
+        Insert: {
+          category_id?: string | null
+          created_at?: string
+          event_type: string
+          id?: string
+          opportunity_id?: string | null
+          store_id?: string | null
+        }
+        Update: {
+          category_id?: string | null
+          created_at?: string
+          event_type?: string
+          id?: string
+          opportunity_id?: string | null
+          store_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "affiliate_events_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "affiliate_events_opportunity_id_fkey"
+            columns: ["opportunity_id"]
+            isOneToOne: false
+            referencedRelation: "affiliate_opportunities"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "affiliate_events_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      affiliate_opportunities: {
+        Row: {
+          active: boolean
+          affiliate_notes: string | null
+          benefits: string | null
+          caption: string | null
+          category_id: string | null
+          commission_highlight: boolean
+          commission_info: string | null
+          created_at: string
+          description: string | null
+          ends_at: string | null
+          featured: boolean
+          gallery: Json
+          id: string
+          image_url: string | null
+          link_url: string
+          promo_image_url: string | null
+          sort_order: number
+          starts_at: string | null
+          store_id: string
+          title: string
+          updated_at: string
+          video_url: string | null
+        }
+        Insert: {
+          active?: boolean
+          affiliate_notes?: string | null
+          benefits?: string | null
+          caption?: string | null
+          category_id?: string | null
+          commission_highlight?: boolean
+          commission_info?: string | null
+          created_at?: string
+          description?: string | null
+          ends_at?: string | null
+          featured?: boolean
+          gallery?: Json
+          id?: string
+          image_url?: string | null
+          link_url: string
+          promo_image_url?: string | null
+          sort_order?: number
+          starts_at?: string | null
+          store_id: string
+          title: string
+          updated_at?: string
+          video_url?: string | null
+        }
+        Update: {
+          active?: boolean
+          affiliate_notes?: string | null
+          benefits?: string | null
+          caption?: string | null
+          category_id?: string | null
+          commission_highlight?: boolean
+          commission_info?: string | null
+          created_at?: string
+          description?: string | null
+          ends_at?: string | null
+          featured?: boolean
+          gallery?: Json
+          id?: string
+          image_url?: string | null
+          link_url?: string
+          promo_image_url?: string | null
+          sort_order?: number
+          starts_at?: string | null
+          store_id?: string
+          title?: string
+          updated_at?: string
+          video_url?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "affiliate_opportunities_category_id_fkey"
+            columns: ["category_id"]
+            isOneToOne: false
+            referencedRelation: "categories"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "affiliate_opportunities_store_id_fkey"
+            columns: ["store_id"]
+            isOneToOne: false
+            referencedRelation: "stores"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       analytics_events: {
         Row: {
           anonymous_session_id: string | null

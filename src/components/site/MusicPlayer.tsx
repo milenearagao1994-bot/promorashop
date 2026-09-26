@@ -4,6 +4,7 @@ import { ChevronDown, ChevronUp, Music2, Pause, Play, SkipBack, SkipForward, Vol
 import { useEffect, useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
+import { INTRO_DONE_EVENT } from "@/components/site/WelcomeIntro";
 
 const PLAYLIST_ID = "PLepg7gx3R7I0";
 
@@ -12,19 +13,29 @@ export function MusicPlayer() {
   const [ready, setReady] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(false);
+  const [nudge, setNudge] = useState(false);
+  const readyRef = useRef(false);
+  const playingRef = useRef(false);
+  const pendingAuto = useRef(false);
   const [title, setTitle] = useState("Playlist PromoraShop");
   const player = useRef<{ playVideo:()=>void; pauseVideo:()=>void; nextVideo:()=>void; previousVideo:()=>void; mute:()=>void; unMute:()=>void; getVideoData:()=>{title?:string} } | null>(null);
   useEffect(() => {
     const create = () => {
       const YT = (window as unknown as {YT?:{Player:new(id:string,options:unknown)=>typeof player.current}}).YT;
       if (!YT || player.current) return;
-      player.current = new YT.Player("promorashop-youtube-player", { height:"200", width:"356", playerVars:{listType:"playlist",list:PLAYLIST_ID,playsinline:1}, events:{ onReady:()=>setReady(true), onStateChange:(event:{data:number})=>{setPlaying(event.data===1); const name=player.current?.getVideoData().title; if(name)setTitle(name);} } });
+      player.current = new YT.Player("promorashop-youtube-player", { height:"200", width:"356", playerVars:{listType:"playlist",list:PLAYLIST_ID,playsinline:1}, events:{ onReady:()=>{setReady(true);readyRef.current=true;if(pendingAuto.current)tryAuto();}, onStateChange:(event:{data:number})=>{setPlaying(event.data===1);playingRef.current=event.data===1;if(event.data===1)setNudge(false); const name=player.current?.getVideoData().title; if(name)setTitle(name);} } });
     };
     const win=window as unknown as {YT?:unknown;onYouTubeIframeAPIReady?:()=>void};
     if(win.YT) create(); else { const script=document.createElement("script"); script.src="https://www.youtube.com/iframe_api"; document.head.appendChild(script); win.onYouTubeIframeAPIReady=create; }
+    // Após as boas-vindas, tenta tocar respeitando a política de autoplay do navegador.
+    function tryAuto(){pendingAuto.current=false;player.current?.playVideo();setTimeout(()=>{if(!playingRef.current)setNudge(true)},1800);}
+    const onIntro=()=>{if(readyRef.current)tryAuto();else pendingAuto.current=true;};
+    window.addEventListener(INTRO_DONE_EVENT,onIntro);
+    return ()=>window.removeEventListener(INTRO_DONE_EVENT,onIntro);
   }, []);
 
-  return (
+  return (<>
+    {nudge&&!expanded?<button type="button" onClick={()=>{player.current?.playVideo();setNudge(false)}} className="fixed bottom-4 left-16 z-40 animate-fade-in rounded-full border border-border bg-card/95 px-3 py-2 text-xs font-semibold text-primary shadow-card backdrop-blur md:bottom-6 md:left-[4.5rem]">🎵 Ativar música</button>:null}
     <aside className={`fixed bottom-3 left-3 z-40 overflow-hidden border border-border bg-card/95 shadow-card backdrop-blur transition-[width] duration-300 md:bottom-5 md:left-5 ${expanded ? "w-[calc(100%-1.5rem)] max-w-sm rounded-xl md:w-96" : "size-11 rounded-full"}`}>
       {expanded ? (
         <div className="flex h-14 items-center gap-3 px-3">
@@ -50,5 +61,5 @@ export function MusicPlayer() {
       )}
       <div className={`${expanded ? "aspect-video border-t border-border" : "pointer-events-none absolute size-px overflow-hidden opacity-0"} bg-muted`}><div id="promorashop-youtube-player" className="size-full" /></div>
     </aside>
-  );
+  </>);
 }
