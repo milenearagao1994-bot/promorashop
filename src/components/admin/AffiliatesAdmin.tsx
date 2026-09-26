@@ -44,9 +44,9 @@ export function AffiliatesAdmin({ stores, categories }: { stores: Store[]; categ
     e.preventDefault();
     const f = new FormData(e.currentTarget);
     const title = t(f, "title"), link = t(f, "link_url"), store = t(f, "store_id");
-    if (!title) return toast.error("Informe o nome do produto.");
-    if (!store) return toast.error("Selecione a loja.");
-    if (!link || !validLink(link)) return toast.error("Informe um link válido.");
+    if (!title) { toast.error("Informe o nome do produto."); return; }
+    if (!store) { toast.error("Selecione a loja."); return; }
+    if (!link || !validLink(link)) { toast.error("Informe um link válido."); return; }
     const row = {
       title, link_url: link, store_id: store, category_id: t(f, "category_id"),
       image_url: t(f, "image_url"), gallery: String(f.get("gallery") ?? "").split("\n").map((s) => s.trim()).filter(Boolean),
@@ -60,16 +60,16 @@ export function AffiliatesAdmin({ stores, categories }: { stores: Store[]; categ
     setSaving(true);
     const q = editing && editing !== "new" ? supabase.from("affiliate_opportunities").update(row).eq("id", editing.id) : supabase.from("affiliate_opportunities").insert(row);
     const { error } = await q; setSaving(false);
-    if (error) return toast.error("Não foi possível salvar a oportunidade.");
+    if (error) { toast.error("Não foi possível salvar a oportunidade."); return; }
     toast.success("Oportunidade salva."); setEditing(null); await list.refetch();
   }
-  async function patch(id: string, v: Partial<AffiliateOpportunity>) { const { error } = await supabase.from("affiliate_opportunities").update(v).eq("id", id); if (error) toast.error("Não foi possível atualizar."); await list.refetch(); }
+  async function patch(id: string, v: { active?: boolean; featured?: boolean }) { const { error } = await supabase.from("affiliate_opportunities").update(v).eq("id", id); if (error) toast.error("Não foi possível atualizar."); await list.refetch(); }
   async function del(id: string) { if (!confirm("Excluir esta oportunidade?")) return; const { error } = await supabase.from("affiliate_opportunities").delete().eq("id", id); if (error) toast.error("Não foi possível excluir."); await list.refetch(); }
   async function saveContent(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault(); const f = new FormData(e.currentTarget);
     const value = Object.fromEntries(AFFILIATE_CONTENT_KEYS.map(([k]) => [k, String(f.get(k) ?? "").trim()]));
     const { error } = await supabase.from("site_settings").upsert({ key: "affiliates", value, public: true });
-    if (error) return toast.error("Não foi possível salvar.");
+    if (error) { toast.error("Não foi possível salvar."); return; }
     toast.success("Conteúdo atualizado."); await settings.refetch();
   }
   const cur = editing && editing !== "new" ? editing : null;
@@ -123,16 +123,16 @@ export function AffiliatesAdmin({ stores, categories }: { stores: Store[]; categ
               <div><Label htmlFor="a-cat">Categoria · Opcional</Label><select id="a-cat" name="category_id" defaultValue={cur?.category_id ?? ""} className="h-10 w-full rounded-md border border-input bg-background px-3 text-sm"><option value="">Sem categoria</option>{categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}</select></div>
             </div>
             <div><Label htmlFor="a-link">Link do produto · Obrigatório</Label><Input id="a-link" name="link_url" type="url" defaultValue={cur?.link_url ?? ""} required /></div>
-            <MediaUploadField label="Imagem principal · Opcional" name="image_url" kind="image" folder="afiliados" defaultValue={cur?.image_url} />
+            <MediaUploadField label="Imagem principal · Opcional" name="image_url" kind="image" folder="afiliados" defaultValue={cur?.image_url ?? null} />
             <MediaListField label="Imagens adicionais · Opcional" name="gallery" folder="afiliados" defaultValue={galleryToArray(cur?.gallery)} />
-            <MediaUploadField label="Vídeo · Opcional" name="video_url" kind="video" folder="afiliados" defaultValue={cur?.video_url} />
+            <MediaUploadField label="Vídeo · Opcional" name="video_url" kind="video" folder="afiliados" defaultValue={cur?.video_url ?? null} />
             <div><Label htmlFor="a-com">Informação de comissão · Opcional</Label><Input id="a-com" name="commission_info" placeholder="Ex.: Comissão diferenciada" defaultValue={cur?.commission_info ?? ""} /></div>
             <label className="flex items-center gap-2 text-sm"><input type="checkbox" name="commission_highlight" defaultChecked={cur?.commission_highlight} />Destacar a comissão</label>
             <div><Label htmlFor="a-desc">Descrição · Opcional</Label><Textarea id="a-desc" name="description" defaultValue={cur?.description ?? ""} /></div>
             <div><Label htmlFor="a-notes">Observações para o afiliado · Opcional</Label><Textarea id="a-notes" name="affiliate_notes" defaultValue={cur?.affiliate_notes ?? ""} /></div>
             <div><Label htmlFor="a-cap">Legenda sugerida · Opcional</Label><Textarea id="a-cap" name="caption" defaultValue={cur?.caption ?? ""} /></div>
             <div><Label htmlFor="a-ben">Benefícios · Opcional</Label><Textarea id="a-ben" name="benefits" defaultValue={cur?.benefits ?? ""} /></div>
-            <MediaUploadField label="Imagem pronta para divulgação · Opcional" name="promo_image_url" kind="image" folder="afiliados" defaultValue={cur?.promo_image_url} />
+            <MediaUploadField label="Imagem pronta para divulgação · Opcional" name="promo_image_url" kind="image" folder="afiliados" defaultValue={cur?.promo_image_url ?? null} />
             <div className="grid gap-4 sm:grid-cols-3">
               <div><Label htmlFor="a-s">Início · Opcional</Label><Input id="a-s" name="starts_at" type="date" defaultValue={toLocal(cur?.starts_at ?? null)} /></div>
               <div><Label htmlFor="a-e">Término · Opcional</Label><Input id="a-e" name="ends_at" type="date" defaultValue={toLocal(cur?.ends_at ?? null)} /></div>
