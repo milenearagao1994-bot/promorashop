@@ -47,3 +47,8 @@
 - [x] Player minimizado reduzido a um único botão musical, sem interromper a reprodução
 - [x] Cadastro de produto limitado a cinco campos obrigatórios, com os demais opcionais
 - [x] Validar visual e cadastro rápido em celular e desktop
+
+## Entrada e área de afiliados
+- [x] Boas-vindas animada uma vez por dia, com tentativa de tocar a playlist e botão "Ativar música" se o navegador bloquear
+- [x] Seção "Exclusivo para Afiliados" no fim da home e página /afiliados (por destaque, loja e categoria)
+- [x] Painel: oportunidades (CRUD, destaque, ordem, período), conteúdo extra e analytics separado
