@@ -1,0 +1,1 @@
+ALTER TABLE public.products ADD COLUMN frete_gratis boolean NOT NULL DEFAULT false, ADD COLUMN entrega_super_rapida boolean NOT NULL DEFAULT false;

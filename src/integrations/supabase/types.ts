@@ -482,7 +482,9 @@ export type Database = {
           description: string | null
           editorial_rating: number | null
           editorial_review: string | null
+          entrega_super_rapida: boolean
           featured: boolean
+          frete_gratis: boolean
           gallery: Json
           id: string
           image_url: string | null
@@ -509,7 +511,9 @@ export type Database = {
           description?: string | null
           editorial_rating?: number | null
           editorial_review?: string | null
+          entrega_super_rapida?: boolean
           featured?: boolean
+          frete_gratis?: boolean
           gallery?: Json
           id?: string
           image_url?: string | null
@@ -536,7 +540,9 @@ export type Database = {
           description?: string | null
           editorial_rating?: number | null
           editorial_review?: string | null
+          entrega_super_rapida?: boolean
           featured?: boolean
+          frete_gratis?: boolean
           gallery?: Json
           id?: string
           image_url?: string | null
