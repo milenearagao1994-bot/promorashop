@@ -49,6 +49,8 @@ export type Product = {
   sort_order: number;
   frete_gratis: boolean;
   entrega_super_rapida: boolean;
+  discount_mode: "auto" | "manual";
+  discount_percent: number | null;
   specifications?: Record<string, unknown>;
   stores?: Pick<Store, "id" | "name" | "slug" | "accent_color"> | null;
   categories?: Pick<Category, "id" | "name" | "slug"> | null;
@@ -142,9 +144,21 @@ export function formatPrice(value: number | null | undefined, currency = "BRL") 
   return value.toLocaleString("pt-BR", { style: "currency", currency });
 }
 
-export function discountPercent(product: Pick<Product, "price" | "original_price">) {
-  if (!product.price || !product.original_price || product.original_price <= product.price) return null;
-  return Math.round((1 - product.price / product.original_price) * 100);
+/** Auto discount: ((anterior - final) / anterior) × 100, rounded to an integer; null when invalid. */
+export function autoDiscount(price: number | null | undefined, original: number | null | undefined) {
+  if (price == null || original == null || !(original > 0) || !(price > 0) || price >= original) return null;
+  const pct = Math.round(((original - price) / original) * 100);
+  return pct > 0 ? pct : null;
+}
+
+/** Discount shown to visitors: the manual value when mode is manual, otherwise the automatic calculation. */
+export function discountPercent(product: Pick<Product, "price" | "original_price"> & Partial<Pick<Product, "discount_mode" | "discount_percent">>) {
+  if (!product.original_price || product.price == null) return null;
+  if (product.discount_mode === "manual") {
+    const v = product.discount_percent == null ? null : Number(product.discount_percent);
+    return v && v > 0 && v < 100 ? Math.round(v * 100) / 100 : null;
+  }
+  return autoDiscount(product.price, product.original_price);
 }
 
 export function slugify(value: string) {

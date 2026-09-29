@@ -480,6 +480,8 @@ export type Database = {
           created_at: string
           currency: string
           description: string | null
+          discount_mode: string
+          discount_percent: number | null
           editorial_rating: number | null
           editorial_review: string | null
           entrega_super_rapida: boolean
@@ -509,6 +511,8 @@ export type Database = {
           created_at?: string
           currency?: string
           description?: string | null
+          discount_mode?: string
+          discount_percent?: number | null
           editorial_rating?: number | null
           editorial_review?: string | null
           entrega_super_rapida?: boolean
@@ -538,6 +542,8 @@ export type Database = {
           created_at?: string
           currency?: string
           description?: string | null
+          discount_mode?: string
+          discount_percent?: number | null
           editorial_rating?: number | null
           editorial_review?: string | null
           entrega_super_rapida?: boolean

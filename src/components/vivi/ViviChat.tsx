@@ -23,7 +23,7 @@ import {
 } from "@/components/ai-elements/prompt-input";
 import { Shimmer } from "@/components/ai-elements/shimmer";
 import { Button } from "@/components/ui/button";
-import { DeliveryBadges } from "@/components/site/DeliveryBadges";
+import { FreeShippingTag, StoreDeliveryLine } from "@/components/site/DeliveryBadges";
 import { formatPrice, productsQuery, type Product } from "@/lib/promovip";
 
 const STORAGE_KEY = "promorashop:vivi:v2";
@@ -168,12 +168,12 @@ function Chat({ initialMessages, products }: { initialMessages: UIMessage[]; pro
                               {product.image_url ? (
                                 <img src={product.image_url} alt="" className="mb-2 aspect-square w-full rounded object-cover" />
                               ) : null}
+                              <FreeShippingTag product={product} className="mb-1" />
                               <p className="line-clamp-2 text-sm font-semibold">{product.title}</p>
-                              <p className="mt-1 text-xs text-muted-foreground">{product.stores?.name ?? "Loja parceira"}</p>
+                              <StoreDeliveryLine product={product} storeName={product.stores?.name ?? "Loja parceira"} className="mt-1 text-xs text-muted-foreground" />
                               <p className="mt-1 text-xs font-semibold text-primary">
                                 {product.price === null ? "Preço na loja" : formatPrice(product.price, product.currency)}
                               </p>
-                               <DeliveryBadges product={product} className="mt-2" />
                               <span className="mt-2 inline-block text-xs font-semibold text-primary">Ver produto →</span>
                             </Link>
                           ))}
