@@ -105,6 +105,9 @@ export function AdminPanel() {
         const storeId = form.get("store_id") === NONE ? null : String(form.get("store_id") ?? "");
         if (!title || price === null || !storeId || !imageUrl || !affiliateUrl) throw new Error("Preencha nome, preço, loja, link de afiliado e foto principal.");
         if (price < 0) throw new Error("Informe um preço válido.");
+        const originalPrice = numberOrNull(form.get("original_price"));
+        if (originalPrice !== null && originalPrice < 0) throw new Error("Informe um preço anterior válido.");
+        if (form.get("discount_mode") === "manual") { const pct = numberOrNull(form.get("discount_percent")); if (pct !== null && (pct <= 0 || pct >= 100)) throw new Error("Informe um percentual de desconto entre 0 e 100."); }
         if (!validUrl(affiliateUrl, true)) throw new Error("Informe um link de afiliado válido.");
         if (!validMedia(imageUrl, true)) throw new Error("Não foi possível enviar a imagem. Tente novamente.");
         if (!validMedia(videoUrl)) throw new Error("Não foi possível enviar o vídeo. Tente novamente.");

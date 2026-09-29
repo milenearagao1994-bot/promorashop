@@ -4,13 +4,14 @@ import { ArrowLeft, ExternalLink, Search, ShieldCheck } from "lucide-react";
 import { useEffect } from "react";
 
 import { ProductGallery } from "@/components/site/ProductGallery";
-import { DeliveryBadges } from "@/components/site/DeliveryBadges";
+import { FreeShippingTag, StoreDeliveryLine } from "@/components/site/DeliveryBadges";
+import { PriceBlock } from "@/components/site/PriceBlock";
 import { ProductReviews } from "@/components/site/ProductReviews";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
-import { formatPrice, galleryToArray, productQuery, youtubeEmbedUrl } from "@/lib/promovip";
+import { galleryToArray, productQuery, youtubeEmbedUrl } from "@/lib/promovip";
 
 export const Route = createFileRoute("/produto/$slug")({
   head: () => ({
@@ -71,22 +72,15 @@ function Page() {
         <div className="mt-6 grid gap-8 lg:grid-cols-[1.15fr_.85fr]">
           <ProductGallery images={images} videoUrl={video} title={p.title} />
           <div className="lg:sticky lg:top-24 lg:self-start">
-            <p className="text-sm font-medium text-primary">{p.stores?.name ?? "Loja parceira"}</p>
+            <StoreDeliveryLine product={p} storeName={p.stores?.name ?? "Loja parceira"} variant="detail" className="text-sm font-medium text-primary" />
+            <FreeShippingTag product={p} className="mt-2" />
             <h1 className="mt-2 font-display text-3xl font-bold md:text-4xl">{p.title}</h1>
             {p.short_description ? <p className="mt-4 text-muted-foreground">{p.short_description}</p> : null}
-            <DeliveryBadges product={p} className="mt-4" />
             <div className="mt-6">
-              {p.price === null ? (
-                <p className="text-muted-foreground">Preço disponível na loja</p>
-              ) : (
-                <>
-                  <p className="font-display text-3xl font-bold text-primary">{formatPrice(p.price, p.currency)}</p>
-                  {p.original_price ? <p className="text-sm text-muted-foreground line-through">{formatPrice(p.original_price, p.currency)}</p> : null}
-                  {p.price_updated_at ? (
-                    <p className="mt-1 text-xs text-muted-foreground">Preço informado em {new Date(p.price_updated_at).toLocaleDateString("pt-BR")}</p>
-                  ) : null}
-                </>
-              )}
+              <PriceBlock product={p} size="detail" />
+              {p.price !== null && p.price_updated_at ? (
+                <p className="mt-1 text-xs text-muted-foreground">Preço informado em {new Date(p.price_updated_at).toLocaleDateString("pt-BR")}</p>
+              ) : null}
             </div>
             <Button asChild size="lg" className="mt-6 w-full">
               <a href={p.affiliate_url} rel="sponsored noreferrer" onClick={click}>
