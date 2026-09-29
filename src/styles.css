@@ -191,3 +191,26 @@
   background-color: oklch(1 0 0 / 0.65);
   backdrop-filter: blur(14px);
 }
+
+/* A brief gleam followed by a long quiet interval. Motion is optional. */
+@keyframes delivery-gleam {
+  0%, 5% { transform: translateX(-120%); opacity: 0; }
+  12% { opacity: .28; }
+  24%, 100% { transform: translateX(240%); opacity: 0; }
+}
+@keyframes delivery-spark {
+  0%, 5%, 24%, 100% { transform: translateY(0) scale(1); }
+  12% { transform: translateY(-1px) scale(1.12); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .delivery-fast::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    width: 45%;
+    background: linear-gradient(90deg, transparent, var(--color-card), transparent);
+    animation: delivery-gleam 6s ease-in-out infinite;
+    pointer-events: none;
+  }
+  .delivery-fast-icon { animation: delivery-spark 6s ease-in-out infinite; }
+}

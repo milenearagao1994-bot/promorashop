@@ -4,6 +4,7 @@ import { ArrowLeft, ExternalLink, Search, ShieldCheck } from "lucide-react";
 import { useEffect } from "react";
 
 import { ProductGallery } from "@/components/site/ProductGallery";
+import { DeliveryBadges } from "@/components/site/DeliveryBadges";
 import { ProductReviews } from "@/components/site/ProductReviews";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { Badge } from "@/components/ui/badge";
@@ -73,6 +74,7 @@ function Page() {
             <p className="text-sm font-medium text-primary">{p.stores?.name ?? "Loja parceira"}</p>
             <h1 className="mt-2 font-display text-3xl font-bold md:text-4xl">{p.title}</h1>
             {p.short_description ? <p className="mt-4 text-muted-foreground">{p.short_description}</p> : null}
+            <DeliveryBadges product={p} className="mt-4" />
             <div className="mt-6">
               {p.price === null ? (
                 <p className="text-muted-foreground">Preço disponível na loja</p>

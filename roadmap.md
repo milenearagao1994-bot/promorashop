@@ -1,5 +1,9 @@
 # Vídeos dos produtos e ordem da página inicial
 
+## Opções de entrega dos produtos
+- [x] Opções independentes e desativadas por padrão no cadastro e edição, sem novos campos obrigatórios.
+- [x] Selos condicionais em destaque, catálogo, detalhes e recomendações da Vivi; brilho discreto com respeito a movimento reduzido.
+
 - [x] Exibir vídeos enviados pelo dispositivo e vídeos do YouTube na galeria pública do produto.
 - [x] Ocultar completamente o player quando o produto não possui vídeo.
 - [x] Fixar a ordem principal da home: Vivi, destaques, categorias, Caça ao Desconto e cupons.

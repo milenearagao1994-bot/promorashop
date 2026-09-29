@@ -3,6 +3,7 @@ import { ArrowUpRight, ImageIcon } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { DeliveryBadges } from "@/components/site/DeliveryBadges";
 import { formatPrice, type Product } from "@/lib/promovip";
 
 export function ProductCard({ product }: { product: Product }) {
@@ -28,6 +29,7 @@ export function ProductCard({ product }: { product: Product }) {
           <p className="text-xs font-medium text-muted-foreground">{product.stores?.name ?? "Loja parceira"}</p>
           <h3 className="mt-1 line-clamp-2 font-display text-base font-semibold text-foreground">{product.title}</h3>
         </div>
+        <DeliveryBadges product={product} />
         <div className="flex min-h-10 items-end justify-between gap-3">
           <div>
             {product.price === null ? (
