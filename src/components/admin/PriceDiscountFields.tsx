@@ -4,7 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { autoDiscount } from "@/lib/promovip";
 
-export function PriceDiscountFields({ price, original, mode, percent }: { price?: number | null; original?: number | null; mode?: "auto" | "manual"; percent?: number | null }) {
+export function PriceDiscountFields({ price, original, mode, percent }: { price?: number | null | undefined; original?: number | null | undefined; mode?: "auto" | "manual" | undefined; percent?: number | null | undefined }) {
   const [p, setP] = useState(price == null ? "" : String(price));
   const [o, setO] = useState(original == null ? "" : String(original));
   const [m, setM] = useState<"auto" | "manual">(mode ?? "auto");
