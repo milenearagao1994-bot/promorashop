@@ -1,0 +1,1 @@
+ALTER TABLE public.products ADD COLUMN IF NOT EXISTS discount_mode text NOT NULL DEFAULT 'auto' CHECK (discount_mode IN ('auto','manual')), ADD COLUMN IF NOT EXISTS discount_percent numeric(5,2) CHECK (discount_percent IS NULL OR (discount_percent > 0 AND discount_percent < 100));
