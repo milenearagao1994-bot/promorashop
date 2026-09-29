@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Reutilize `DeliveryBadges` nas apresentações públicas de produto; as duas opções de entrega vêm dos campos booleanos independentes em `products`, evitando afirmações não cadastradas.

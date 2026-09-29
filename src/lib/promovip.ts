@@ -47,6 +47,8 @@ export type Product = {
   active: boolean;
   created_at: string;
   sort_order: number;
+  frete_gratis: boolean;
+  entrega_super_rapida: boolean;
   specifications?: Record<string, unknown>;
   stores?: Pick<Store, "id" | "name" | "slug" | "accent_color"> | null;
   categories?: Pick<Category, "id" | "name" | "slug"> | null;
