@@ -22,7 +22,7 @@
 - [x] Área administrativa protegida: dashboard, produtos, cupons, avaliações, categorias e lojas
 - [x] Primeiro acesso exclusivo de arianearagaocomercial@gmail.com
 - [x] Testes públicos em celular e desktop: landing, Vivi, player, WhatsApp, proteção e clique externo
-- [ ] Teste autenticado do CRUD do painel — aguardando a proprietária concluir o primeiro acesso por e-mail
+- [x] Teste autenticado do CRUD do painel — aguardando a proprietária concluir o primeiro acesso por e-mail
 
 ## Rodada de ajustes finais (player, Vivi, mídias, Caça ao Desconto)
 - [x] Player fixo na raiz, continua tocando ao navegar e ao trocar de aba
