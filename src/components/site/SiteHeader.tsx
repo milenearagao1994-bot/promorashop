@@ -31,7 +31,7 @@ export function SiteHeader() {
 
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
-            <Button variant="ghost" size="icon" className="ml-auto md:hidden" aria-label="Abrir menu">
+            <Button variant="ghost" size="icon" className="ml-auto lg:hidden" aria-label="Abrir menu">
               <Menu />
             </Button>
           </SheetTrigger>
