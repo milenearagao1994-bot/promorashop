@@ -43,9 +43,10 @@ export function BannerCarousel({ banner, aspect }: { banner: Banner; aspect?: st
         <video className="absolute inset-0 size-full object-cover opacity-40" src={video ?? undefined} muted playsInline loop autoPlay={banner.autoplay} preload="metadata" controls={!banner.autoplay} />
       ) : total ? (
         images.map((url, position) => (
-          <img key={url} src={url} alt="" className={`absolute inset-0 size-full object-cover transition-opacity duration-500 ${position === index ? "opacity-30" : "opacity-0"}`} />
+          <img key={url} src={url} alt="" className={`absolute inset-0 size-full object-cover transition-opacity duration-500 ${position === index ? "opacity-100" : "opacity-0"}`} />
         ))
       ) : null}
+      {total && (banner.title || banner.subtitle || banner.link_url) ? <div className="absolute inset-0 bg-gradient-to-t from-foreground/70 via-foreground/10 to-transparent" /> : null}
 
       <div className="relative mt-auto max-w-md">
         {banner.title ? <h2 className="font-display text-xl font-bold drop-shadow md:text-3xl">{banner.title}</h2> : null}
