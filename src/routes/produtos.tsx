@@ -11,7 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { categoriesQuery, productsQuery, storesQuery } from "@/lib/promovip";
 
 export const Route = createFileRoute("/produtos")({
-  validateSearch: (search: Record<string, unknown>): { q?: string } => (typeof search.q === "string" && search.q.trim() ? { q: search.q.slice(0, 120) } : {}),
+  validateSearch: (search: Record<string, unknown>): { q?: string } => (typeof search['q'] === "string" && search['q'].trim() ? { q: search['q'].slice(0, 120) } : {}),
   loader: ({ context }) => Promise.all([context.queryClient.ensureQueryData(productsQuery), context.queryClient.ensureQueryData(categoriesQuery), context.queryClient.ensureQueryData(storesQuery)]),
   head: () => ({ meta: [
     { title: "Achadinhos — PromoraShop" },

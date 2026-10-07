@@ -1,6 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, ChevronLeft, ChevronRight, MessageCircleHeart, Search, ShoppingBag, Sparkles, Tag, TicketPercent } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, MessageCircleHeart, Search, ShoppingBag, Sparkles, Tag } from "lucide-react";
 import { useEffect, useState } from "react";
 
 import { BannerCarousel } from "@/components/site/BannerCarousel";
