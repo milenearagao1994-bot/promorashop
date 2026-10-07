@@ -1,36 +1,176 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, Search, Sparkles, Tag } from "lucide-react";
-import vivi from "@/assets/vivi-full.png.asset.json";
+import { ArrowRight, ChevronLeft, ChevronRight, MessageCircleHeart, Search, ShoppingBag, Sparkles, Tag } from "lucide-react";
+import { useEffect, useState } from "react";
+
 import { BannerCarousel } from "@/components/site/BannerCarousel";
 import { CouponCard } from "@/components/site/CouponCard";
 import { EmptyState } from "@/components/site/EmptyState";
 import { ProductCard } from "@/components/site/ProductCard";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { Button } from "@/components/ui/button";
-import { bannersQuery, categoriesQuery, couponsQuery, discountHuntConfig, productsQuery, siteSettingsQuery } from "@/lib/promovip";
+import { affiliateOpportunitiesQuery, bannersQuery, categoriesQuery, contactConfig, couponsQuery, discountHuntConfig, productsQuery, siteSettingsQuery, type Banner } from "@/lib/promovip";
 
-const description="Achadinhos, ofertas, promoções e produtos selecionados em um só lugar.";
-export const Route=createFileRoute("/")({
-  loader:({context})=>Promise.all([context.queryClient.ensureQueryData(productsQuery),context.queryClient.ensureQueryData(categoriesQuery),context.queryClient.ensureQueryData(couponsQuery),context.queryClient.ensureQueryData(bannersQuery),context.queryClient.ensureQueryData(siteSettingsQuery)]),
-  head:()=>({meta:[{title:"PromoraShop — Achadinhos, ofertas e promoções"},{name:"description",content:description},{property:"og:title",content:"PromoraShop — Achadinhos, ofertas e promoções"},{property:"og:description",content:description},{property:"og:type",content:"website"},{name:"twitter:card",content:"summary_large_image"}]}),
-  component:Index,
+const description = "Achadinhos, ofertas, promoções e produtos selecionados em um só lugar.";
+const ZAP_MESSAGE = "Olá! Quero entrar na lista VIP gratuita e receber ofertas no WhatsApp todo dia";
+const ASPECTS = new Set(["15/9", "16/9", "4/3", "1/1", "21/9", "3/1"]);
+
+export const Route = createFileRoute("/")({
+  loader: ({ context }) => Promise.all([
+    context.queryClient.ensureQueryData(productsQuery),
+    context.queryClient.ensureQueryData(categoriesQuery),
+    context.queryClient.ensureQueryData(couponsQuery),
+    context.queryClient.ensureQueryData(bannersQuery),
+    context.queryClient.ensureQueryData(siteSettingsQuery),
+    context.queryClient.ensureQueryData(affiliateOpportunitiesQuery),
+  ]),
+  head: () => ({ meta: [
+    { title: "PromoraShop — Achadinhos, ofertas e promoções" },
+    { name: "description", content: description },
+    { property: "og:title", content: "PromoraShop — Achadinhos, ofertas e promoções" },
+    { property: "og:description", content: description },
+    { property: "og:type", content: "website" },
+    { name: "twitter:card", content: "summary_large_image" },
+  ] }),
+  component: Index,
 });
 
-function Index(){
-  const{data:products}=useSuspenseQuery(productsQuery);const{data:categories}=useSuspenseQuery(categoriesQuery);const{data:coupons}=useSuspenseQuery(couponsQuery);const{data:banners}=useSuspenseQuery(bannersQuery);const{data:settings}=useSuspenseQuery(siteSettingsQuery);
-  const landing=(settings.find(s=>s.key==="landing")?.value??{}) as Record<string,string>;const featured=products.filter(p=>p.featured).slice(0,4);const hunt=discountHuntConfig(settings);
-  return <SiteLayout>
-    <section className="overflow-hidden bg-soft-gradient"><div className="mx-auto grid max-w-6xl items-center gap-3 px-4 py-8 lg:h-[calc(100svh-4rem)] lg:min-h-[620px] lg:max-h-[760px] lg:grid-cols-[1.08fr_.92fr]">
-      <div className="relative z-10"><div className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-card/70 px-3 py-2 text-xs font-semibold text-primary"><Sparkles className="size-3.5"/>OFERTAS · DESCOBERTAS · VOCÊ</div><h1 className="mt-6 max-w-2xl font-display text-4xl font-bold leading-[1.08] md:text-6xl">{landing["hero_title"]??"Descubra coisas incríveis. Do seu jeito."}</h1><p className="mt-5 max-w-xl text-base leading-7 text-muted-foreground md:text-lg">{landing["hero_description"]??"Achadinhos escolhidos com carinho, informações claras e uma assistente pronta para ajudar você a encontrar o que combina com sua vida."}</p><div className="mt-7 flex flex-col gap-3 sm:flex-row"><Button asChild variant="hero" size="lg"><Link to="/produtos"><Search/>Explorar achadinhos</Link></Button><Button asChild variant="outline" size="lg"><Link to="/vivi"><Sparkles/>Falar com a Vivi</Link></Button></div></div>
-      <div className="relative mx-auto h-[280px] w-full max-w-md self-end md:h-[460px]"><img src={vivi.url} alt="Vivi, assistente virtual da PromoraShop" className="absolute inset-0 size-full object-contain object-bottom"/></div>
-    </div></section>
-    <section className="bg-muted/50"><div className="mx-auto max-w-6xl px-4 py-16"><div className="flex items-end justify-between gap-4"><div><p className="text-xs font-semibold text-primary">SELEÇÃO PROMORASHOP</p><h2 className="mt-2 font-display text-3xl font-bold">Achadinhos em destaque</h2></div><Button asChild variant="ghost"><Link to="/produtos">Ver todos <ArrowRight/></Link></Button></div><div className="mt-8">{featured.length?<div className="grid grid-cols-2 gap-3 md:grid-cols-4 md:gap-6">{featured.map(p=><ProductCard key={p.id} product={p}/>)}</div>:<EmptyState title="A curadoria está chegando" description="Nenhum produto foi destacado ainda."/>}</div></div></section>
-    <section className="mx-auto max-w-6xl px-4 py-16"><p className="text-xs font-semibold text-primary">EXPLORE POR CATEGORIA</p><h2 className="mt-2 font-display text-3xl font-bold">Encontre sua próxima descoberta</h2><div className="mt-7 flex gap-3 overflow-x-auto pb-3">{categories.length?categories.map(c=><Link key={c.id} to="/produtos" className="flex min-w-36 items-center gap-3 rounded-xl border border-border bg-card p-4 text-sm font-semibold transition hover:border-primary hover:text-primary"><Tag className="size-4"/>{c.name}</Link>):<p className="text-sm text-muted-foreground">As categorias aparecerão aqui quando estiverem ativas.</p>}</div></section>
-    <section className="mx-auto max-w-6xl px-4 pb-16"><div className="grid items-center gap-6 rounded-2xl border border-primary/15 bg-soft-gradient p-6 md:grid-cols-[1fr_auto] md:p-10"><div><div className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-card px-3 py-1.5 text-xs font-semibold text-primary"><Search className="size-3.5"/>🔎 {hunt.name.toUpperCase()}</div><h2 className="mt-4 font-display text-3xl font-bold">{hunt.title}</h2><p className="mt-3 max-w-xl text-muted-foreground">{hunt.description}</p></div><Button asChild size="lg" className="w-full md:w-auto"><Link to="/caca-ao-desconto" search={{}}>{hunt.cta}</Link></Button></div></section>
-    <section className="mx-auto max-w-6xl px-4 py-16"><div className="flex items-end justify-between"><div><p className="text-xs font-semibold text-primary">CUPONS</p><h2 className="mt-2 font-display text-3xl font-bold">Condições para conferir</h2></div><Button asChild variant="ghost"><Link to="/cupons">Ver cupons <ArrowRight/></Link></Button></div><div className="mt-8">{coupons.slice(0,3).length?<div className="grid gap-4 md:grid-cols-3">{coupons.slice(0,3).map(c=><CouponCard key={c.id} coupon={c}/>)}</div>:<EmptyState title="Sem cupons ativos agora" description="Assim que houver cupons cadastrados e não expirados, eles aparecerão aqui."/>}</div></section>
-    <section className="mx-auto max-w-6xl px-4 pb-12"><div className="flex flex-col items-start justify-between gap-4 rounded-xl border border-border bg-card p-5 sm:flex-row sm:items-center"><div><h2 className="font-display text-lg font-semibold">💜 Exclusivo para Afiliados</h2><p className="mt-1 text-sm text-muted-foreground">Produtos, campanhas e oportunidades para quem divulga.</p></div><Button asChild variant="outline"><Link to="/afiliados">Conhecer área de afiliados <ArrowRight/></Link></Button></div></section>
-    {banners.length?<section className="mx-auto max-w-6xl px-4 pb-12"><div className="grid gap-4 md:grid-cols-2">{banners.map(b=><BannerCarousel key={b.id} banner={b}/>)}</div></section>:null}
-    <section className="mx-auto max-w-6xl px-4 pb-8"><div className="overflow-hidden rounded-xl bg-night-gradient px-6 py-10 text-primary-foreground md:px-12 md:py-14"><Sparkles className="size-7 text-lilac"/><h2 className="mt-4 max-w-3xl font-display text-3xl font-bold md:text-4xl">{landing["vivi_title"]??"Encontre o que você precisa por um preço que vale a pena."}</h2><p className="mt-3 max-w-3xl text-primary-foreground/75">{landing["vivi_description"]??"A Vivi é sua assistente que vai te ajudar a encontrar o que você precisa, por um preço que vale a pena."}</p><Button asChild variant="vip" size="lg" className="mt-6"><Link to="/vivi">Conversar com a Vivi <ArrowRight/></Link></Button></div></section>
-  </SiteLayout>;
+function whatsappLink(base: string, text: string) {
+  const digits = base.replace(/\D/g, "") || "5571992600863";
+  return `https://wa.me/${digits}?text=${encodeURIComponent(text)}`;
+}
+
+function Index() {
+  const { data: products } = useSuspenseQuery(productsQuery);
+  const { data: categories } = useSuspenseQuery(categoriesQuery);
+  const { data: coupons } = useSuspenseQuery(couponsQuery);
+  const { data: banners } = useSuspenseQuery(bannersQuery);
+  const { data: settings } = useSuspenseQuery(siteSettingsQuery);
+  const { data: opportunities } = useSuspenseQuery(affiliateOpportunitiesQuery);
+
+  const landing = (settings.find((s) => s.key === "landing")?.value ?? {}) as Record<string, string>;
+  const aspect = ASPECTS.has(landing["banner_aspect"] ?? "") ? landing["banner_aspect"]! : "15/9";
+  const featured = products.filter((p) => p.featured);
+  const offers = (featured.length ? featured : products).slice(0, 12);
+  const hunt = discountHuntConfig(settings);
+  const contact = contactConfig(settings);
+  const commission = opportunities.find((o) => o.commission_highlight && o.commission_info?.trim())?.commission_info?.trim();
+
+  return (
+    <SiteLayout>
+      {banners.length ? (
+        <section className="mx-auto max-w-6xl px-4 pt-4 md:pt-6"><HomeBanners banners={banners} aspect={aspect} /></section>
+      ) : null}
+
+      <section className="mx-auto max-w-6xl px-4 pt-6 md:pt-10">
+        <div className="flex items-end justify-between gap-4">
+          <h2 className="font-display text-2xl font-bold md:text-3xl">✨ Ofertas em destaque</h2>
+          <Button asChild variant="ghost" size="sm"><Link to="/produtos">Ver todas <ArrowRight /></Link></Button>
+        </div>
+        <div className="mt-4">
+          {offers.length ? (
+            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:gap-5 lg:grid-cols-4 xl:grid-cols-5">{offers.map((p) => <ProductCard key={p.id} product={p} />)}</div>
+          ) : (
+            <EmptyState title="A curadoria está chegando" description="Nenhum produto foi cadastrado ainda." />
+          )}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 pt-8">
+        <a href={whatsappLink(contact.whatsapp, ZAP_MESSAGE)} target="_blank" rel="noopener noreferrer" className="group flex items-center justify-between gap-4 rounded-2xl bg-brand-gradient px-5 py-4 text-primary-foreground shadow-soft transition hover:-translate-y-0.5 md:px-8 md:py-5">
+          <span>
+            <span className="block font-display text-lg font-bold md:text-xl">💜 Quero receber ofertas no Zap</span>
+            <span className="mt-0.5 block text-xs text-primary-foreground/80 md:text-sm">Peça para entrar na lista VIP gratuita pelo WhatsApp.</span>
+          </span>
+          <ArrowRight className="size-5 shrink-0 transition group-hover:translate-x-1" />
+        </a>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 pt-12">
+        <h2 className="font-display text-2xl font-bold md:text-3xl">🛍️ Explorar por categorias</h2>
+        <div className="mt-4 flex gap-3 overflow-x-auto pb-3">
+          {categories.length ? categories.map((c) => (
+            <Link key={c.id} to="/produtos" search={{ q: c.name }} className="flex min-w-36 items-center gap-3 rounded-xl border border-border bg-card p-4 text-sm font-semibold transition hover:border-primary hover:text-primary"><Tag className="size-4" />{c.name}</Link>
+          )) : <p className="text-sm text-muted-foreground">As categorias aparecerão aqui quando estiverem ativas.</p>}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 pt-10">
+        <div className="grid items-center gap-6 rounded-2xl border border-primary/15 bg-soft-gradient p-6 md:grid-cols-[1fr_auto] md:p-10">
+          <div>
+            <div className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-card px-3 py-1.5 text-xs font-semibold text-primary"><Search className="size-3.5" />🔎 {hunt.name.toUpperCase()}</div>
+            <h2 className="mt-4 font-display text-2xl font-bold md:text-3xl">{hunt.title}</h2>
+            <p className="mt-3 max-w-xl text-muted-foreground">{hunt.description}</p>
+          </div>
+          <Button asChild size="lg" className="w-full md:w-auto"><Link to="/caca-ao-desconto" search={{}}>{hunt.cta}</Link></Button>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 pt-12">
+        <div className="flex items-end justify-between gap-4">
+          <h2 className="font-display text-2xl font-bold md:text-3xl">🎟️ Cupons</h2>
+          <Button asChild variant="ghost" size="sm"><Link to="/cupons">Ver cupons <ArrowRight /></Link></Button>
+        </div>
+        <div className="mt-4">
+          {coupons.slice(0, 3).length ? (
+            <div className="grid gap-4 md:grid-cols-3">{coupons.slice(0, 3).map((c) => <CouponCard key={c.id} coupon={c} />)}</div>
+          ) : <EmptyState title="Sem cupons ativos agora" description="Assim que houver cupons cadastrados e não expirados, eles aparecerão aqui." />}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 pt-12">
+        <div className="flex flex-col items-start justify-between gap-4 rounded-xl border border-border bg-card p-5 sm:flex-row sm:items-center">
+          <div>
+            <h2 className="font-display text-lg font-semibold">💜 Exclusivo para Afiliados</h2>
+            <p className="mt-1 text-sm text-muted-foreground">Produtos, campanhas e oportunidades para quem divulga.</p>
+            {commission ? <p className="mt-3 inline-flex items-baseline gap-2 rounded-full bg-primary/10 px-3 py-1 text-sm font-semibold text-primary">Comissão extra <span className="font-display text-lg">{commission}</span></p> : null}
+          </div>
+          <Button asChild variant="outline"><Link to="/afiliados">Conhecer área de afiliados <ArrowRight /></Link></Button>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 pt-12">
+        <div className="flex flex-col gap-5 overflow-hidden rounded-2xl bg-night-gradient px-6 py-8 text-primary-foreground md:flex-row md:items-center md:justify-between md:px-10">
+          <div className="flex items-start gap-4">
+            <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary-foreground/10"><MessageCircleHeart className="size-6 text-lilac" /></span>
+            <div>
+              <h2 className="font-display text-xl font-bold md:text-2xl">✨ Conversar com a Vivi</h2>
+              <p className="mt-1 max-w-xl text-sm text-primary-foreground/75">{landing["vivi_description"] || "A Vivi é sua assistente que vai te ajudar a encontrar o que você precisa, por um preço que vale a pena."}</p>
+            </div>
+          </div>
+          <Button asChild variant="vip" size="lg"><Link to="/vivi"><Sparkles />Abrir chat</Link></Button>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-3xl px-4 py-12 text-center">
+        <ShoppingBag className="mx-auto size-5 text-primary/70" />
+        <p className="mt-3 text-sm leading-6 text-muted-foreground">Achadinhos selecionados com carinho, informações claras e uma assistente pronta para ajudar você a encontrar o que combina com sua vida!</p>
+      </section>
+    </SiteLayout>
+  );
+}
+
+function HomeBanners({ banners, aspect }: { banners: Banner[]; aspect: string }) {
+  const [index, setIndex] = useState(0);
+  const total = banners.length;
+  useEffect(() => {
+    if (total < 2) return;
+    const timer = window.setInterval(() => setIndex((v) => (v + 1) % total), 7000);
+    return () => window.clearInterval(timer);
+  }, [total]);
+  const current = banners[index % total]!;
+  return (
+    <div className="relative">
+      <BannerCarousel key={current.id} banner={current} aspect={aspect} />
+      {total > 1 ? (
+        <>
+          <button type="button" aria-label="Banner anterior" onClick={() => setIndex((v) => (v + total - 1) % total)} className="absolute -left-1 top-1/2 hidden size-9 -translate-y-1/2 items-center justify-center rounded-full bg-card text-primary shadow-soft md:flex"><ChevronLeft className="size-4" /></button>
+          <button type="button" aria-label="Próximo banner" onClick={() => setIndex((v) => (v + 1) % total)} className="absolute -right-1 top-1/2 hidden size-9 -translate-y-1/2 items-center justify-center rounded-full bg-card text-primary shadow-soft md:flex"><ChevronRight className="size-4" /></button>
+          <div className="mt-2 flex justify-center gap-1.5">
+            {banners.map((b, i) => <button key={b.id} type="button" aria-label={`Ir para banner ${i + 1}`} onClick={() => setIndex(i)} className={`h-1.5 rounded-full transition-all ${i === index ? "w-5 bg-primary" : "w-1.5 bg-primary/30"}`} />)}
+          </div>
+        </>
+      ) : null}
+    </div>
+  );
 }
