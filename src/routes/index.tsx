@@ -77,7 +77,7 @@ function Index() {
       </section>
 
       <section className="mx-auto max-w-6xl px-4 pt-8">
-        <a href={whatsappLink(contact.whatsapp, ZAP_MESSAGE)} target="_blank" rel="noopener noreferrer" className="group flex items-center justify-between gap-4 rounded-2xl bg-hero-gradient px-5 py-4 text-primary-foreground shadow-soft transition hover:-translate-y-0.5 md:px-8 md:py-5">
+        <a href={whatsappLink(contact.whatsapp, ZAP_MESSAGE)} target="_blank" rel="noopener noreferrer" className="group flex items-center justify-between gap-4 rounded-2xl bg-brand-gradient px-5 py-4 text-primary-foreground shadow-soft transition hover:-translate-y-0.5 md:px-8 md:py-5">
           <span>
             <span className="block font-display text-lg font-bold md:text-xl">💜 Quero receber ofertas no Zap</span>
             <span className="mt-0.5 block text-xs text-primary-foreground/80 md:text-sm">Peça para entrar na lista VIP gratuita pelo WhatsApp.</span>
