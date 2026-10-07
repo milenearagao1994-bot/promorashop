@@ -1,9 +1,8 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ArrowRight, ChevronLeft, ChevronRight, MessageCircleHeart, Search, ShoppingBag, Sparkles, Tag } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
-import { BannerCarousel } from "@/components/site/BannerCarousel";
 import { CouponCard } from "@/components/site/CouponCard";
 import { EmptyState } from "@/components/site/EmptyState";
 import { ProductCard } from "@/components/site/ProductCard";
@@ -64,7 +63,7 @@ function Index() {
 
       <section className="mx-auto max-w-6xl px-4 pt-6 md:pt-10">
         <div className="flex items-end justify-between gap-4">
-          <h2 className="font-display text-2xl font-bold md:text-3xl">✨ Ofertas em destaque</h2>
+          <h2 className="font-display text-2xl font-bold md:text-3xl">Promoções em Destaque</h2>
           <Button asChild variant="ghost" size="sm"><Link to="/produtos">Ver todas <ArrowRight /></Link></Button>
         </div>
         <div className="mt-4">
@@ -79,7 +78,7 @@ function Index() {
       <section className="mx-auto max-w-6xl px-4 pt-8">
         <a href={whatsappLink(contact.whatsapp, ZAP_MESSAGE)} target="_blank" rel="noopener noreferrer" className="group flex items-center justify-between gap-4 rounded-2xl bg-brand-gradient px-5 py-4 text-primary-foreground shadow-soft transition hover:-translate-y-0.5 md:px-8 md:py-5">
           <span>
-            <span className="block font-display text-lg font-bold md:text-xl">💜 Quero receber ofertas no Zap</span>
+            <span className="block font-display text-lg font-bold md:text-xl">Quero receber ofertas no Zap</span>
             <span className="mt-0.5 block text-xs text-primary-foreground/80 md:text-sm">Peça para entrar na lista VIP gratuita pelo WhatsApp.</span>
           </span>
           <ArrowRight className="size-5 shrink-0 transition group-hover:translate-x-1" />
@@ -151,25 +150,39 @@ function Index() {
 }
 
 function HomeBanners({ banners, aspect }: { banners: Banner[]; aspect: string }) {
+  const slides = banners.filter((b) => b.image_url);
   const [index, setIndex] = useState(0);
-  const total = banners.length;
+  const [pausedUntil, setPausedUntil] = useState(0);
+  const touchStart = useRef<number | null>(null);
+  const total = slides.length;
   useEffect(() => {
     if (total < 2) return;
-    const timer = window.setInterval(() => setIndex((v) => (v + 1) % total), 7000);
+    const timer = window.setInterval(() => { if (Date.now() >= pausedUntil) setIndex((v) => (v + 1) % total); }, 5000);
     return () => window.clearInterval(timer);
-  }, [total]);
-  const current = banners[index % total]!;
+  }, [total, pausedUntil]);
+  if (!total) return null;
+  const go = (next: number) => { setIndex(((next % total) + total) % total); setPausedUntil(Date.now() + 8000); };
   return (
     <div className="relative">
-      <BannerCarousel key={current.id} banner={current} aspect={aspect} />
+      <div className="relative overflow-hidden rounded-2xl bg-muted shadow-soft" style={{ aspectRatio: aspect }}
+        onTouchStart={(e) => { touchStart.current = e.touches[0]?.clientX ?? null; }}
+        onTouchEnd={(e) => { const s = touchStart.current; const end = e.changedTouches[0]?.clientX; touchStart.current = null; if (s === null || end === undefined || Math.abs(end - s) < 40) return; go(index + (end < s ? 1 : -1)); }}>
+        <div className="flex h-full transition-transform duration-500" style={{ transform: `translateX(-${index * 100}%)` }}>
+          {slides.map((b, i) => (
+            <a key={b.id} href={b.link_url ?? "#"} target="_blank" rel="noopener noreferrer" aria-label={`Banner ${i + 1} de ${total}`} className="block h-full w-full shrink-0">
+              <img src={b.image_url!} alt="" className="size-full object-cover" loading={i === 0 ? "eager" : "lazy"} draggable={false} />
+            </a>
+          ))}
+        </div>
+        {total > 1 ? (<>
+          <button type="button" aria-label="Banner anterior" onClick={() => go(index - 1)} className="absolute left-2 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-card/80 text-primary shadow-soft backdrop-blur"><ChevronLeft className="size-4" /></button>
+          <button type="button" aria-label="Próximo banner" onClick={() => go(index + 1)} className="absolute right-2 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-card/80 text-primary shadow-soft backdrop-blur"><ChevronRight className="size-4" /></button>
+        </>) : null}
+      </div>
       {total > 1 ? (
-        <>
-          <button type="button" aria-label="Banner anterior" onClick={() => setIndex((v) => (v + total - 1) % total)} className="absolute -left-1 top-1/2 hidden size-9 -translate-y-1/2 items-center justify-center rounded-full bg-card text-primary shadow-soft md:flex"><ChevronLeft className="size-4" /></button>
-          <button type="button" aria-label="Próximo banner" onClick={() => setIndex((v) => (v + 1) % total)} className="absolute -right-1 top-1/2 hidden size-9 -translate-y-1/2 items-center justify-center rounded-full bg-card text-primary shadow-soft md:flex"><ChevronRight className="size-4" /></button>
-          <div className="mt-2 flex justify-center gap-1.5">
-            {banners.map((b, i) => <button key={b.id} type="button" aria-label={`Ir para banner ${i + 1}`} onClick={() => setIndex(i)} className={`h-1.5 rounded-full transition-all ${i === index ? "w-5 bg-primary" : "w-1.5 bg-primary/30"}`} />)}
-          </div>
-        </>
+        <div className="mt-2 flex justify-center gap-1.5">
+          {slides.map((b, i) => <button key={b.id} type="button" aria-label={`Ir para banner ${i + 1}`} onClick={() => go(i)} className={`h-1.5 rounded-full transition-all ${i === index ? "w-5 bg-primary" : "w-1.5 bg-primary/30"}`} />)}
+        </div>
       ) : null}
     </div>
   );
