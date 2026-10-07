@@ -1,7 +1,7 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import { Search } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { EmptyState } from "@/components/site/EmptyState";
 import { ProductCard } from "@/components/site/ProductCard";
@@ -11,6 +11,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@
 import { categoriesQuery, productsQuery, storesQuery } from "@/lib/promovip";
 
 export const Route = createFileRoute("/produtos")({
+  validateSearch: (search: Record<string, unknown>): { q?: string } => (typeof search.q === "string" && search.q.trim() ? { q: search.q.slice(0, 120) } : {}),
   loader: ({ context }) => Promise.all([context.queryClient.ensureQueryData(productsQuery), context.queryClient.ensureQueryData(categoriesQuery), context.queryClient.ensureQueryData(storesQuery)]),
   head: () => ({ meta: [
     { title: "Achadinhos — PromoraShop" },
@@ -27,13 +28,16 @@ function ProductsPage() {
   const { data: products } = useSuspenseQuery(productsQuery);
   const { data: categories } = useSuspenseQuery(categoriesQuery);
   const { data: stores } = useSuspenseQuery(storesQuery);
-  const [query, setQuery] = useState("");
+  const { q } = Route.useSearch();
+  const [query, setQuery] = useState(q ?? "");
+  useEffect(() => { setQuery(q ?? ""); }, [q]);
   const [category, setCategory] = useState("all");
   const [store, setStore] = useState("all");
   const [sort, setSort] = useState("featured");
   const visible = useMemo(() => products.filter((product) => {
-    const text = `${product.title} ${product.short_description ?? ""} ${product.tags.join(" ")}`.toLowerCase();
-    return text.includes(query.toLowerCase()) && (category === "all" || product.category_id === category) && (store === "all" || product.store_id === store);
+    const text = normalize(`${product.title} ${product.short_description ?? ""} ${product.description ?? ""} ${product.tags.join(" ")} ${product.stores?.name ?? ""} ${product.categories?.name ?? ""}`);
+    const words = normalize(query).split(/\s+/).filter(Boolean);
+    return words.every((word) => text.includes(word)) && (category === "all" || product.category_id === category) && (store === "all" || product.store_id === store);
   }).sort((a, b) => sort === "new" ? Date.parse(b.created_at) - Date.parse(a.created_at) : Number(b.featured) - Number(a.featured) || a.sort_order - b.sort_order), [products, query, category, store, sort]);
 
   return <SiteLayout><div className="mx-auto w-full max-w-6xl px-4 py-10">
@@ -47,4 +51,8 @@ function ProductsPage() {
     </div>
     <div className="mt-8">{visible.length ? <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-6 lg:grid-cols-4">{visible.map((product) => <ProductCard key={product.id} product={product} />)}</div> : <EmptyState title="Nenhum achadinho por aqui" description="Tente retirar um filtro ou conversar com a Vivi para buscar outra ideia." />}</div>
   </div></SiteLayout>;
+}
+
+function normalize(value: string) {
+  return value.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase();
 }

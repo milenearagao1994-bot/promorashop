@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { bannerImages, youtubeEmbedUrl, type Banner } from "@/lib/promovip";
 
-export function BannerCarousel({ banner }: { banner: Banner }) {
+export function BannerCarousel({ banner, aspect }: { banner: Banner; aspect?: string }) {
   const images = bannerImages(banner);
   const video = banner.video_url ?? null;
   const embed = youtubeEmbedUrl(video);
@@ -24,7 +24,8 @@ export function BannerCarousel({ banner }: { banner: Banner }) {
 
   return (
     <article
-      className="relative min-h-52 overflow-hidden rounded-xl bg-night-gradient p-6 text-primary-foreground"
+      className={`relative flex overflow-hidden rounded-2xl bg-night-gradient p-5 text-primary-foreground shadow-soft md:p-8 ${aspect ? "" : "min-h-52"}`}
+      style={aspect ? { aspectRatio: aspect } : undefined}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
       onTouchStart={(event) => { touchStart.current = event.touches[0]?.clientX ?? null; }}
@@ -46,8 +47,8 @@ export function BannerCarousel({ banner }: { banner: Banner }) {
         ))
       ) : null}
 
-      <div className="relative max-w-md">
-        <h2 className="font-display text-2xl font-bold">{banner.title}</h2>
+      <div className="relative mt-auto max-w-md">
+        {banner.title ? <h2 className="font-display text-xl font-bold drop-shadow md:text-3xl">{banner.title}</h2> : null}
         {banner.subtitle ? <p className="mt-2 text-sm text-primary-foreground/80">{banner.subtitle}</p> : null}
         {banner.link_url ? (
           <Button asChild variant="vip" className="mt-5">
