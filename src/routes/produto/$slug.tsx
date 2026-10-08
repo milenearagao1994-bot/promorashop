@@ -90,7 +90,7 @@ function Page() {
             <Button asChild variant="ghost" size="sm" className="mt-2 w-full text-muted-foreground">
               <Link
                 to="/caca-ao-desconto"
-                search={{ produto: p.title, link: p.affiliate_url, ...(p.image_url ? { imagem: p.image_url } : {}) }}
+                search={{ produto: p.title, link: p.affiliate_url }}
               >
                 <Search /> 🔎 Procurar desconto
               </Link>

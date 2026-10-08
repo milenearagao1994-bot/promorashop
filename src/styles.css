@@ -40,6 +40,7 @@
   --color-lilac: var(--lilac);
   --color-lavender: var(--lavender);
   --color-rose: var(--rose);
+  --color-shipping: var(--shipping);
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
   --color-border: var(--border);
@@ -86,6 +87,7 @@
   --lilac: oklch(0.7 0.16 293);
   --lavender: oklch(0.91 0.05 298);
   --rose: oklch(0.885 0.075 342);
+  --shipping: oklch(0.46 0.13 150);
 
   --destructive: oklch(0.58 0.22 22);
   --destructive-foreground: oklch(0.99 0.005 305);
@@ -113,6 +115,7 @@
 }
 
 .dark {
+  --shipping: oklch(0.78 0.16 150);
   --background: oklch(0.2 0.062 302);
   --foreground: oklch(0.97 0.012 305);
   --card: oklch(0.26 0.075 302);
