@@ -158,7 +158,7 @@ function DiscountHuntPage() {
       if (i === 4) {
         const h = ascii(headers[0] + "\\nstream\\n");
         chunks.push(head, h, objects[i], ascii("\\nendstream\\n"), ascii("endobj\\n"));
-        total += head.length + h.length + objects[i].length + 14;
+        total += head.length + h.length + objects[i].length + ascii("\nendstream\n").length + ascii("endobj\n").length;
       } else {
         chunks.push(head, objects[i], tail);
         total += head.length + objects[i].length + tail.length;
