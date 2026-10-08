@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
-import { ImagePlus, Link2, MessageCircle, Search, Trash2 } from "lucide-react";
+import { Download, FileText, ImagePlus, Link2, MessageCircle, Search, Trash2 } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { SiteLayout } from "@/components/site/SiteLayout";
@@ -70,6 +70,58 @@ function DiscountHuntPage() {
   const message = lines.join("\n");
   const ready = Boolean(name.trim() || link.trim() || preview);
 
+  async function createPdfBlob() {
+    const escapePdf = (value: string) => value.replace(/\\/g, "\\\\").replace(/\\(/g, "\\\\(").replace(/\\)/g, "\\\\)");
+    const rawLines = [
+      "PROMORASHOP — CAÇA AO DESCONTO",
+      "",
+      "Produto: " + (name.trim() || "Nao informado"),
+      "Link: " + (link.trim() || "Nao informado"),
+      "",
+      "Solicitacao:",
+      config.message_question,
+    ];
+    const lines = rawLines.map((line) => line.normalize("NFD").replace(/[\\u0300-\\u036f]/g, "")).map(escapePdf);
+    const content = ["BT", "/F1 15 Tf", "50 790 Td", ...lines.flatMap((line, i) => [i ? "0 -24 Td" : "", `(${line}) Tj`]), "ET"].filter(Boolean).join("\n");
+    const objects = [
+      "<< /Type /Catalog /Pages 2 0 R >>",
+      "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
+      "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>",
+      "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
+      `<< /Length ${content.length} >>\\nstream\\n${content}\\nendstream`,
+    ];
+    let pdf = "%PDF-1.4\\n";
+    const offsets = [0];
+    for (let i = 0; i < objects.length; i++) { offsets.push(pdf.length); pdf += `${i + 1} 0 obj\\n${objects[i]}\\nendobj\\n`; }
+    const xref = pdf.length;
+    pdf += `xref\\n0 ${objects.length + 1}\\n0000000000 65535 f \\n`;
+    for (let i = 1; i < offsets.length; i++) pdf += `${String(offsets[i]).padStart(10, "0")} 00000 n \\n`;
+    pdf += `trailer\\n<< /Size ${objects.length + 1} /Root 1 0 R >>\\nstartxref\\n${xref}\\n%%EOF`;
+    return new Blob([pdf], { type: "application/pdf" });
+  }
+
+  async function sendPdfToWhatsApp() {
+    if (!ready) return;
+    const blob = await createPdfBlob();
+    const file = new File([blob], "caca-ao-desconto-promorashop.pdf", { type: "application/pdf" });
+    const textMessage = message + "\\n\\n📎 PDF da solicitação: caca-ao-desconto-promorashop.pdf";
+    if (navigator.share && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
+      try {
+        await navigator.share({ title: "Caça ao Desconto — PromoraShop", text: textMessage, files: [file] });
+        return;
+      } catch (error) {
+        if (error instanceof DOMException && error.name === "AbortError") return;
+      }
+    }
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = file.name;
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+    window.open(whatsappLink(config.whatsapp, textMessage), "_blank", "noopener,noreferrer");
+  }
+
   return (
     <SiteLayout>
       <div className="mx-auto max-w-5xl px-4 py-10 md:py-14">
@@ -126,21 +178,25 @@ function DiscountHuntPage() {
             <pre className="whitespace-pre-wrap rounded-xl border border-border bg-card/90 p-4 text-sm leading-6 text-foreground">{message}</pre>
             {localImage ? (
               <p className="rounded-lg bg-card/80 p-3 text-xs leading-5 text-muted-foreground">
-                <Link2 className="mr-1 inline size-3" /> A foto fica aqui na tela: o WhatsApp não permite anexá-la automaticamente pelo link, então
-                anexe-a na conversa depois de abrir o WhatsApp.
+                <Link2 className="mr-1 inline size-3" /> O PDF reúne nome, link e a solicitação. Em celular compatível, o botão acima abre o compartilhamento já com o PDF pronto para selecionar o WhatsApp.
               </p>
             ) : null}
-            <Button asChild size="lg" className="w-full" disabled={!ready}>
-              <a
-                href={ready ? whatsappLink(config.whatsapp, message) : "#"}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-disabled={!ready}
-                onClick={(event) => { if (!ready) event.preventDefault(); }}
-              >
-                <MessageCircle /> 💬 {config.send_label}
-              </a>
+            <Button type="button" size="lg" className="w-full" disabled={!ready} onClick={sendPdfToWhatsApp}>
+              <FileText /> 💬 Enviar PDF pelo WhatsApp
             </Button>
+            {ready ? (
+              <Button type="button" variant="outline" className="w-full" onClick={async () => {
+                const blob = await createPdfBlob();
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement("a");
+                a.href = url;
+                a.download = "caca-ao-desconto-promorashop.pdf";
+                a.click();
+                setTimeout(() => URL.revokeObjectURL(url), 1000);
+              }}>
+                <Download /> Baixar PDF
+              </Button>
+            ) : null}
             {!ready ? <p className="text-center text-xs text-muted-foreground">Adicione uma foto, um link ou o nome do produto para enviar.</p> : null}
           </section>
         </div>
