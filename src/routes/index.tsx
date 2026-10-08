@@ -11,7 +11,7 @@ import { Button } from "@/components/ui/button";
 import { affiliateOpportunitiesQuery, bannersQuery, categoriesQuery, contactConfig, couponsQuery, discountHuntConfig, productsQuery, siteSettingsQuery, type Banner } from "@/lib/promovip";
 
 const description = "Achadinhos, ofertas, promoções e produtos selecionados em um só lugar.";
-const ZAP_MESSAGE = "Olá! Quero entrar na lista VIP gratuita e receber ofertas no WhatsApp todo dia";
+const ZAP_MESSAGE = "Entre na lista VIP Gratuita e receba ofertas diárias no seu celular";
 const ASPECTS = new Set(["15/9", "16/9", "4/3", "1/1", "21/9", "3/1"]);
 
 export const Route = createFileRoute("/")({
@@ -79,7 +79,7 @@ function Index() {
         <a href={whatsappLink(contact.whatsapp, ZAP_MESSAGE)} target="_blank" rel="noopener noreferrer" className="group flex items-center justify-between gap-4 rounded-2xl bg-brand-gradient px-5 py-4 text-primary-foreground shadow-soft transition hover:-translate-y-0.5 md:px-8 md:py-5">
           <span>
             <span className="block font-display text-lg font-bold md:text-xl">Quero receber ofertas no Zap</span>
-            <span className="mt-0.5 block text-xs text-primary-foreground/80 md:text-sm">Peça para entrar na lista VIP gratuita pelo WhatsApp.</span>
+            <span className="mt-0.5 block text-xs text-primary-foreground/80 md:text-sm">Entre na lista VIP Gratuita e receba ofertas diárias no seu celular.</span>
           </span>
           <ArrowRight className="size-5 shrink-0 transition group-hover:translate-x-1" />
         </a>
