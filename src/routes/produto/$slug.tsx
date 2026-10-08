@@ -84,7 +84,7 @@ function Page() {
             </div>
             <Button asChild size="lg" className="mt-6 w-full">
               <a href={p.affiliate_url} rel="sponsored noreferrer" onClick={click}>
-                Quero esse! 💜 <ExternalLink />
+                Comprar com cupom <ExternalLink />
               </a>
             </Button>
             <Button asChild variant="ghost" size="sm" className="mt-2 w-full text-muted-foreground">
