@@ -6,7 +6,7 @@ type DeliveryProduct = Pick<Product, "frete_gratis" | "entrega_super_rapida">;
 export function FreeShippingTag({ product, className = "" }: { product: DeliveryProduct; className?: string }) {
   if (!product.frete_gratis) return null;
   return (
-    <span className={`inline-flex w-fit items-center rounded-sm bg-primary/10 px-1.5 py-0.5 text-[10px] font-bold uppercase leading-none tracking-wide text-primary ${className}`}>
+    <span className={`inline-flex w-fit items-center rounded-sm bg-shipping/10 px-1.5 py-0.5 text-[10px] font-bold uppercase leading-none text-shipping ${className}`}>
       Frete grátis
     </span>
   );

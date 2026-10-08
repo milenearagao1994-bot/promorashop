@@ -11,6 +11,11 @@
 
 # PromoraShop — roadmap
 
+## Ajustes de apresentação de outubro
+- [x] Caça ao Desconto sem foto, somente link e nome/observação, com novo texto.
+- [x] Frete grátis verde, título Destaques ⚡️ e rodapé compacto sem logo, preservando os links.
+- [ ] Verificar formulário e apresentação pública.
+
 - [x] Banco de dados (lojas, categorias, produtos, cupons, perfis, papéis)
 - [x] Login por e-mail ativado
 - [x] Imagens oficiais (logo/brandboard + Vivi) salvas no projeto

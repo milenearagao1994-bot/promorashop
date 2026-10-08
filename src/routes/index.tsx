@@ -8,7 +8,7 @@ import { EmptyState } from "@/components/site/EmptyState";
 import { ProductCard } from "@/components/site/ProductCard";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { Button } from "@/components/ui/button";
-import { affiliateOpportunitiesQuery, bannersQuery, categoriesQuery, contactConfig, couponsQuery, discountHuntConfig, productsQuery, siteSettingsQuery, type Banner } from "@/lib/promovip";
+import { affiliateOpportunitiesQuery, bannersQuery, categoriesQuery, contactConfig, couponsQuery, DISCOUNT_HUNT_DESCRIPTION, discountHuntConfig, productsQuery, siteSettingsQuery, type Banner } from "@/lib/promovip";
 
 const description = "Achadinhos, ofertas, promoções e produtos selecionados em um só lugar.";
 const ZAP_MESSAGE = "Olá! Quero entrar na lista VIP gratuita e receber ofertas no WhatsApp todo dia";
@@ -63,7 +63,7 @@ function Index() {
 
       <section className="mx-auto max-w-6xl px-4 pt-6 md:pt-10">
         <div className="flex items-end justify-between gap-4">
-          <h2 className="font-display text-2xl font-bold md:text-3xl">Promoções em Destaque</h2>
+          <h2 className="font-display text-2xl font-bold md:text-3xl">Destaques ⚡️</h2>
           <Button asChild variant="ghost" size="sm"><Link to="/produtos">Ver todas <ArrowRight /></Link></Button>
         </div>
         <div className="mt-4">
@@ -99,7 +99,7 @@ function Index() {
           <div>
             <div className="inline-flex items-center gap-2 rounded-full border border-primary/15 bg-card px-3 py-1.5 text-xs font-semibold text-primary"><Search className="size-3.5" />🔎 {hunt.name.toUpperCase()}</div>
             <h2 className="mt-4 font-display text-2xl font-bold md:text-3xl">{hunt.title}</h2>
-            <p className="mt-3 max-w-xl text-muted-foreground">{hunt.description}</p>
+            <p className="mt-3 max-w-xl text-muted-foreground">{DISCOUNT_HUNT_DESCRIPTION}</p>
           </div>
           <Button asChild size="lg" className="w-full md:w-auto"><Link to="/caca-ao-desconto" search={{}}>{hunt.cta}</Link></Button>
         </div>

@@ -95,10 +95,12 @@ export const CONTACT_DEFAULTS = {
   facebook: "https://www.facebook.com/PromoraShop.ofc?mibextid=wwXIfr",
 };
 
+export const DISCOUNT_HUNT_DESCRIPTION = "Entre em contato para uma caça ao desconto do seu produto";
+
 export const DISCOUNT_HUNT_DEFAULTS = {
   name: "Caça ao Desconto",
   title: "Encontrou um produto?",
-  description: "Mande uma foto ou o link e pergunte se existe uma oferta, desconto ou cupom para ele.",
+  description: DISCOUNT_HUNT_DESCRIPTION,
   cta: "Procurar desconto",
   send_label: "Enviar pelo WhatsApp",
   whatsapp: CONTACT_DEFAULTS.whatsapp,

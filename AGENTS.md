@@ -10,3 +10,4 @@
 <!-- LOVABLE:END -->
 
 - Reutilize `DeliveryBadges` nas apresentações públicas de produto; as duas opções de entrega vêm dos campos booleanos independentes em `products`, evitando afirmações não cadastradas.
+- Share discount-hunt supporting copy through a browser-safe constant across public views, so saved legacy photo instructions cannot reappear.
