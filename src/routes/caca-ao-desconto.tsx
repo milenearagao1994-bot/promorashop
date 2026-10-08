@@ -71,33 +71,105 @@ function DiscountHuntPage() {
   const ready = Boolean(name.trim() || link.trim() || preview);
 
   async function createPdfBlob() {
-    const escapePdf = (value: string) => value.replace(/\\/g, "\\\\").replace(/\\(/g, "\\\\(").replace(/\\)/g, "\\\\)");
-    const rawLines = [
-      "PROMORASHOP — CAÇA AO DESCONTO",
-      "",
-      "Produto: " + (name.trim() || "Nao informado"),
-      "Link: " + (link.trim() || "Nao informado"),
-      "",
-      "Solicitacao:",
-      config.message_question,
+    const canvas = document.createElement("canvas");
+    canvas.width = 1240;
+    canvas.height = 1754;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) throw new Error("Não foi possível criar o PDF.");
+    ctx.fillStyle = "#ffffff";
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.fillStyle = "#171717";
+    ctx.font = "bold 42px Arial";
+    ctx.fillText("PROMORASHOP — CAÇA AO DESCONTO", 70, 90);
+    ctx.font = "28px Arial";
+    ctx.fillText("Produto:", 70, 155);
+    ctx.font = "bold 28px Arial";
+    ctx.fillText(name.trim() || "Não informado", 210, 155);
+    ctx.font = "28px Arial";
+    ctx.fillText("Link:", 70, 205);
+    ctx.font = "22px Arial";
+    const linkText = link.trim() || "Não informado";
+    ctx.fillText(linkText.slice(0, 75), 150, 205);
+
+    let y = 270;
+    if (preview) {
+      try {
+        const img = new Image();
+        img.crossOrigin = "anonymous";
+        await new Promise<void>((resolve, reject) => {
+          img.onload = () => resolve();
+          img.onerror = () => reject(new Error("Não foi possível carregar a foto."));
+          img.src = preview;
+        });
+        const maxW = 1100;
+        const maxH = 850;
+        const scale = Math.min(maxW / img.naturalWidth, maxH / img.naturalHeight, 1);
+        const w = img.naturalWidth * scale;
+        const h = img.naturalHeight * scale;
+        ctx.drawImage(img, (canvas.width - w) / 2, y, w, h);
+        y += h + 50;
+      } catch {
+        // Mantém o PDF funcional mesmo se a imagem não puder ser incorporada pelo navegador.
+      }
+    }
+
+    ctx.font = "bold 30px Arial";
+    ctx.fillText("Solicitação:", 70, Math.min(y, 1450));
+    ctx.font = "26px Arial";
+    const question = config.message_question;
+    const words = question.split(" ");
+    let line = "";
+    let lineY = Math.min(y + 48, 1500);
+    for (const word of words) {
+      const next = line ? line + " " + word : word;
+      if (ctx.measureText(next).width > 1080) {
+        ctx.fillText(line, 70, lineY);
+        line = word;
+        lineY += 38;
+      } else line = next;
+    }
+    if (line) ctx.fillText(line, 70, lineY);
+
+    const jpegBlob = await new Promise<Blob>((resolve, reject) => {
+      canvas.toBlob((blob) => blob ? resolve(blob) : reject(new Error("Não foi possível gerar o PDF.")), "image/jpeg", 0.9);
+    });
+    const jpeg = new Uint8Array(await jpegBlob.arrayBuffer());
+    const encoder = new TextEncoder();
+    const ascii = (s: string) => encoder.encode(s);
+    const objects: Uint8Array[] = [];
+    objects.push(ascii("<< /Type /Catalog /Pages 2 0 R >>"));
+    objects.push(ascii("<< /Type /Pages /Kids [3 0 R] /Count 1 >>"));
+    objects.push(ascii("<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /XObject << /Im1 5 0 R >> >> /Contents 4 0 R >>"));
+    const content = ascii("q 595 0 0 842 0 0 cm /Im1 Do Q");
+    objects.push(ascii(`<< /Length ${content.length} >>\\nstream\\n` + new TextDecoder().decode(content) + "\\nendstream"));
+    objects.push(jpeg);
+
+    const headers = [
+      "<< /Type /XObject /Subtype /Image /Width 1240 /Height 1754 /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length " + jpeg.length + " >>",
     ];
-    const lines = rawLines.map((line) => line.normalize("NFD").replace(/[\\u0300-\\u036f]/g, "")).map(escapePdf);
-    const content = ["BT", "/F1 15 Tf", "50 790 Td", ...lines.flatMap((line, i) => [i ? "0 -24 Td" : "", `(${line}) Tj`]), "ET"].filter(Boolean).join("\n");
-    const objects = [
-      "<< /Type /Catalog /Pages 2 0 R >>",
-      "<< /Type /Pages /Kids [3 0 R] /Count 1 >>",
-      "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>",
-      "<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>",
-      `<< /Length ${content.length} >>\\nstream\\n${content}\\nendstream`,
-    ];
-    let pdf = "%PDF-1.4\\n";
-    const offsets = [0];
-    for (let i = 0; i < objects.length; i++) { offsets.push(pdf.length); pdf += `${i + 1} 0 obj\\n${objects[i]}\\nendobj\\n`; }
-    const xref = pdf.length;
-    pdf += `xref\\n0 ${objects.length + 1}\\n0000000000 65535 f \\n`;
-    for (let i = 1; i < offsets.length; i++) pdf += `${String(offsets[i]).padStart(10, "0")} 00000 n \\n`;
-    pdf += `trailer\\n<< /Size ${objects.length + 1} /Root 1 0 R >>\\nstartxref\\n${xref}\\n%%EOF`;
-    return new Blob([pdf], { type: "application/pdf" });
+    let total = 0;
+    const chunks: Uint8Array[] = [ascii("%PDF-1.4\\n")];
+    const offsets: number[] = [0];
+    total = chunks[0].length;
+    for (let i = 0; i < objects.length; i++) {
+      offsets.push(total);
+      const head = ascii(`${i + 1} 0 obj\\n`);
+      const tail = ascii("\\nendobj\\n");
+      if (i === 4) {
+        const h = ascii(headers[0] + "\\nstream\\n");
+        chunks.push(head, h, objects[i], ascii("\\nendstream\\n"), ascii("endobj\\n"));
+        total += head.length + h.length + objects[i].length + 14;
+      } else {
+        chunks.push(head, objects[i], tail);
+        total += head.length + objects[i].length + tail.length;
+      }
+    }
+    const xrefOffset = total;
+    let xref = `xref\\n0 ${objects.length + 1}\\n0000000000 65535 f \\n`;
+    for (let i = 1; i < offsets.length; i++) xref += `${String(offsets[i]).padStart(10, "0")} 00000 n \\n`;
+    xref += `trailer\\n<< /Size ${objects.length + 1} /Root 1 0 R >>\\nstartxref\\n${xrefOffset}\\n%%EOF`;
+    chunks.push(ascii(xref));
+    return new Blob(chunks as BlobPart[], { type: "application/pdf" });
   }
 
   async function sendPdfToWhatsApp() {
