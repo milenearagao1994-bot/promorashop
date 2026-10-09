@@ -46,7 +46,7 @@ function PromoraVideos() {
     const root = feed.current;
     if (!root) return;
     const obs = new IntersectionObserver(
-      (entries) => entries.forEach((e) => { if (e.isIntersecting) setActive(Number((e.target as HTMLElement).dataset.index)); }),
+      (entries) => entries.forEach((e) => { if (e.isIntersecting) setActive(Number((e.target as HTMLElement).dataset["index"])); }),
       { root, threshold: 0.6 },
     );
     Array.from(root.children).forEach((c) => obs.observe(c));
