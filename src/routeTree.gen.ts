@@ -16,6 +16,7 @@ import { Route as CacaAoDescontoRouteImport } from './routes/caca-ao-desconto'
 import { Route as CuponsRouteImport } from './routes/cupons'
 import { Route as PrivacidadeRouteImport } from './routes/privacidade'
 import { Route as ProdutosRouteImport } from './routes/produtos'
+import { Route as PromoravideosRouteImport } from './routes/promoravideos'
 import { Route as SobreRouteImport } from './routes/sobre'
 import { Route as TermosRouteImport } from './routes/termos'
 import { Route as ViviRouteImport } from './routes/vivi'
@@ -57,6 +58,11 @@ const PrivacidadeRoute = PrivacidadeRouteImport.update({
 const ProdutosRoute = ProdutosRouteImport.update({
   id: '/produtos',
   path: '/produtos',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const PromoravideosRoute = PromoravideosRouteImport.update({
+  id: '/promoravideos',
+  path: '/promoravideos',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SobreRoute = SobreRouteImport.update({
@@ -107,6 +113,7 @@ export interface FileRoutesByFullPath {
   '/cupons': typeof CuponsRoute
   '/privacidade': typeof PrivacidadeRoute
   '/produtos': typeof ProdutosRoute
+  '/promoravideos': typeof PromoravideosRoute
   '/sobre': typeof SobreRoute
   '/termos': typeof TermosRoute
   '/vivi': typeof ViviRoute
@@ -123,6 +130,7 @@ export interface FileRoutesByTo {
   '/cupons': typeof CuponsRoute
   '/privacidade': typeof PrivacidadeRoute
   '/produtos': typeof ProdutosRoute
+  '/promoravideos': typeof PromoravideosRoute
   '/sobre': typeof SobreRoute
   '/termos': typeof TermosRoute
   '/vivi': typeof ViviRoute
@@ -141,6 +149,7 @@ export interface FileRoutesById {
   '/cupons': typeof CuponsRoute
   '/privacidade': typeof PrivacidadeRoute
   '/produtos': typeof ProdutosRoute
+  '/promoravideos': typeof PromoravideosRoute
   '/sobre': typeof SobreRoute
   '/termos': typeof TermosRoute
   '/vivi': typeof ViviRoute
@@ -159,6 +168,7 @@ export interface FileRouteTypes {
     | '/cupons'
     | '/privacidade'
     | '/produtos'
+    | '/promoravideos'
     | '/sobre'
     | '/termos'
     | '/vivi'
@@ -175,6 +185,7 @@ export interface FileRouteTypes {
     | '/cupons'
     | '/privacidade'
     | '/produtos'
+    | '/promoravideos'
     | '/sobre'
     | '/termos'
     | '/vivi'
@@ -192,6 +203,7 @@ export interface FileRouteTypes {
     | '/cupons'
     | '/privacidade'
     | '/produtos'
+    | '/promoravideos'
     | '/sobre'
     | '/termos'
     | '/vivi'
@@ -210,6 +222,7 @@ export interface RootRouteChildren {
   CuponsRoute: typeof CuponsRoute
   PrivacidadeRoute: typeof PrivacidadeRoute
   ProdutosRoute: typeof ProdutosRoute
+  PromoravideosRoute: typeof PromoravideosRoute
   SobreRoute: typeof SobreRoute
   TermosRoute: typeof TermosRoute
   ViviRoute: typeof ViviRoute
@@ -268,6 +281,13 @@ declare module '@tanstack/react-router' {
       path: '/produtos'
       fullPath: '/produtos'
       preLoaderRoute: typeof ProdutosRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/promoravideos': {
+      id: '/promoravideos'
+      path: '/promoravideos'
+      fullPath: '/promoravideos'
+      preLoaderRoute: typeof PromoravideosRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sobre': {
@@ -348,6 +368,7 @@ const rootRouteChildren: RootRouteChildren = {
   CuponsRoute: CuponsRoute,
   PrivacidadeRoute: PrivacidadeRoute,
   ProdutosRoute: ProdutosRoute,
+  PromoravideosRoute: PromoravideosRoute,
   SobreRoute: SobreRoute,
   TermosRoute: TermosRoute,
   ViviRoute: ViviRoute,
