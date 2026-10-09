@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Menu, MessageCircleHeart, Search, TicketPercent } from "lucide-react";
+import { Menu, MessageCircleHeart, Search, TicketPercent, Video } from "lucide-react";
 import { useState, type FormEvent } from "react";
 
 import { Logo } from "@/components/site/Logo";
@@ -47,8 +47,8 @@ export function SiteHeader() {
           </SheetContent>
         </Sheet>
 
-        <div className="order-last flex w-full items-center gap-2 md:order-none md:ml-4 md:flex-1">
-          <form onSubmit={submit} role="search" className="flex h-11 flex-1 items-center rounded-full border-2 border-primary/40 bg-card pl-4 pr-1 shadow-soft transition focus-within:border-primary">
+        <div className="order-last flex w-full flex-wrap items-center justify-end gap-2 md:order-none md:ml-4 md:min-w-0 md:flex-1">
+          <form onSubmit={submit} role="search" className="flex h-11 min-w-52 flex-1 items-center rounded-full border-2 border-primary/40 bg-card pl-4 pr-1 shadow-soft transition focus-within:border-primary">
             <input
               value={term}
               onChange={(event) => setTerm(event.target.value)}
@@ -57,22 +57,34 @@ export function SiteHeader() {
               maxLength={120}
               className="min-w-0 flex-1 bg-transparent text-sm outline-none placeholder:text-muted-foreground"
             />
-            <button type="submit" aria-label="Pesquisar" className="flex h-8 w-11 items-center justify-center rounded-full bg-primary text-primary-foreground transition hover:opacity-90">
+            <Button type="submit" aria-label="Pesquisar" size="icon" className="h-8 w-11 shrink-0 rounded-full">
               <Search className="size-4" />
-            </button>
+            </Button>
           </form>
-          <Link to="/cupons" aria-label="Cupons" className="flex size-11 shrink-0 flex-col items-center justify-center rounded-2xl text-primary transition hover:bg-secondary">
+          <div className="flex shrink-0 items-center gap-1" aria-label="Atalhos">
+          <Button asChild variant="ghost" className="h-11 w-20 flex-col gap-1 px-0 text-primary">
+            <Link to="/promoravideos" aria-label="PromoraVídeos">
+              <Video className="size-5" />
+              <span className="text-[10px] font-semibold leading-none">PromoraVídeos</span>
+            </Link>
+          </Button>
+          <Button asChild variant="ghost" className="size-11 flex-col gap-1 px-0 text-primary">
+          <Link to="/cupons" aria-label="Cupons">
             <TicketPercent className="size-5" />
             <span className="text-[10px] font-semibold leading-none">Cupons</span>
           </Link>
-          <Link to="/vivi" aria-label="Conversar com a Vivi" className="flex size-11 shrink-0 flex-col items-center justify-center rounded-2xl text-primary transition hover:bg-secondary">
+          </Button>
+          <Button asChild variant="ghost" className="size-11 flex-col gap-1 px-0 text-primary">
+          <Link to="/vivi" aria-label="Conversar com a Vivi">
             <MessageCircleHeart className="size-5" />
             <span className="text-[10px] font-semibold leading-none">Vivi</span>
           </Link>
+          </Button>
+          </div>
         </div>
 
         <nav className="hidden items-center gap-1 lg:flex">
-          {links.slice(0, 1).concat(links.slice(2, 3), links.slice(4)).map((link) => (
+          {links.slice(0, 1).concat(links.slice(4)).map((link) => (
             <Link key={link.to} to={link.to} className="rounded-full px-3 py-2 text-sm font-medium text-muted-foreground transition hover:bg-secondary hover:text-secondary-foreground" activeProps={{ className: "bg-secondary text-secondary-foreground" }}>
               {link.label}
             </Link>

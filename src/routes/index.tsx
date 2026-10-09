@@ -1,6 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, ChevronLeft, ChevronRight, MessageCircleHeart, Search, ShoppingBag, Sparkles, Tag } from "lucide-react";
+import { ArrowRight, ChevronLeft, ChevronRight, MessageCircleHeart, Search, Sparkles, Tag } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { CouponCard } from "@/components/site/CouponCard";
@@ -141,10 +141,6 @@ function Index() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-3xl px-4 py-12 text-center">
-        <ShoppingBag className="mx-auto size-5 text-primary/70" />
-        <p className="mt-3 text-sm leading-6 text-muted-foreground">Achadinhos selecionados com carinho, informações claras e uma assistente pronta para ajudar você a encontrar o que combina com sua vida!</p>
-      </section>
     </SiteLayout>
   );
 }
