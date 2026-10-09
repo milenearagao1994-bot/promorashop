@@ -9,6 +9,7 @@ import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 const links = [
   { to: "/produtos", label: "Achadinhos" },
   { to: "/cupons", label: "Cupons" },
+  { to: "/promoravideos", label: "PromoraVídeos" },
   { to: "/vivi", label: "Vivi" },
   { to: "/sobre", label: "Sobre" },
 ] as const;
@@ -71,7 +72,7 @@ export function SiteHeader() {
         </div>
 
         <nav className="hidden items-center gap-1 lg:flex">
-          {links.slice(0, 1).concat(links.slice(3)).map((link) => (
+          {links.slice(0, 1).concat(links.slice(2, 3), links.slice(4)).map((link) => (
             <Link key={link.to} to={link.to} className="rounded-full px-3 py-2 text-sm font-medium text-muted-foreground transition hover:bg-secondary hover:text-secondary-foreground" activeProps={{ className: "bg-secondary text-secondary-foreground" }}>
               {link.label}
             </Link>
