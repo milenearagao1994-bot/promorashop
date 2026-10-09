@@ -12,6 +12,8 @@
 # PromoraShop — roadmap
 
 ## Ajustes de apresentação de outubro
+- [x] Organizar atalhos do cabeçalho: PromoraVídeos, Cupons, Vivi, preservando a busca.
+- [x] Remover texto final da home sem espaço reservado e verificar navegação e telas estreitas.
 - [x] Caça ao Desconto sem foto, somente link e nome/observação, com novo texto.
 - [x] Frete grátis verde, título Destaques ⚡️ e rodapé compacto sem logo, preservando os links.
 - [x] Verificar formulário e apresentação pública.
