@@ -1,6 +1,6 @@
 import { useSuspenseQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { ArrowRight, ChevronLeft, ChevronRight, MessageCircleHeart, Search, Sparkles, Tag } from "lucide-react";
+import { ArrowRight, BadgePercent, ChevronLeft, ChevronRight, Flame, Gift, MessageCircleHeart, Play, Search, Sparkles, Store, Tag, TicketPercent, Truck, Zap } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 import { CouponCard } from "@/components/site/CouponCard";
@@ -51,6 +51,7 @@ function Index() {
   const aspect = ASPECTS.has(landing["banner_aspect"] ?? "") ? landing["banner_aspect"]! : "15/9";
   const featured = products.filter((p) => p.featured);
   const offers = (featured.length ? featured : products).slice(0, 12);
+  const videoProducts = products.filter((p) => p.video_url?.trim()).slice(0, 10);
   const hunt = discountHuntConfig(settings);
   const contact = contactConfig(settings);
   const commission = opportunities.find((o) => o.commission_highlight && o.commission_info?.trim())?.commission_info?.trim();
@@ -61,14 +62,51 @@ function Index() {
         <section className="mx-auto max-w-6xl px-4 pt-4 md:pt-6"><HomeBanners banners={banners} aspect={aspect} /></section>
       ) : null}
 
-      <section className="mx-auto max-w-6xl px-4 pt-6 md:pt-10">
+      <section className="mx-auto max-w-6xl px-4 pt-4">
+        <ul className="grid grid-cols-2 gap-y-2 rounded-2xl border border-primary/10 bg-card px-2 py-3 shadow-soft sm:grid-cols-4 sm:divide-x sm:divide-primary/10">
+          {[
+            { Icon: Truck, label: "Frete grátis", hint: "em produtos selecionados" },
+            { Icon: Zap, label: "Entrega rápida", hint: "em produtos selecionados" },
+            { Icon: Store, label: "Lojas parceiras", hint: "Shopee, ML e Amazon" },
+            { Icon: BadgePercent, label: "Ofertas selecionadas", hint: "curadoria diária" },
+          ].map(({ Icon, label, hint }) => (
+            <li key={label} className="flex min-w-0 items-center gap-2 px-2">
+              <Icon className="size-5 shrink-0 text-primary" aria-hidden="true" />
+              <span className="min-w-0"><span className="block text-xs font-semibold leading-tight">{label}</span><span className="block text-[10px] leading-tight text-muted-foreground">{hint}</span></span>
+            </li>
+          ))}
+        </ul>
+      </section>
+
+      {videoProducts.length ? (
+        <section className="mx-auto max-w-6xl px-4 pt-8">
+          <div className="flex items-end justify-between gap-4">
+            <h2 className="flex items-center gap-2 font-display text-xl font-bold md:text-3xl"><span className="flex size-7 items-center justify-center rounded-full bg-primary text-primary-foreground"><Play className="size-3.5 fill-current" /></span>PromoraVídeos</h2>
+            <Button asChild variant="ghost" size="sm"><Link to="/promoravideos">Ver todos <ArrowRight /></Link></Button>
+          </div>
+          <div className="-mx-4 mt-3 flex snap-x gap-3 overflow-x-auto px-4 pb-2">
+            {videoProducts.map((p) => (
+              <Link key={p.id} to="/produto/$slug" params={{ slug: p.slug }} className="group relative w-32 shrink-0 snap-start overflow-hidden rounded-xl border border-border bg-muted md:w-40">
+                <div className="aspect-[9/14]">
+                  {p.image_url ? <img src={p.image_url} alt={p.title} loading="lazy" className="size-full object-cover" /> : null}
+                </div>
+                <span className="absolute left-2 top-2 rounded-full bg-card/90 px-2 py-0.5 text-[10px] font-semibold text-primary">Com vídeo</span>
+                <span className="absolute inset-0 m-auto flex size-10 items-center justify-center rounded-full bg-card/85 text-primary shadow-soft"><Play className="size-4 fill-current" /></span>
+                <span className="absolute inset-x-0 bottom-0 line-clamp-2 bg-gradient-to-t from-foreground/80 to-transparent p-2 pt-6 text-[11px] font-semibold text-background">{p.title}</span>
+              </Link>
+            ))}
+          </div>
+        </section>
+      ) : null}
+
+      <section className="mx-auto max-w-6xl px-4 pt-8 md:pt-10">
         <div className="flex items-end justify-between gap-4">
-          <h2 className="font-display text-2xl font-bold md:text-3xl">Destaques ⚡️</h2>
+          <h2 className="flex items-center gap-2 font-display text-xl font-bold md:text-3xl"><Flame className="size-5 text-primary" />Promoções em Destaques</h2>
           <Button asChild variant="ghost" size="sm"><Link to="/produtos">Ver todas <ArrowRight /></Link></Button>
         </div>
         <div className="mt-4">
           {offers.length ? (
-            <div className="grid grid-cols-2 gap-2.5 sm:grid-cols-3 md:gap-5 lg:grid-cols-4 xl:grid-cols-5">{offers.map((p) => <ProductCard key={p.id} product={p} />)}</div>
+            <div className="grid grid-cols-1 gap-2.5 min-[340px]:grid-cols-2 sm:grid-cols-3 md:gap-5 lg:grid-cols-4 xl:grid-cols-5">{offers.map((p) => <ProductCard key={p.id} product={p} />)}</div>
           ) : (
             <EmptyState title="A curadoria está chegando" description="Nenhum produto foi cadastrado ainda." />
           )}
@@ -85,12 +123,30 @@ function Index() {
         </a>
       </section>
 
-      <section className="mx-auto max-w-6xl px-4 pt-12">
-        <h2 className="font-display text-2xl font-bold md:text-3xl">🛍️ Explorar por categorias</h2>
-        <div className="mt-4 flex gap-3 overflow-x-auto pb-3">
+      <section className="mx-auto max-w-6xl px-4 pt-10">
+        <h2 className="font-display text-xl font-bold md:text-3xl">Explorar por categorias</h2>
+        <div className="-mx-4 mt-4 flex gap-4 overflow-x-auto px-4 pb-3">
           {categories.length ? categories.map((c) => (
-            <Link key={c.id} to="/produtos" search={{ q: c.name }} className="flex min-w-36 items-center gap-3 rounded-xl border border-border bg-card p-4 text-sm font-semibold transition hover:border-primary hover:text-primary"><Tag className="size-4" />{c.name}</Link>
+            <Link key={c.id} to="/produtos" search={{ q: c.name }} className="flex w-16 shrink-0 flex-col items-center gap-1.5 text-center text-[11px] font-semibold text-foreground transition hover:text-primary">
+              <span className="flex size-14 items-center justify-center rounded-full border border-primary/15 bg-secondary text-primary"><Tag className="size-5" /></span>
+              <span className="line-clamp-2 leading-tight">{c.name}</span>
+            </Link>
           )) : <p className="text-sm text-muted-foreground">As categorias aparecerão aqui quando estiverem ativas.</p>}
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-6xl px-4 pt-6">
+        <div className="grid grid-cols-4 gap-2">
+          {[
+            { to: "/caca-ao-desconto" as const, label: "Caça ao Desconto", Icon: Search },
+            { to: "/cupons", label: "Cupons", Icon: TicketPercent },
+            { to: "/afiliados", label: "Comissão extra", Icon: Gift },
+            { to: "/vivi", label: "Conversar com a Vivi", Icon: MessageCircleHeart },
+          ].map(({ to, label, Icon }) => (
+            <Link key={label} to={to} search={{} as never} className="flex flex-col items-center gap-1.5 rounded-xl border border-primary/10 bg-card px-1 py-3 text-center text-[10px] font-semibold leading-tight text-foreground shadow-soft transition hover:border-primary hover:text-primary sm:text-xs">
+              <Icon className="size-5 text-primary" aria-hidden="true" />{label}
+            </Link>
+          ))}
         </div>
       </section>
 

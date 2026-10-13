@@ -25,18 +25,16 @@ export function ProductCard({ product }: { product: Product }) {
         )}
         {product.featured ? <Badge className="absolute left-3 top-3">Destaque</Badge> : null}
       </div>
-      <div className="space-y-3 p-4">
+      <div className="space-y-2.5 p-3 md:space-y-3 md:p-4">
         <div>
           <StoreDeliveryLine product={product} storeName={product.stores?.name ?? "Loja parceira"} className="text-xs font-medium text-muted-foreground" />
           <FreeShippingTag product={product} className="mt-1.5" />
           <h3 className="mt-1 line-clamp-2 font-display text-base font-semibold text-foreground">{product.title}</h3>
         </div>
-        <div className="flex min-h-10 items-end justify-between gap-3">
-          <PriceBlock product={product} />
-          <Button asChild size="icon-sm" aria-label={`Ver ${product.title}`}>
-            <Link to="/produto/$slug" params={{ slug: product.slug }}><ArrowUpRight aria-hidden="true" /></Link>
-          </Button>
-        </div>
+        <PriceBlock product={product} />
+        <Button asChild size="sm" className="w-full rounded-full" aria-label={`Quero esse: ${product.title}`}>
+          <Link to="/produto/$slug" params={{ slug: product.slug }}>Quero esse <ArrowUpRight aria-hidden="true" /></Link>
+        </Button>
       </div>
     </article>
   );
