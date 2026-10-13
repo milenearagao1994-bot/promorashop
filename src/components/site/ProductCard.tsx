@@ -31,12 +31,10 @@ export function ProductCard({ product }: { product: Product }) {
           <FreeShippingTag product={product} className="mt-1.5" />
           <h3 className="mt-1 line-clamp-2 font-display text-base font-semibold text-foreground">{product.title}</h3>
         </div>
-        <div className="flex min-h-10 items-end justify-between gap-3">
-          <PriceBlock product={product} />
-          <Button asChild size="icon-sm" aria-label={`Ver ${product.title}`}>
-            <Link to="/produto/$slug" params={{ slug: product.slug }}><ArrowUpRight aria-hidden="true" /></Link>
-          </Button>
-        </div>
+        <PriceBlock product={product} />
+        <Button asChild size="sm" className="w-full rounded-full" aria-label={`Quero esse: ${product.title}`}>
+          <Link to="/produto/$slug" params={{ slug: product.slug }}>Quero esse <ArrowUpRight aria-hidden="true" /></Link>
+        </Button>
       </div>
     </article>
   );

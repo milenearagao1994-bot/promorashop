@@ -138,12 +138,12 @@ function Index() {
       <section className="mx-auto max-w-6xl px-4 pt-6">
         <div className="grid grid-cols-4 gap-2">
           {[
-            { to: "/caca-ao-desconto", label: "Caça ao Desconto", Icon: Search },
+            { to: "/caca-ao-desconto" as const, label: "Caça ao Desconto", Icon: Search },
             { to: "/cupons", label: "Cupons", Icon: TicketPercent },
             { to: "/afiliados", label: "Comissão extra", Icon: Gift },
             { to: "/vivi", label: "Conversar com a Vivi", Icon: MessageCircleHeart },
           ].map(({ to, label, Icon }) => (
-            <Link key={label} to={to} className="flex flex-col items-center gap-1.5 rounded-xl border border-primary/10 bg-card px-1 py-3 text-center text-[10px] font-semibold leading-tight text-foreground shadow-soft transition hover:border-primary hover:text-primary sm:text-xs">
+            <Link key={label} to={to} search={{} as never} className="flex flex-col items-center gap-1.5 rounded-xl border border-primary/10 bg-card px-1 py-3 text-center text-[10px] font-semibold leading-tight text-foreground shadow-soft transition hover:border-primary hover:text-primary sm:text-xs">
               <Icon className="size-5 text-primary" aria-hidden="true" />{label}
             </Link>
           ))}
