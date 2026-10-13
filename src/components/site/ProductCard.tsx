@@ -25,7 +25,7 @@ export function ProductCard({ product }: { product: Product }) {
         )}
         {product.featured ? <Badge className="absolute left-3 top-3">Destaque</Badge> : null}
       </div>
-      <div className="space-y-3 p-4">
+      <div className="space-y-2.5 p-3 md:space-y-3 md:p-4">
         <div>
           <StoreDeliveryLine product={product} storeName={product.stores?.name ?? "Loja parceira"} className="text-xs font-medium text-muted-foreground" />
           <FreeShippingTag product={product} className="mt-1.5" />

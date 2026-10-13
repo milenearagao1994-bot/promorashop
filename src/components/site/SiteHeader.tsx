@@ -67,11 +67,11 @@ export function SiteHeader() {
               { to: "/cupons", label: "Cupons", hint: "Descontos ativos", Icon: TicketPercent },
               { to: "/vivi", label: "Vivi", hint: "Sua assistente", Icon: MessageCircleHeart },
             ] as const).map(({ to, label, hint, Icon }) => (
-              <Link key={to} to={to} aria-label={label} className="flex min-w-0 items-center gap-2 rounded-xl border border-primary/15 bg-card px-2 py-2 text-primary shadow-soft transition hover:border-primary md:h-11 md:flex-col md:justify-center md:gap-1 md:border-0 md:bg-transparent md:px-2 md:py-0 md:shadow-none">
+              <Link key={to} to={to} aria-label={label} className="flex min-w-0 flex-col items-center gap-1 rounded-xl border border-primary/15 bg-card px-1 py-2 text-center text-primary shadow-soft transition hover:border-primary md:h-11 md:flex-col md:justify-center md:gap-1 md:border-0 md:bg-transparent md:px-2 md:py-0 md:shadow-none">
                 <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 md:size-auto md:bg-transparent"><Icon className="size-4 md:size-5" /></span>
                 <span className="min-w-0">
                   <span className="block truncate text-[11px] font-bold leading-tight md:text-[10px] md:font-semibold md:leading-none">{label}</span>
-                  <span className="block truncate text-[9px] leading-tight text-muted-foreground md:hidden">{hint}</span>
+                  <span className="hidden">{hint}</span>
                 </span>
               </Link>
             ))}
