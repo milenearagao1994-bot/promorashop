@@ -167,6 +167,19 @@
   }
 }
 
+/* Pastel fills and icons retain the supplied orange; small text uses its
+ * accessible ink companion on light surfaces, including existing views. */
+.text-primary {
+  color: var(--primary-ink);
+}
+svg.text-primary,
+.text-primary > svg {
+  color: var(--primary);
+}
+.hover\:text-primary:hover {
+  color: var(--primary-ink);
+}
+
 @utility bg-brand-gradient {
   background-image: var(--gradient-brand);
 }
