@@ -185,12 +185,12 @@ function Index() {
       </section>
 
       <section className="mx-auto max-w-6xl px-4 pt-12">
-        <div className="flex flex-col gap-5 overflow-hidden rounded-2xl bg-night-gradient px-6 py-8 text-primary-foreground md:flex-row md:items-center md:justify-between md:px-10">
+        <div className="flex flex-col gap-5 overflow-hidden rounded-2xl bg-night-gradient px-6 py-8 text-highlight-foreground md:flex-row md:items-center md:justify-between md:px-10">
           <div className="flex items-start gap-4">
-            <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-primary-foreground/10"><MessageCircleHeart className="size-6 text-lilac" /></span>
+            <span className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-highlight-foreground/10"><MessageCircleHeart className="size-6 text-lilac" /></span>
             <div>
               <h2 className="font-display text-xl font-bold md:text-2xl">✨ Conversar com a Vivi</h2>
-              <p className="mt-1 max-w-xl text-sm text-primary-foreground/75">{landing["vivi_description"] || "A Vivi é sua assistente que vai te ajudar a encontrar o que você precisa, por um preço que vale a pena."}</p>
+              <p className="mt-1 max-w-xl text-sm text-highlight-foreground/75">{landing["vivi_description"] || "A Vivi é sua assistente que vai te ajudar a encontrar o que você precisa, por um preço que vale a pena."}</p>
             </div>
           </div>
           <Button asChild variant="vip" size="lg"><Link to="/vivi"><Sparkles />Abrir chat</Link></Button>

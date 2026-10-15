@@ -24,7 +24,7 @@ export function BannerCarousel({ banner, aspect }: { banner: Banner; aspect?: st
 
   return (
     <article
-      className={`relative flex overflow-hidden rounded-2xl bg-night-gradient p-5 text-primary-foreground shadow-soft md:p-8 ${aspect ? "" : "min-h-52"}`}
+      className={`relative flex overflow-hidden rounded-2xl bg-night-gradient p-5 text-highlight-foreground shadow-soft md:p-8 ${aspect ? "" : "min-h-52"}`}
       style={aspect ? { aspectRatio: aspect } : undefined}
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
@@ -50,7 +50,7 @@ export function BannerCarousel({ banner, aspect }: { banner: Banner; aspect?: st
 
       <div className="relative mt-auto max-w-md">
         {banner.title ? <h2 className="font-display text-xl font-bold drop-shadow md:text-3xl">{banner.title}</h2> : null}
-        {banner.subtitle ? <p className="mt-2 text-sm text-primary-foreground/80">{banner.subtitle}</p> : null}
+        {banner.subtitle ? <p className="mt-2 text-sm text-highlight-foreground/80">{banner.subtitle}</p> : null}
         {banner.link_url ? (
           <Button asChild variant="vip" className="mt-5">
             <a href={banner.link_url} target="_blank" rel="noopener noreferrer">{banner.link_label ?? "Saiba mais"}</a>
@@ -60,15 +60,15 @@ export function BannerCarousel({ banner, aspect }: { banner: Banner; aspect?: st
 
       {!embed && !isFileVideo && total > 1 ? (
         <>
-          <button type="button" aria-label="Imagem anterior" onClick={() => setIndex((value) => (value + total - 1) % total)} className="absolute left-2 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-background/30 text-primary-foreground backdrop-blur transition hover:bg-background/50">
+          <button type="button" aria-label="Imagem anterior" onClick={() => setIndex((value) => (value + total - 1) % total)} className="absolute left-2 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-foreground/30 text-highlight-foreground backdrop-blur transition hover:bg-foreground/50">
             <ChevronLeft className="size-4" />
           </button>
-          <button type="button" aria-label="Próxima imagem" onClick={() => setIndex((value) => (value + 1) % total)} className="absolute right-2 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-background/30 text-primary-foreground backdrop-blur transition hover:bg-background/50">
+          <button type="button" aria-label="Próxima imagem" onClick={() => setIndex((value) => (value + 1) % total)} className="absolute right-2 top-1/2 flex size-9 -translate-y-1/2 items-center justify-center rounded-full bg-foreground/30 text-highlight-foreground backdrop-blur transition hover:bg-foreground/50">
             <ChevronRight className="size-4" />
           </button>
           <div className="absolute bottom-3 left-1/2 flex -translate-x-1/2 gap-1.5">
             {images.map((url, position) => (
-              <button key={url} type="button" aria-label={`Ir para imagem ${position + 1}`} onClick={() => setIndex(position)} className={`size-2 rounded-full transition ${position === index ? "bg-primary-foreground" : "bg-primary-foreground/40"}`} />
+              <button key={url} type="button" aria-label={`Ir para imagem ${position + 1}`} onClick={() => setIndex(position)} className={`size-2 rounded-full transition ${position === index ? "bg-highlight-foreground" : "bg-highlight-foreground/40"}`} />
             ))}
           </div>
         </>
