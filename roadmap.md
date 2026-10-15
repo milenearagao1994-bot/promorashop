@@ -11,6 +11,10 @@
 
 # PromoraShop — roadmap
 
+## Identidade visual
+- [ ] Aplicar paleta compartilhada e contraste em todas as páginas sem alterar funcionalidades ou conteúdo.
+- [ ] Verificar apresentação e navegação no celular e computador.
+
 ## Ajustes de apresentação de outubro
 - [x] Organizar atalhos do cabeçalho: PromoraVídeos, Cupons, Vivi, preservando a busca.
 - [x] Remover texto final da home sem espaço reservado e verificar navegação e telas estreitas.
