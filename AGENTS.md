@@ -11,3 +11,4 @@
 
 - Reutilize `DeliveryBadges` nas apresentações públicas de produto; as duas opções de entrega vêm dos campos booleanos independentes em `products`, evitando afirmações não cadastradas.
 - Share discount-hunt supporting copy through a browser-safe constant across public views, so saved legacy photo instructions cannot reappear.
+- Keep theme colors centralized in `src/styles.css`, including legacy accent aliases; use separate readable ink and dark-surface foreground tokens so palette changes preserve contrast without changing app behavior.
