@@ -8,7 +8,7 @@ import { Search, Sparkles, Trash2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 
-import vivi from "@/assets/vivi-avatar.png.asset.json";
+import vivi from "@/assets/vivi-orange-avatar.png.asset.json";
 import {
   Conversation,
   ConversationContent,
@@ -44,7 +44,7 @@ function parseAnswer(text: string) {
   const slugMatch = text.match(/PRODUTOS:\s*(.+)$/im);
   const slugs = slugMatch?.[1]?.split(",").map((value) => value.trim()).filter(Boolean) ?? [];
   const showHunt = text.includes("[[CACA]]");
-  const clean = text.replace(/PRODUTOS:\s*.+$/im, "").replace(/\[\[CACA\]\]/g, "").trim();
+  const clean = text.replace(/PRODUTOS:\s*.+$/im, "").replace(/\[\[CACA\]\]/g, "").replace(/💜/g, "").trim();
   return { clean, slugs, showHunt };
 }
 
@@ -123,7 +123,7 @@ function Chat({ initialMessages, products }: { initialMessages: UIMessage[]; pro
             {messages.length === 0 ? (
               <div className="py-8 text-center">
                 <img src={vivi.url} alt="Vivi" className="mx-auto h-40 w-40 rounded-full object-cover object-top" />
-                <h2 className="mt-4 font-display text-2xl font-bold">Oi, eu sou a Vivi! 💜</h2>
+                <h2 className="mt-4 font-display text-2xl font-bold">Oi, eu sou a Vivi!</h2>
                 <p className="mt-2 text-muted-foreground">Podemos conversar, escolher um presente ou procurar um achadinho.</p>
                 <div className="mt-6 flex flex-wrap justify-center gap-2">
                   {QUICK_PROMPTS.map((item) => (
@@ -207,7 +207,7 @@ function Chat({ initialMessages, products }: { initialMessages: UIMessage[]; pro
               <PromptInputTextarea
                 value={input}
                 onChange={(event) => setInput(event.target.value)}
-                placeholder="Conte o que você procura ou só diga oi 💜"
+                placeholder="Conte o que você procura ou só diga oi"
               />
               <PromptInputFooter className="justify-end">
                 <PromptInputSubmit status={status} disabled={busy || input.trim().length === 0} />

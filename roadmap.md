@@ -12,6 +12,7 @@
 # PromoraShop — roadmap
 
 ## Identidade visual
+- [ ] Adicionar atalho Afiliados, substituir logo e foto da Vivi pelas imagens enviadas, retirar corações roxos e ocultar o texto institucional apenas na home; validar no celular e computador.
 - [x] Aplicar paleta compartilhada e contraste em todas as páginas sem alterar funcionalidades ou conteúdo.
 - [x] Verificar apresentação e navegação no celular e computador.
 
