@@ -22,7 +22,7 @@ export function WelcomeIntro() {
     return () => timers.forEach(clearTimeout);
   }, []);
   if (!show) return null;
-  const lines = ["✨ Seja muito bem-vindo(a) à PromoraShop", "Cupons • Promoções • Achadinhos • Um cantinho só seu 💜", "Solta o play 🎵\nBoas compras!"];
+  const lines = ["✨ Seja muito bem-vindo(a) à PromoraShop", "Cupons • Promoções • Achadinhos • Um cantinho só seu", "Solta o play 🎵\nBoas compras!"];
   return (
     <div role="status" aria-live="polite" className={`fixed inset-0 z-[60] flex flex-col items-center justify-center bg-soft-gradient px-6 text-center transition-opacity duration-500 ${leaving ? "opacity-0" : "opacity-100"}`}>
       <p key={step} className="animate-fade-in whitespace-pre-line font-display text-2xl font-bold leading-snug text-foreground md:text-4xl">

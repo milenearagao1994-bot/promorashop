@@ -59,7 +59,7 @@ function AffiliatesPage() {
   return (
     <SiteLayout>
       <section className="bg-soft-gradient"><div className="mx-auto max-w-6xl px-4 py-12">
-        <p className="text-xs font-semibold text-primary">💜 EXCLUSIVO PARA AFILIADOS</p>
+        <p className="text-xs font-semibold text-primary">EXCLUSIVO PARA AFILIADOS</p>
         <h1 className="mt-2 font-display text-3xl font-bold md:text-5xl">Área exclusiva para afiliados</h1>
         <p className="mt-4 max-w-2xl text-muted-foreground">{description}</p>
         <p className="mt-3 max-w-2xl text-xs text-muted-foreground">Comissões e condições são definidas pelas lojas parceiras. Cliques não garantem vendas nem comissões.</p>

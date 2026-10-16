@@ -1,16 +1,17 @@
-import { Link } from "@tanstack/react-router";
+import { Link, useRouterState } from "@tanstack/react-router";
 import { Facebook, Heart, MessageCircle } from "lucide-react";
 
 export function SiteFooter() {
+  const isHome = useRouterState({ select: (state) => state.location.pathname === "/" });
   return (
     <footer className="mt-20 bg-night-gradient text-highlight-foreground">
       <div className="mx-auto flex w-full max-w-6xl flex-col gap-4 px-4 py-8 md:flex-row md:items-center md:justify-between">
-        <div className="max-w-sm space-y-3">
+        {!isHome ? <div className="max-w-sm space-y-3">
           <p className="text-sm text-highlight-foreground/80">
             Sua plataforma de ofertas, descobertas e compras inteligentes. A PromoraShop não vende nem
             processa pagamentos: indicamos e você finaliza na loja parceira.
           </p>
-        </div>
+        </div> : null}
 
         <div className="flex flex-col gap-2 text-sm">
           <Link to="/produtos" className="text-highlight-foreground/80 transition hover:text-highlight-foreground">

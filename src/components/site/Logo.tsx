@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 
-import logo from "@/assets/promorashop-logo.png.asset.json";
+import logo from "@/assets/promorashop-orange-logo.png.asset.json";
 import { cn } from "@/lib/utils";
 
 export function Logo({ className, size = "md" }: { className?: string; size?: "sm" | "md" | "lg" }) {

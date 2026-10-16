@@ -51,7 +51,7 @@ function ProductsPage() {
       <Select value={sort} onValueChange={setSort}><SelectTrigger><SelectValue /></SelectTrigger><SelectContent><SelectItem value="featured">Destaques</SelectItem><SelectItem value="new">Novidades</SelectItem></SelectContent></Select>
     </div>
     <div className="mt-8">{visible.length ? <div className="grid grid-cols-2 gap-3 md:grid-cols-3 md:gap-6 lg:grid-cols-4">{visible.map((product) => <ProductCard key={product.id} product={product} />)}</div> : <div className="rounded-2xl border border-primary/15 bg-soft-gradient p-6 text-center md:p-10">
-      <p className="font-display text-xl font-bold">{query.trim() ? <>Não encontramos “{query.trim()}” no nosso catálogo.</> : "Não encontramos esse produto no momento 💜"}</p>
+      <p className="font-display text-xl font-bold">{query.trim() ? <>Não encontramos “{query.trim()}” no nosso catálogo.</> : "Não encontramos esse produto no momento"}</p>
       <p className="mt-2 text-muted-foreground">Mas podemos tentar encontrar uma oferta para você.</p>
       <Button asChild size="lg" className="mt-5"><Link to="/caca-ao-desconto" search={query.trim() ? { produto: query.trim() } : {}}>🔎 Procurar desconto</Link></Button>
     </div>}</div>

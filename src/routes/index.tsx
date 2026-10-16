@@ -176,7 +176,7 @@ function Index() {
       <section className="mx-auto max-w-6xl px-4 pt-12">
         <div className="flex flex-col items-start justify-between gap-4 rounded-xl border border-border bg-card p-5 sm:flex-row sm:items-center">
           <div>
-            <h2 className="font-display text-lg font-semibold">💜 Exclusivo para Afiliados</h2>
+            <h2 className="font-display text-lg font-semibold">Exclusivo para Afiliados</h2>
             <p className="mt-1 text-sm text-muted-foreground">Produtos, campanhas e oportunidades para quem divulga.</p>
             {commission ? <p className="mt-3 inline-flex items-baseline gap-2 rounded-full bg-primary/10 px-3 py-1 text-sm font-semibold text-primary">Comissão extra <span className="font-display text-lg">{commission}</span></p> : null}
           </div>

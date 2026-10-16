@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Menu, MessageCircleHeart, Search, TicketPercent, Video } from "lucide-react";
+import { Menu, MessageCircleHeart, Search, TicketPercent, Video, Users } from "lucide-react";
 import { useState, type FormEvent } from "react";
 
 import { Logo } from "@/components/site/Logo";
@@ -11,6 +11,7 @@ const links = [
   { to: "/cupons", label: "Cupons" },
   { to: "/promoravideos", label: "PromoraVídeos" },
   { to: "/vivi", label: "Vivi" },
+  { to: "/afiliados", label: "Afiliados" },
   { to: "/sobre", label: "Sobre" },
 ] as const;
 
@@ -61,11 +62,12 @@ export function SiteHeader() {
               <Search className="size-4" />
             </Button>
           </form>
-          <div className="grid w-full grid-cols-3 gap-2 md:flex md:w-auto md:shrink-0 md:gap-1" aria-label="Atalhos">
+          <div className="grid w-full grid-cols-4 gap-2 md:flex md:w-auto md:shrink-0 md:gap-1" aria-label="Atalhos">
             {([
               { to: "/promoravideos", label: "PromoraVídeos", hint: "Produtos em vídeo", Icon: Video },
               { to: "/cupons", label: "Cupons", hint: "Descontos ativos", Icon: TicketPercent },
               { to: "/vivi", label: "Vivi", hint: "Sua assistente", Icon: MessageCircleHeart },
+              { to: "/afiliados", label: "Afiliados", hint: "Exclusivo para afiliados", Icon: Users },
             ] as const).map(({ to, label, hint, Icon }) => (
               <Link key={to} to={to} aria-label={label} className="flex min-w-0 flex-col items-center gap-1 rounded-xl border border-primary/15 bg-card px-1 py-2 text-center text-primary shadow-soft transition hover:border-primary md:h-11 md:flex-col md:justify-center md:gap-1 md:border-0 md:bg-transparent md:px-2 md:py-0 md:shadow-none">
                 <span className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-primary/10 md:size-auto md:bg-transparent"><Icon className="size-4 md:size-5" /></span>
@@ -79,7 +81,7 @@ export function SiteHeader() {
         </div>
 
         <nav className="hidden items-center gap-1 lg:flex">
-          {links.slice(0, 1).concat(links.slice(4)).map((link) => (
+          {links.filter((link) => link.to === "/produtos" || link.to === "/sobre").map((link) => (
             <Link key={link.to} to={link.to} className="rounded-full px-3 py-2 text-sm font-medium text-muted-foreground transition hover:bg-secondary hover:text-secondary-foreground" activeProps={{ className: "bg-secondary text-secondary-foreground" }}>
               {link.label}
             </Link>
