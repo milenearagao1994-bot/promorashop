@@ -78,7 +78,7 @@ export function AffiliatesAdmin({ stores, categories }: { stores: Store[]; categ
   return (
     <div className="mt-4 space-y-6">
       <div className="flex items-center justify-between gap-3 rounded-lg border border-border bg-card p-4">
-        <div><h2 className="font-display text-lg font-semibold">💜 Exclusivo para Afiliados</h2><p className="text-xs text-muted-foreground">Separado do catálogo público dos consumidores.</p></div>
+        <div><h2 className="font-display text-lg font-semibold">Exclusivo para Afiliados</h2><p className="text-xs text-muted-foreground">Separado do catálogo público dos consumidores.</p></div>
         <Button size="sm" onClick={() => setEditing("new")}><Plus />Nova oportunidade</Button>
       </div>
       <div className="space-y-2">

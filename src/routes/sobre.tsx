@@ -49,7 +49,7 @@ function AboutPage() {
 
         <section className="mt-16 overflow-hidden rounded-2xl border border-primary/15 bg-soft-gradient p-6 md:p-10">
           <p className="text-xs font-semibold text-primary">FALE COM A GENTE</p>
-          <h2 className="mt-2 font-display text-3xl font-bold">Vamos conversar 💜</h2>
+          <h2 className="mt-2 font-display text-3xl font-bold">Vamos conversar</h2>
           <p className="mt-3 max-w-xl text-muted-foreground">
             Dúvidas sobre um achadinho, parcerias ou sugestões? Estamos por aqui.
           </p>

@@ -191,7 +191,7 @@ function ReviewDialog({
         {done ? (
           <div className="space-y-5">
             <p className="rounded-2xl bg-secondary/70 p-5 text-sm leading-6">
-              Obrigada pela sua avaliação! 💜
+              Obrigada pela sua avaliação!
               <br />
               Ela será analisada pela nossa equipe e, se aprovada, aparecerá na página do produto.
             </p>

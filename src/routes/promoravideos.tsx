@@ -166,7 +166,7 @@ function VideoSlide({ product: p, index, active, near, muted, onToggleMute }: { 
         <div className="mt-2 flex items-end justify-between gap-3">
           <PriceBlock product={p} />
           <Button asChild className="shrink-0">
-            <a href={p.affiliate_url} rel="sponsored noreferrer" onClick={click}>Quero esse! 💜</a>
+            <a href={p.affiliate_url} rel="sponsored noreferrer" onClick={click}>Quero esse!</a>
           </Button>
         </div>
       </div>
