@@ -5,10 +5,11 @@ import { useEffect, useRef, useState } from "react";
 
 import { CouponCard } from "@/components/site/CouponCard";
 import { EmptyState } from "@/components/site/EmptyState";
+import { FlashDealsSection } from "@/components/site/FlashDeals";
 import { ProductCard } from "@/components/site/ProductCard";
 import { SiteLayout } from "@/components/site/SiteLayout";
 import { Button } from "@/components/ui/button";
-import { affiliateOpportunitiesQuery, bannersQuery, categoriesQuery, contactConfig, couponsQuery, DISCOUNT_HUNT_DESCRIPTION, discountHuntConfig, productsQuery, siteSettingsQuery, type Banner } from "@/lib/promovip";
+import { affiliateOpportunitiesQuery, bannersQuery, categoriesQuery, contactConfig, couponsQuery, DISCOUNT_HUNT_DESCRIPTION, discountHuntConfig, flashDealsQuery, productsQuery, youtubeEmbedUrl, siteSettingsQuery, type Banner } from "@/lib/promovip";
 
 const description = "Achadinhos, ofertas, promoções e produtos selecionados em um só lugar.";
 const ZAP_MESSAGE = "Olá! Quero entrar na lista VIP gratuita e receber ofertas no WhatsApp todo dia";
@@ -22,6 +23,7 @@ export const Route = createFileRoute("/")({
     context.queryClient.ensureQueryData(bannersQuery),
     context.queryClient.ensureQueryData(siteSettingsQuery),
     context.queryClient.ensureQueryData(affiliateOpportunitiesQuery),
+    context.queryClient.ensureQueryData(flashDealsQuery),
   ]),
   head: () => ({ meta: [
     { title: "PromoraShop — Achadinhos, ofertas e promoções" },
@@ -46,6 +48,7 @@ function Index() {
   const { data: banners } = useSuspenseQuery(bannersQuery);
   const { data: settings } = useSuspenseQuery(siteSettingsQuery);
   const { data: opportunities } = useSuspenseQuery(affiliateOpportunitiesQuery);
+  const { data: flashDeals } = useSuspenseQuery(flashDealsQuery);
 
   const landing = (settings.find((s) => s.key === "landing")?.value ?? {}) as Record<string, string>;
   const aspect = ASPECTS.has(landing["banner_aspect"] ?? "") ? landing["banner_aspect"]! : "15/9";
@@ -86,7 +89,7 @@ function Index() {
           </div>
           <div className="-mx-4 mt-3 flex snap-x gap-3 overflow-x-auto px-4 pb-2">
             {videoProducts.map((p) => (
-              <Link key={p.id} to="/produto/$slug" params={{ slug: p.slug }} className="group relative w-32 shrink-0 snap-start overflow-hidden rounded-xl border border-border bg-muted md:w-40">
+              <Link key={p.id} to="/promoravideos" className="group relative w-32 shrink-0 snap-start overflow-hidden rounded-xl border border-border bg-muted md:w-40">
                 <div className="aspect-[9/14]">
                   {p.image_url ? <img src={p.image_url} alt={p.title} loading="lazy" className="size-full object-cover" /> : null}
                 </div>
@@ -100,13 +103,16 @@ function Index() {
       ) : null}
 
       <section className="mx-auto max-w-6xl px-4 pt-8 md:pt-10">
-        <div className="flex items-end justify-between gap-4">
-          <h2 className="flex items-center gap-2 font-display text-xl font-bold md:text-3xl"><Flame className="size-5 text-primary" />Promoções em Destaques</h2>
-          <Button asChild variant="ghost" size="sm"><Link to="/produtos">Ver todas <ArrowRight /></Link></Button>
-        </div>
-        <div className="mt-4">
+        <div className="mt-0">
           {offers.length ? (
-            <div className="grid grid-cols-1 gap-2.5 min-[340px]:grid-cols-2 sm:grid-cols-3 md:gap-5 lg:grid-cols-4 xl:grid-cols-5">{offers.map((p) => <ProductCard key={p.id} product={p} />)}</div>
+            <div className="space-y-4">
+              {(() => { const first = offers.slice(0, 4); const rest = offers.slice(4); const cls = "grid grid-cols-1 gap-2.5 min-[340px]:grid-cols-2 sm:grid-cols-3 md:gap-5 lg:grid-cols-4 xl:grid-cols-5"; return <>
+                <div className={cls}>{first.map((p) => <ProductCard key={p.id} product={p} />)}</div>
+                <FlashDealsSection deals={flashDeals} />
+                {rest.length ? <div className={cls}>{rest.map((p) => <ProductCard key={p.id} product={p} />)}</div> : null}
+                <div className="flex justify-center"><Button asChild variant="outline" size="sm"><Link to="/produtos">Ver todos os produtos <ArrowRight /></Link></Button></div>
+              </>; })()}
+            </div>
           ) : (
             <EmptyState title="A curadoria está chegando" description="Nenhum produto foi cadastrado ainda." />
           )}
@@ -202,7 +208,7 @@ function Index() {
 }
 
 function HomeBanners({ banners, aspect }: { banners: Banner[]; aspect: string }) {
-  const slides = banners.filter((b) => b.image_url);
+  const slides = banners.filter((b) => b.image_url || b.video_url);
   const [index, setIndex] = useState(0);
   const [pausedUntil, setPausedUntil] = useState(0);
   const touchStart = useRef<number | null>(null);
@@ -222,7 +228,7 @@ function HomeBanners({ banners, aspect }: { banners: Banner[]; aspect: string })
         <div className="flex h-full transition-transform duration-500" style={{ transform: `translateX(-${index * 100}%)` }}>
           {slides.map((b, i) => (
             <a key={b.id} href={b.link_url ?? "#"} target="_blank" rel="noopener noreferrer" aria-label={`Banner ${i + 1} de ${total}`} className="block h-full w-full shrink-0">
-              <img src={b.image_url!} alt="" className="size-full object-cover" loading={i === 0 ? "eager" : "lazy"} draggable={false} />
+              <BannerMedia banner={b} active={i === index} eager={i === 0} />
             </a>
           ))}
         </div>
@@ -238,4 +244,20 @@ function HomeBanners({ banners, aspect }: { banners: Banner[]; aspect: string })
       ) : null}
     </div>
   );
+}
+
+function BannerMedia({ banner: b, active, eager }: { banner: Banner; active: boolean; eager: boolean }) {
+  const ref = useRef<HTMLVideoElement>(null);
+  const embed = youtubeEmbedUrl(b.video_url);
+  useEffect(() => {
+    const v = ref.current; if (!v) return;
+    if (active && b.autoplay !== false) v.play().catch(() => {}); else v.pause();
+  }, [active, b.autoplay]);
+  if (b.video_url && embed) {
+    return active ? <iframe className="pointer-events-none size-full" src={`${embed}?autoplay=${b.autoplay === false ? 0 : 1}&mute=1&loop=1&controls=0&playsinline=1`} title="Vídeo do banner" allow="autoplay; encrypted-media" /> : (b.image_url ? <img src={b.image_url} alt="" className="size-full object-cover" /> : null);
+  }
+  if (b.video_url) {
+    return <video ref={ref} src={b.video_url} poster={b.image_url ?? undefined} muted loop playsInline preload={active ? "auto" : "none"} controls={b.autoplay === false} className="size-full object-cover" />;
+  }
+  return <img src={b.image_url!} alt="" className="size-full object-cover" loading={eager ? "eager" : "lazy"} draggable={false} />;
 }

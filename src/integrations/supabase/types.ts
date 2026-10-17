@@ -388,6 +388,53 @@ export type Database = {
           },
         ]
       }
+      flash_deals: {
+        Row: {
+          created_at: string
+          ends_at: string
+          final_price: number
+          id: string
+          image_url: string | null
+          original_price: number
+          product_id: string
+          sort_order: number
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          ends_at: string
+          final_price: number
+          id?: string
+          image_url?: string | null
+          original_price: number
+          product_id: string
+          sort_order?: number
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          ends_at?: string
+          final_price?: number
+          id?: string
+          image_url?: string | null
+          original_price?: number
+          product_id?: string
+          sort_order?: number
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "flash_deals_product_id_fkey"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       product_relations: {
         Row: {
           created_at: string

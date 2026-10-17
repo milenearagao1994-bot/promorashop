@@ -120,6 +120,10 @@ function VideoSlide({ product: p, index, active, near, muted, onToggleMute }: { 
 
   return (
     <section data-index={index} className="flex h-full snap-start snap-always flex-col gap-2 pb-2">
+      <div className="shrink-0 rounded-2xl border border-border bg-card p-3">
+        <h2 className="line-clamp-2 font-display text-base font-semibold text-foreground">{p.title}</h2>
+        <div className="mt-1"><PriceBlock product={p} /></div>
+      </div>
       <div className="relative min-h-0 flex-1 overflow-hidden rounded-2xl bg-foreground/95">
         {embed ? (
           active ? (
@@ -159,16 +163,14 @@ function VideoSlide({ product: p, index, active, near, muted, onToggleMute }: { 
           </div>
         ) : null}
       </div>
-      <div className="shrink-0 rounded-2xl border border-border bg-card p-3">
-        <StoreDeliveryLine product={p} storeName={p.stores?.name ?? "Loja parceira"} className="text-xs font-medium text-muted-foreground" />
-        <FreeShippingTag product={p} className="mt-1" />
-        <h2 className="mt-1 line-clamp-1 font-display text-base font-semibold text-foreground">{p.title}</h2>
-        <div className="mt-2 flex items-end justify-between gap-3">
-          <PriceBlock product={p} />
-          <Button asChild className="shrink-0">
-            <a href={p.affiliate_url} rel="sponsored noreferrer" onClick={click}>Quero esse!</a>
-          </Button>
+      <div className="flex shrink-0 items-center justify-between gap-3 rounded-2xl border border-border bg-card p-3">
+        <div className="min-w-0">
+          <StoreDeliveryLine product={p} storeName={p.stores?.name ?? "Loja parceira"} className="text-xs font-medium text-muted-foreground" />
+          <FreeShippingTag product={p} className="mt-1" />
         </div>
+        <Button asChild className="shrink-0">
+          <a href={p.affiliate_url} rel="sponsored noreferrer" onClick={click}>Quero esse!</a>
+        </Button>
       </div>
     </section>
   );
