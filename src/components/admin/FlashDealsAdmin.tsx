@@ -53,6 +53,7 @@ export function FlashDealsAdmin({ products }: { products: Product[] }) {
     const payload = { product_id: draft.product_id, original_price: original, final_price: final, ends_at: ends.toISOString(), image_url: String(form.get("image_url") ?? "").trim() || null, sort_order: Number(form.get("sort_order") || 0) };
     const ok = await run(() => editing === "new" ? supabase.from("flash_deals").insert({ ...payload, status: "active" }) : supabase.from("flash_deals").update(payload).eq("id", (editing as FlashDeal).id), "Oferta salva.");
     if (ok) setEditing(null);
+    return;
   };
 
   const shift = (d: FlashDeal, hours: number) => {
@@ -60,6 +61,7 @@ export function FlashDealsAdmin({ products }: { products: Product[] }) {
     const next = new Date(base + hours * 3600000);
     if (next <= new Date()) return toast.error("A duração não pode terminar no passado.");
     void run(() => supabase.from("flash_deals").update({ ends_at: next.toISOString() }).eq("id", d.id), "Duração atualizada.");
+    return;
   };
 
   const product = products.find((p) => p.id === draft.product_id);
