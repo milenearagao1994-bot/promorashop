@@ -1,5 +1,5 @@
-import { Link, useNavigate } from "@tanstack/react-router";
-import { Menu, MessageCircleHeart, Search, TicketPercent, Video, Users } from "lucide-react";
+import { Link, useNavigate, useRouter, useRouterState } from "@tanstack/react-router";
+import { ArrowLeft, Menu, MessageCircleHeart, Search, TicketPercent, Video, Users } from "lucide-react";
 import { useState, type FormEvent } from "react";
 
 import { Logo } from "@/components/site/Logo";
@@ -19,6 +19,14 @@ export function SiteHeader() {
   const [open, setOpen] = useState(false);
   const [term, setTerm] = useState("");
   const navigate = useNavigate();
+  const router = useRouter();
+  const pathname = useRouterState({ select: (st) => st.location.pathname });
+  const isHome = pathname === "/";
+  function goBack() {
+    if (typeof window !== "undefined" && window.history.length > 1 && document.referrer.startsWith(window.location.origin)) router.history.back();
+    else if (typeof window !== "undefined" && (window.history.state as { idx?: number } | null)?.idx) router.history.back();
+    else navigate({ to: "/" });
+  }
 
   function submit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -29,7 +37,12 @@ export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-border/60 bg-background/90 backdrop-blur-xl">
       <div className="mx-auto flex w-full max-w-6xl flex-wrap items-center gap-x-3 gap-y-2 px-4 py-2.5 md:flex-nowrap md:py-3">
-        <Logo size="sm" className="shrink-0 md:[&_img]:h-10" />
+        {isHome ? null : (
+          <>
+            <Button variant="ghost" size="icon" onClick={goBack} aria-label="Voltar" className="shrink-0"><ArrowLeft /></Button>
+            <Logo size="sm" className="shrink-0 md:[&_img]:h-10" />
+          </>
+        )}
 
         <Sheet open={open} onOpenChange={setOpen}>
           <SheetTrigger asChild>
