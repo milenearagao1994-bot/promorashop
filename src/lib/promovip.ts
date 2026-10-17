@@ -385,3 +385,28 @@ export const AFFILIATE_CONTENT_KEYS = [
 export function affiliateContent(settings: SiteSetting[] | undefined) {
   return settingsMap(settings)["affiliates"] ?? {};
 }
+
+// ---------- Relâmpagos (ofertas por tempo limitado, máx. 3 ativas) ----------
+export type FlashDeal = {
+  id: string; product_id: string; image_url: string | null; original_price: number; final_price: number;
+  ends_at: string; status: "active" | "paused" | "ended"; sort_order: number;
+  products?: Pick<Product, "id" | "title" | "slug" | "image_url" | "affiliate_url" | "store_id"> | null;
+};
+const FLASH_SELECT = "*, products(id,title,slug,image_url,affiliate_url,store_id)";
+export const flashDealsQuery = queryOptions({
+  queryKey: ["flash-deals", "public"],
+  queryFn: async (): Promise<FlashDeal[]> => {
+    const { data, error } = await supabase.from("flash_deals").select(FLASH_SELECT)
+      .eq("status", "active").gt("ends_at", new Date().toISOString()).order("sort_order").limit(3);
+    if (error) throw error;
+    return (data ?? []) as unknown as FlashDeal[];
+  },
+});
+export const adminFlashDealsQuery = queryOptions({
+  queryKey: ["flash-deals", "admin"],
+  queryFn: async (): Promise<FlashDeal[]> => {
+    const { data, error } = await supabase.from("flash_deals").select(FLASH_SELECT).order("sort_order").order("created_at", { ascending: false });
+    if (error) throw error;
+    return (data ?? []) as unknown as FlashDeal[];
+  },
+});
